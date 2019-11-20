@@ -7,11 +7,16 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.walkly.walkly.utilities.DistanceUtil
 import com.walkly.walkly.utilities.LocationUtil
+import java.util.*
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var locationUtil: LocationUtil
+    private lateinit var distanceUtil: DistanceUtil
+
+    val cal = Calendar.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,6 +36,11 @@ class MainActivity : AppCompatActivity() {
 
         locationUtil = LocationUtil(this)
         locationUtil.readLocation()
+
+        distanceUtil = DistanceUtil(this)
+        cal.add(Calendar.MINUTE, -1000)
+        distanceUtil.getDistanceSince(cal.timeInMillis)
+
     }
 
 }
