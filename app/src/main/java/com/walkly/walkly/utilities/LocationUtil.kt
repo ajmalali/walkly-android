@@ -13,14 +13,13 @@ import com.google.android.gms.location.LocationServices
 class LocationUtil(activity: Activity) {
     private val activity = activity
     private var MY_PERMISSIONS_REQUEST_ACESS_FINE_LOCATION = 0
-    private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var fusedLocationClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(activity)
 
     init {
-        fusedLocationClient = LocationServices.getFusedLocationProviderClient(activity)
         checkPermission()
     }
 
-    fun checkPermission(){
+    private fun checkPermission(){
         // check if the location permission is granted
         if (ContextCompat.checkSelfPermission(activity, Manifest.permission.ACCESS_FINE_LOCATION)
             != PackageManager.PERMISSION_GRANTED) {
@@ -31,14 +30,9 @@ class LocationUtil(activity: Activity) {
                 ActivityCompat.requestPermissions(activity,
                     arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                     MY_PERMISSIONS_REQUEST_ACESS_FINE_LOCATION)
-                // read location after getting permission
-            //    readLocation()
             }
         }
-        // permission is already granted, read location
-        else {
-        //    readLocation()
-        }
+
     }
     fun readLocation(){
         fusedLocationClient.lastLocation.addOnSuccessListener { location : Location? ->
