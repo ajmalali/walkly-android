@@ -3,6 +3,7 @@
 ## Very Important Notes
 
 - NEVER use --force
+- DO NOT use rebase to merge branches if you just can simply use merge
 - keep your local repo in sync with the remote repo
 - Write meaningful commit message (I might create a template)
 
