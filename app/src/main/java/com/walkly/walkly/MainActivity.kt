@@ -1,7 +1,10 @@
 package com.walkly.walkly
 
+import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.MutableLiveData
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -16,7 +19,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var locationUtil: LocationUtil
     private lateinit var distanceUtil: DistanceUtil
 
-    val cal = Calendar.getInstance()
+    private val cal = Calendar.getInstance()
+    private val currentLocation = MutableLiveData<Location>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,8 +38,13 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        locationUtil = LocationUtil(this)
-        locationUtil.readLocation()
+        locationUtil = LocationUtil(this, 100L, 50L)
+        locationUtil.readLocation(currentLocation)
+
+        currentLocation.observe(this, androidx.lifecycle.Observer {
+            Log.d("Location_latitude", it?.latitude.toString() )
+            Log.d("Location_longitude", it?.longitude.toString())
+        })
 
         distanceUtil = DistanceUtil(this)
         cal.add(Calendar.MINUTE, -1000)
@@ -43,4 +52,13 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    override fun onPause() {
+        super.onPause()
+        locationUtil.stopLocationUpdates()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        locationUtil.startLocationUpdates()
+    }
 }
