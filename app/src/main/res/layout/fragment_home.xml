@@ -13,53 +13,46 @@
         android:text="@string/app_name"
         android:textColor="@color/common_google_signin_btn_text_dark_focused"
         android:textSize="24sp"
-        app:layout_constraintBottom_toTopOf="@+id/text_home"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.235" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/status"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="228dp"
         android:layout_marginEnd="8dp"
         android:textAlignment="center"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/emailPasswordFields"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.107" />
+        app:layout_constraintTop_toBottomOf="@+id/detail" />
 
     <TextView
         android:id="@+id/detail"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="228dp"
         android:layout_marginEnd="8dp"
         android:textAlignment="center"
         android:textSize="20sp"
-        app:layout_constraintBottom_toTopOf="@+id/status"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.365" />
+        app:layout_constraintTop_toBottomOf="@+id/textView5" />
 
     <LinearLayout
         android:id="@+id/emailPasswordFields"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="140dp"
         android:orientation="horizontal"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        app:layout_constraintBottom_toTopOf="@+id/emailPasswordButtons"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/status"
+        android:visibility="gone"
         tools:layout_editor_absoluteX="0dp">
 
         <EditText
@@ -83,11 +76,11 @@
         android:id="@+id/emailPasswordButtons"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="164dp"
         android:orientation="horizontal"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/emailPasswordFields"
+        android:visibility="gone"
         tools:layout_editor_absoluteX="8dp">
 
         <Button
@@ -119,9 +112,9 @@
         android:orientation="horizontal"
         android:paddingLeft="16dp"
         android:paddingRight="16dp"
-        android:visibility="gone"
         android:weightSum="2.0"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/status">
 
         <Button
             android:id="@+id/signOutButton"
