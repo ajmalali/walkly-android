@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -12,15 +13,17 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.walkly.walkly.utilities.DistanceUtil
 import com.walkly.walkly.utilities.LocationUtil
+import kotlinx.coroutines.CoroutineScope
 import java.util.*
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(){
 
     private lateinit var locationUtil: LocationUtil
     private lateinit var distanceUtil: DistanceUtil
 
     private val cal = Calendar.getInstance()
     private val currentLocation = MutableLiveData<Location>()
+    private val walkedDistance = MutableLiveData<Float>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -41,24 +44,30 @@ class MainActivity : AppCompatActivity() {
         locationUtil = LocationUtil(this, 100L, 50L)
         locationUtil.readLocation(currentLocation)
 
-        currentLocation.observe(this, androidx.lifecycle.Observer {
+        currentLocation.observe(this, Observer {
             Log.d("Location_latitude", it?.latitude.toString() )
             Log.d("Location_longitude", it?.longitude.toString())
         })
 
-        distanceUtil = DistanceUtil(this)
+        walkedDistance.observe(this, Observer {
+            Log.d("Distance_walked", it.toString())
+        })
+
         cal.add(Calendar.MINUTE, -1000)
-        distanceUtil.getDistanceSince(cal.timeInMillis)
+        distanceUtil = DistanceUtil(this, cal.timeInMillis, 500, walkedDistance)
 
     }
+
 
     override fun onPause() {
         super.onPause()
         locationUtil.stopLocationUpdates()
+        distanceUtil.stopUpdates()
     }
 
     override fun onResume() {
         super.onResume()
         locationUtil.startLocationUpdates()
+        distanceUtil.startUpdates()
     }
 }
