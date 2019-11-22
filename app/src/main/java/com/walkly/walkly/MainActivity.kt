@@ -62,7 +62,7 @@ class MainActivity : AppCompatActivity(){
     override fun onPause() {
         super.onPause()
         locationUtil.stopLocationUpdates()
-        distanceUtil.stopUpdates()
+        distanceUtil.startUpdates()
     }
 
     override fun onResume() {

@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "331480279129",
+    "firebase_url": "https://walkly-81d94.firebaseio.com",
+    "project_id": "walkly-81d94",
+    "storage_bucket": "walkly-81d94.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331480279129:android:f6ee4f75e7fdf84b942948",
+        "android_client_info": {
+          "package_name": "com.walkly.walkly"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331480279129-6r9eqbb3f1utba8st7srnc46hqhasfkk.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.walkly.walkly",
+            "certificate_hash": "cf0e8906b20ef756f038b7cde498b3aeeec60c91"
+          }
+        },
+        {
+          "client_id": "331480279129-2pibrtfiumeg00vfsgouf5ng0bh64jsf.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB2pi3rDGwglrT_zoFykaEIGwpHj9uelKE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331480279129-2pibrtfiumeg00vfsgouf5ng0bh64jsf.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
