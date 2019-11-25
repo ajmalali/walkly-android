@@ -11,6 +11,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.firebase.auth.FirebaseAuth
 import com.walkly.walkly.models.Player
 import com.walkly.walkly.utilities.DistanceUtil
 import com.walkly.walkly.utilities.LocationUtil
@@ -27,6 +28,8 @@ class MainActivity : AppCompatActivity(){
     private val currentLocation = MutableLiveData<Location>()
     private val walkedDistance = MutableLiveData<Float>()
     private val stamina = MutableLiveData<Long>()
+
+    private val auth = FirebaseAuth.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,10 +62,17 @@ class MainActivity : AppCompatActivity(){
         cal.add(Calendar.MINUTE, -1000)
         distanceUtil = DistanceUtil(this, cal.timeInMillis, 500, walkedDistance)
 
-        player = Player(stamina)
-        stamina.observe(this, Observer {
-            Log.d("Stamina: ", it.toString())
-        })
+        // the player model should not be initialized before valid sign in
+        // the authentication activity shall not has this code to avoid auth checking in if statements
+        auth.addAuthStateListener {
+            if (it.currentUser != null){
+                player = Player(stamina)
+                stamina.observe(this, Observer {stamina ->
+                    Log.d("Stamina: ", stamina.toString())
+                })
+                player.startStaminaUpdates()
+            }
+        }
 
     }
 
@@ -71,13 +81,22 @@ class MainActivity : AppCompatActivity(){
         super.onPause()
         locationUtil.stopLocationUpdates()
         distanceUtil.stopUpdates()
-        player.stopStaminaUpdates()
+
+        if (auth.currentUser != null)
+            player.stopStaminaUpdates()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        player.syncModel()
     }
 
     override fun onResume() {
         super.onResume()
         locationUtil.startLocationUpdates()
         distanceUtil.startUpdates()
-        player.startStaminaUpdates()
+
+        if (auth.currentUser != null)
+            player.startStaminaUpdates()
     }
 }

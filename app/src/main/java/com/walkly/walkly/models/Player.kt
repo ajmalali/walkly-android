@@ -3,12 +3,14 @@ package com.walkly.walkly.models
 import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.*
 
 class Player (data: MutableLiveData<Long>) {
 
     private lateinit var user: Map<String, Any>
+    private lateinit var userRef: DocumentReference
 
     private var stamina = 0L
 
@@ -17,16 +19,15 @@ class Player (data: MutableLiveData<Long>) {
     private val scope = CoroutineScope(Dispatchers.Main + job)
 
     private val data = data
-    private val INTERVAL = 36000L    // update every 36 seconds
+    private val INTERVAL = 3600L    // update every 36 seconds
     private val MAX_STAMINA = 300   // max of 3 stamina points
 
     private val auth = FirebaseAuth.getInstance()
     private val firestore = FirebaseFirestore.getInstance()
 
     init {
-        // TODO: get stamina from firebase
         val uid = auth.currentUser?.uid
-        val userRef = firestore.collection("users").document(uid!!)
+        userRef = firestore.collection("users").document(uid!!)
         userRef.get()
             .addOnSuccessListener {
                 user = it.data!!
@@ -40,7 +41,6 @@ class Player (data: MutableLiveData<Long>) {
     }
 
 
-    // TODO: provide it to activities
 
     fun stopStaminaUpdates() {
         update = false
@@ -52,13 +52,13 @@ class Player (data: MutableLiveData<Long>) {
         }
     }
 
-    // TODO: sync with firebase
 
-
+    fun syncModel(){
+        userRef.update("stamina", stamina)
+    }
 
     // TODO: boost stamina by distance
 
-    // TODO: convert time to stamina
 
     suspend fun timeToStamin(){
         while (update && stamina < MAX_STAMINA){
