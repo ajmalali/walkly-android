@@ -14,7 +14,6 @@ import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.walkly.walkly.models.Player
 import com.walkly.walkly.utilities.DistanceUtil
 import com.walkly.walkly.utilities.LocationUtil
-import kotlinx.coroutines.CoroutineScope
 import java.util.*
 
 class MainActivity : AppCompatActivity(){
@@ -27,7 +26,7 @@ class MainActivity : AppCompatActivity(){
 
     private val currentLocation = MutableLiveData<Location>()
     private val walkedDistance = MutableLiveData<Float>()
-    private val stamina = MutableLiveData<Int>()
+    private val stamina = MutableLiveData<Long>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
