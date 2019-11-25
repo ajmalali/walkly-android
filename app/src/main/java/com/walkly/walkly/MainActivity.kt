@@ -64,13 +64,21 @@ class MainActivity : AppCompatActivity(){
 
         // the player model should not be initialized before valid sign in
         // the authentication activity shall not has this code to avoid auth checking in if statements
-        auth.addAuthStateListener {
-            if (it.currentUser != null){
-                player = Player(stamina)
-                stamina.observe(this, Observer {stamina ->
-                    Log.d("Stamina: ", stamina.toString())
-                })
-                player.startStaminaUpdates()
+
+        if (auth.currentUser != null){
+            player = Player(stamina)
+            stamina.observe(this, Observer {stamina ->
+                Log.d("Stamina: ", stamina.toString())
+            })
+        } else {
+            auth.addAuthStateListener {
+                if (it.currentUser != null){
+                    player = Player(stamina)
+                    stamina.observe(this, Observer {stamina ->
+                        Log.d("Stamina: ", stamina.toString())
+                    })
+                    player.startStaminaUpdates()
+                }
             }
         }
 
@@ -88,7 +96,9 @@ class MainActivity : AppCompatActivity(){
 
     override fun onStop() {
         super.onStop()
-        player.syncModel()
+
+        if (auth.currentUser != null)
+            player.syncModel()
     }
 
     override fun onResume() {
