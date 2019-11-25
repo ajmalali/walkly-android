@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import kotlinx.coroutines.*
 
 class Player (data: MutableLiveData<Long>) {
@@ -23,7 +24,13 @@ class Player (data: MutableLiveData<Long>) {
     private val MAX_STAMINA = 300   // max of 3 stamina points
 
     private val auth = FirebaseAuth.getInstance()
-    private val firestore = FirebaseFirestore.getInstance()
+    private val settings = FirebaseFirestoreSettings.Builder()
+        .setPersistenceEnabled(true)
+        .build()
+    private val firestore = FirebaseFirestore.getInstance().also {
+        // caches the data locally to work offline
+        it.firestoreSettings = settings
+    }
 
     init {
         val uid = auth.currentUser?.uid
