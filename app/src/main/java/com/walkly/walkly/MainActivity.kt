@@ -11,6 +11,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.walkly.walkly.models.Player
 import com.walkly.walkly.utilities.DistanceUtil
 import com.walkly.walkly.utilities.LocationUtil
 import kotlinx.coroutines.CoroutineScope
@@ -20,10 +21,13 @@ class MainActivity : AppCompatActivity(){
 
     private lateinit var locationUtil: LocationUtil
     private lateinit var distanceUtil: DistanceUtil
+    private lateinit var player: Player
 
     private val cal = Calendar.getInstance()
+
     private val currentLocation = MutableLiveData<Location>()
     private val walkedDistance = MutableLiveData<Float>()
+    private val stamina = MutableLiveData<Int>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -56,18 +60,25 @@ class MainActivity : AppCompatActivity(){
         cal.add(Calendar.MINUTE, -1000)
         distanceUtil = DistanceUtil(this, cal.timeInMillis, 500, walkedDistance)
 
+        player = Player(stamina)
+        stamina.observe(this, Observer {
+            Log.d("Stamina: ", it.toString())
+        })
+
     }
 
 
     override fun onPause() {
         super.onPause()
         locationUtil.stopLocationUpdates()
-        distanceUtil.startUpdates()
+        distanceUtil.stopUpdates()
+        player.stopStaminaUpdates()
     }
 
     override fun onResume() {
         super.onResume()
         locationUtil.startLocationUpdates()
         distanceUtil.startUpdates()
+        player.startStaminaUpdates()
     }
 }
