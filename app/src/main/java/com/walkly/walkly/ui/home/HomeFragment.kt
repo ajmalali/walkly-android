@@ -1,9 +1,9 @@
 package com.walkly.walkly.ui.home
 
 import android.annotation.SuppressLint
-import android.app.Activity
+import android.content.Intent
+import android.content.Intent.getIntent
 import android.os.Bundle
-import android.text.TextUtils
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -12,20 +12,50 @@ import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.walkly.walkly.LoginActivity
+import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import kotlinx.android.synthetic.main.fragment_home.*
-import androidx.annotation.NonNull
-import com.google.android.gms.tasks.Task
-import com.google.firebase.auth.AuthResult
-
-
-
 
 
 @SuppressLint("Registered")
-class HomeFragment : Fragment() , View.OnClickListener{
+class HomeFragment : Fragment(), View.OnClickListener {
+    lateinit var v : View
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        v =  inflater.inflate(R.layout.fragment_home, container, false)
+        return v
+    }
 
-    private lateinit var auth: FirebaseAuth
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    super.onViewCreated(view, savedInstanceState)
+    signOutButton.setOnClickListener(this)
+    verifyEmailButton.setOnClickListener(this)
+    }
+
+    override fun onClick(v: View) {
+        val i = v.id
+        when (i) {
+            R.id.signOutButton -> signOut()
+        }
+    }
+
+    private fun signOut() {
+        FirebaseAuth.getInstance().signOut()
+        updateUI()
+    }
+
+
+    private fun updateUI() {
+            var intent = Intent(activity, LoginActivity::class.java)
+            startActivity(intent)
+
+    }
+
+   /* private lateinit var auth: FirebaseAuth
     private lateinit var v : View
     private var mAuthStateListener: FirebaseAuth.AuthStateListener? = null
 
@@ -233,5 +263,5 @@ class HomeFragment : Fragment() , View.OnClickListener{
 
     companion object {
         private const val TAG = "EmailPassword"
-    }
+    }*/
 }
