@@ -1,17 +1,17 @@
 package com.walkly.walkly
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import kotlinx.android.synthetic.main.activity_login.*
+import kotlinx.android.synthetic.main.activity_signup.*
 
-class LoginActivity : AppCompatActivity(), View.OnClickListener  {
+class SignUp : AppCompatActivity(), View.OnClickListener  {
 
     // [START declare_auth]
     private lateinit var auth: FirebaseAuth
@@ -19,19 +19,12 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener  {
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_login)
-
-        // Buttons
-        emailSignInButton.setOnClickListener(this)
-        noAcc.setOnClickListener(this)
-
-        // [START initialize_auth]
-        // Initialize Firebase Auth
+        setContentView(R.layout.activity_signup)
+        emailCreateAccountButton.setOnClickListener(this)
         auth = FirebaseAuth.getInstance()
-        // [END initialize_auth]
+
     }
 
-    // [START on_start_check_user]
     public override fun onStart() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
@@ -66,34 +59,6 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener  {
         // [END create_user_with_email]
     }
 
-    private fun signIn(email: String, password: String) {
-        Log.d(TAG, "signIn:$email")
-        if (!validateForm()) {
-            return
-        }
-
-
-        // [START sign_in_with_email]
-        auth.signInWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(TAG, "signInWithEmail:success")
-                    val user = auth.currentUser
-                    updateUI(user)
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(TAG, "signInWithEmail:failure", task.exception)
-                    Toast.makeText(baseContext, "Authentication failed.",
-                        Toast.LENGTH_SHORT).show()
-                    updateUI(null)
-                }
-            }
-        // [END sign_in_with_email]
-    }
-
-
-
     private fun validateForm(): Boolean {
         var valid = true
 
@@ -122,21 +87,13 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener  {
             startActivity(intent)
         }
     }
-
-    private fun signUp(){
-        var intent = Intent(this, SignUp::class.java)
-        startActivity(intent)
-    }
-
     override fun onClick(v: View) {
         val i = v.id
         when (i) {
-            R.id.emailSignInButton -> signIn(fieldEmail.text.toString(), fieldPassword.text.toString())
-            R.id.noAcc -> signUp()
+            R.id.emailCreateAccountButton -> createAccount(fieldEmail.text.toString(), fieldPassword.text.toString())
         }
     }
-
     companion object {
-        private const val TAG = "LOGIN"
+        private const val TAG = "SIGNUP"
     }
 }

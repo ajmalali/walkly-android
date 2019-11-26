@@ -4,7 +4,9 @@
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/buttonPrimary</item>
+        <item name="android:buttonStyle">@style/MyDarkButton</item>
+        <item name="buttonStyle">@style/MyDarkButton</item>
     </style>
 
     <!-- Activity with no Title -->
@@ -14,12 +16,13 @@
     </style>
 
     <!-- Dark Buttons -->
-    <style name="ThemeOverlay.MyDarkButton" parent="ThemeOverlay.AppCompat.Dark">
+    <style name="MyDarkButton" parent="AppTheme">
         <item name="colorButtonNormal">@color/grey_500</item>
-        <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccent">@color/buttonPrimary</item>
         <item name="android:layout_marginRight">4dp</item>
         <item name="android:layout_marginLeft">4dp</item>
         <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@drawable/rounded_button</item>
     </style>
 
     <!-- Light EditTexts -->
