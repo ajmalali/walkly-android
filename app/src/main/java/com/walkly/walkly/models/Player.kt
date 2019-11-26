@@ -6,11 +6,12 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.*
 
 class Player (data: MutableLiveData<Long>) {
 
-    private lateinit var user: Map<String, Any>
+    private var user: Map<String, Any>? = null
     private lateinit var userRef: DocumentReference
 
     private var stamina = 0L
@@ -20,7 +21,7 @@ class Player (data: MutableLiveData<Long>) {
     private val scope = CoroutineScope(Dispatchers.Main + job)
 
     private val data = data
-    private val INTERVAL = 3600L    // update every 36 seconds
+    private val INTERVAL = 36000L    // update every 36 seconds
     private val MAX_STAMINA = 300   // max of 3 stamina points
 
     private val auth = FirebaseAuth.getInstance()
@@ -34,13 +35,28 @@ class Player (data: MutableLiveData<Long>) {
 
     init {
         val uid = auth.currentUser?.uid
+        Log.d("uid", uid)
         userRef = firestore.collection("users").document(uid!!)
         userRef.get()
             .addOnSuccessListener {
-                user = it.data!!
+                user = it.data
                 Log.d("init data", user.toString())
 
-                stamina = user["stamina"] as Long
+                // try read users stamina from firestore
+                try {
+                    stamina = user?.get("stamina") as Long
+                } catch (tce: kotlin.TypeCastException) {
+                    // does not have stamina
+                    // set it to 0
+                    stamina = 0L
+                    // create new field for stamina
+                    userRef.set(
+                        hashMapOf(
+                            "stamina" to 0L
+                        ), SetOptions.merge()
+                    )
+                }
+
             }
             .addOnFailureListener {
                 Log.e("init","firestore read", it)
