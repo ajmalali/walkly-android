@@ -29,10 +29,13 @@
     <fragment
         android:id="@+id/leaderboardFragment"
         android:name="com.walkly.walkly.ui.leaderboard.LeaderboardFragment"
-        android:label="fragment_leaderboard"
+        android:label="@string/title_leaderboard"
         tools:layout="@layout/fragment_leaderboard" >
         <action
             android:id="@+id/action_leaderboardFragment_to_navigation_home"
-            app:destination="@id/navigation_home" />
+            app:destination="@id/navigation_home"
+            app:enterAnim="@anim/fui_slide_in_right"
+            app:exitAnim="@anim/fui_slide_out_left"
+            app:popUpTo="@+id/navigation_home" />
     </fragment>
 </navigation>
