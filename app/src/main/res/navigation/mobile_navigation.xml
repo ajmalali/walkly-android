@@ -9,7 +9,11 @@
         android:id="@+id/navigation_home"
         android:name="com.walkly.walkly.ui.home.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_leaderboardFragment"
+            app:destination="@id/leaderboardFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_dashboard"
@@ -22,4 +26,13 @@
         android:name="com.walkly.walkly.ui.notifications.NotificationsFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_notifications" />
+    <fragment
+        android:id="@+id/leaderboardFragment"
+        android:name="com.walkly.walkly.ui.leaderboard.LeaderboardFragment"
+        android:label="fragment_leaderboard"
+        tools:layout="@layout/fragment_leaderboard" >
+        <action
+            android:id="@+id/action_leaderboardFragment_to_navigation_home"
+            app:destination="@id/navigation_home" />
+    </fragment>
 </navigation>
