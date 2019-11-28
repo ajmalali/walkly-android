@@ -3,29 +3,62 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/gradient">
+    android:layout_height="match_parent">
 
-    <FrameLayout
-        android:id="@+id/container"
-        android:layout_width="0dp"
-        android:layout_height="611dp"
-        app:layout_constraintBottom_toTopOf="@+id/nav_view"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/nav_host_fragment" />
+<!--    <FrameLayout-->
+<!--        android:id="@+id/container"-->
+<!--        android:layout_width="0dp"-->
+<!--        android:layout_height="611dp"-->
+<!--        app:layout_constraintBottom_toTopOf="parent"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toTopOf="@+id/nav_host_fragment" />-->
 
-    <com.google.android.material.bottomnavigation.BottomNavigationView
-        android:id="@+id/nav_view"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_battles"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="0dp"
-        android:layout_marginEnd="0dp"
+        app:layout_constraintHorizontal_weight="1"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        style="@style/Widget.MaterialComponents.BottomNavigationView.Colored"
-        app:menu="@menu/bottom_nav_menu" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_map"
+        android:background="@drawable/btn_nav"
+        android:textColor="#8AFFFFFF"
+        android:drawableTop="@drawable/ic_profile"
+        android:drawableTint="#8AFFFFFF"
+        android:textAllCaps="false"
+        android:text="Battles"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_map"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_battles"
+        app:layout_constraintEnd_toStartOf="@id/btn_profile"
+        android:background="@drawable/btn_nav"
+        android:textColor="#8AFFFFFF"
+        android:drawableTop="@drawable/ic_profile"
+        android:drawableTint="#8AFFFFFF"
+        android:textAllCaps="false"
+        android:text="Map"/>
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_profile"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintHorizontal_weight="1"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@id/btn_map"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@drawable/btn_nav"
+        android:textColor="#8AFFFFFF"
+        android:drawableTop="@drawable/ic_profile"
+        android:drawableTint="#8AFFFFFF"
+        android:textAllCaps="false"
+        android:text="Profile"/>
+
 
     <fragment
         android:id="@+id/nav_host_fragment"
@@ -33,7 +66,7 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:defaultNavHost="true"
-        app:layout_constraintBottom_toTopOf="@+id/nav_view"
+        app:layout_constraintBottom_toTopOf="@+id/btn_map"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
