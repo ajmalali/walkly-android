@@ -61,7 +61,7 @@ class MainActivity : AppCompatActivity(){
         // TODO: refactor this
         // bottom nav
         btn_profile.setOnClickListener {
-            navController.navigate(R.id.navigation_notifications)
+            navController.navigate(R.id.navigation_home)
             // set this button to solid white color
             btn_profile.setTextColor(SOLID_WHITE)
             btn_profile.compoundDrawableTintList = ColorStateList.valueOf(SOLID_WHITE)
@@ -83,7 +83,7 @@ class MainActivity : AppCompatActivity(){
             btn_battles.compoundDrawableTintList = ColorStateList.valueOf(WHITE)
         }
         btn_battles.setOnClickListener {
-            navController.navigate(R.id.navigation_home)
+            navController.navigate(R.id.navigation_notifications)
             // set this button to solid white color
             btn_battles.setTextColor(SOLID_WHITE)
             btn_battles.compoundDrawableTintList = ColorStateList.valueOf(SOLID_WHITE)
