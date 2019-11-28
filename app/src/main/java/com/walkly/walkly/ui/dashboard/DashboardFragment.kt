@@ -71,17 +71,17 @@ class DashboardFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
             //TODO: how to link the icon with the battle instance?
             symbolManager.create(
                 SymbolOptions()
-                .withLatLng(LatLng(camera.latitude+0.0001, camera.longitude+0.0001))
+                .withLatLng(LatLng(camera.latitude+0.001, camera.longitude+0.001))
                 .withIconImage("zoo-15")
                 .withIconSize(2.5f))
 
             symbolManager.create(SymbolOptions()
-                .withLatLng(LatLng(camera.latitude+0.0001, camera.longitude))
+                .withLatLng(LatLng(camera.latitude+0.0010, camera.longitude))
                 .withIconImage("fire-station-15")
                 .withIconSize(2.5f))
 
             symbolManager.create(SymbolOptions()
-                .withLatLng(LatLng(camera.latitude, camera.longitude+0.0001))
+                .withLatLng(LatLng(camera.latitude, camera.longitude+0.001))
                 .withIconImage("rocket-15")
                 .withIconSize(2.5f))
 
