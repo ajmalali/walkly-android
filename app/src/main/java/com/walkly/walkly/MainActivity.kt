@@ -45,6 +45,7 @@ class MainActivity : AppCompatActivity(){
             )
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
+        supportActionBar?.hide()
         navView.setupWithNavController(navController)
 
         locationUtil = LocationUtil(this, 100L, 50L)

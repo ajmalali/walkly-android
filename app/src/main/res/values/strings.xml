@@ -29,4 +29,6 @@
     <string name="noAcc">You don\'t have an account? <u>Sign Up</u></string>
 
     <string name="signing_up">Sign up</string>
+    <string name="access_token">pk.eyJ1Ijoic3dlNDE3IiwiYSI6ImNrMjh5M2tscjA4MXgzbXBlcnN2anE5azEifQ.p1tQcm24uNjRDNHN0n1gtA</string>
+
 </resources>
