@@ -36,8 +36,7 @@
           android:layout_marginStart="@dimen/button_horizontal_margin"
           android:layout_marginEnd="@dimen/button_horizontal_margin"
           android:layout_weight="1.0"
-          android:text="@string/sign_out"
-          android:theme="@style/ThemeOverlay.MyDarkButton" />
+          android:text="@string/sign_out" />
 
       <Button
           android:id="@+id/verifyEmailButton"
@@ -46,8 +45,7 @@
           android:layout_marginStart="@dimen/button_horizontal_margin"
           android:layout_marginEnd="@dimen/button_horizontal_margin"
           android:layout_weight="1.0"
-          android:text="@string/verify_email"
-          android:theme="@style/ThemeOverlay.MyDarkButton" />
+          android:text="@string/verify_email" />
 
    </LinearLayout>
 

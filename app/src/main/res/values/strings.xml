@@ -11,8 +11,9 @@
     <string name="signed_out">Signed Out</string>
     <string name="sign_out">Sign Out</string>
     <string name="verify_email">Verify Email</string>
-    <string name="hint_email">Email</string>
-    <string name="hint_password">Password</string>
+    <string name="name">Name</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
     <string name="sign_in">Sign In</string>
     <string name="create_account">Create Account</string>
     <string name="loading">Loading…</string>
@@ -22,8 +23,16 @@
     <string name="emailpassword_title_text">Email and Password</string>
     <string name="firebase_status_fmt">Firebase UID: %s</string>
 
-    <string name="signing_up">Sign up</string>
+    <string name="signing_in">Sign in</string>
     <string name="welcome_String">Hi, Logged in</string>
+
     <string name="view_leaderboard">View Leaderboard</string>
     <string name="title_leaderboard">Leaderboard</string>
+
+    <string name="login">Sign In</string>
+    <string name="noAcc">You don\'t have an account? <u>Sign Up</u></string>
+
+    <string name="signing_up">Sign up</string>
+    <string name="access_token">pk.eyJ1Ijoic3dlNDE3IiwiYSI6ImNrMjh5M2tscjA4MXgzbXBlcnN2anE5azEifQ.p1tQcm24uNjRDNHN0n1gtA</string>
+
 </resources>

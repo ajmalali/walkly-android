@@ -12,7 +12,7 @@
         android:id="@+id/textView5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/login"
+        android:text="@string/signing_up"
         android:textColor="@color/common_google_signin_btn_text_dark_focused"
         android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,7 +31,29 @@
         tools:layout_marginTop="88dp">
 
         <TextView
-            android:id="@+id/status"
+            android:id="@+id/name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_weight="1"
+            android:text="@string/name"
+            android:textAlignment="textStart"
+            android:textSize="20sp"
+            android:layout_marginBottom="8dp" />
+
+        <EditText
+            android:id="@+id/fieldName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:padding="4dp"
+            android:layout_marginBottom="32dp"
+            android:inputType="textPersonName"
+            android:background="@drawable/auth_input"/>
+
+        <TextView
+            android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -68,8 +90,8 @@
             android:id="@+id/fieldPassword"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:padding="4dp"
             android:layout_weight="1"
+            android:padding="4dp"
             android:inputType="textPassword"
             android:background="@drawable/auth_input"/>
     </LinearLayout>
@@ -85,26 +107,15 @@
         android:layout_marginTop="32dp">
 
         <Button
-            android:id="@+id/emailSignInButton"
+            android:id="@+id/emailCreateAccountButton"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/button_horizontal_margin"
             android:layout_marginEnd="@dimen/button_horizontal_margin"
             android:layout_weight="1"
-            android:text="@string/sign_in"
-            android:background="@drawable/rounded_button"
-            android:theme="@style/MyDarkButton"/>
+            android:text="@string/create_account"
+            android:theme="@style/MyDarkButton" />
     </LinearLayout>
 
-
-    <TextView
-        android:id="@+id/noAcc"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="8dp"
-        android:text="@string/noAcc"
-        android:textAlignment="center"
-        android:textSize="20sp"
-        android:layout_marginBottom="8dp" />
 
 </LinearLayout>
