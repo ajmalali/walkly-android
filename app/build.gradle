@@ -53,6 +53,10 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-auth:6.1.0'
     // Firebase Firestore
     implementation 'com.google.firebase:firebase-firestore:21.3.0'
+    //Mapbox
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-sdk:8.5.0'
+    implementation 'com.mapbox.mapboxsdk:mapbox-android-plugin-annotation-v8:0.7.0'
+
 
 }
 
