@@ -27,7 +27,8 @@
         android:drawableTop="@drawable/ic_profile"
         android:drawableTint="#8AFFFFFF"
         android:textAllCaps="false"
-        android:text="Battles"/>
+        android:text="Battles"
+        android:gravity="center"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_map"
@@ -42,7 +43,8 @@
         android:drawableTop="@drawable/ic_profile"
         android:drawableTint="#8AFFFFFF"
         android:textAllCaps="false"
-        android:text="Map"/>
+        android:text="Map"
+        android:gravity="center"/>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_profile"
@@ -57,7 +59,8 @@
         android:drawableTop="@drawable/ic_profile"
         android:drawableTint="#8AFFFFFF"
         android:textAllCaps="false"
-        android:text="Profile"/>
+        android:text="Profile"
+        android:gravity="center"/>
 
 
     <fragment
