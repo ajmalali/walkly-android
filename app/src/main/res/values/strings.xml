@@ -25,6 +25,10 @@
 
     <string name="signing_in">Sign in</string>
     <string name="welcome_String">Hi, Logged in</string>
+
+    <string name="view_leaderboard">View Leaderboard</string>
+    <string name="title_leaderboard">Leaderboard</string>
+
     <string name="login">Sign In</string>
     <string name="noAcc">You don\'t have an account? <u>Sign Up</u></string>
 

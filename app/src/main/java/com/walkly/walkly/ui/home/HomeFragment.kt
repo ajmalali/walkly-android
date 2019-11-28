@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.walkly.walkly.LoginActivity
@@ -20,20 +21,23 @@ import kotlinx.android.synthetic.main.fragment_home.*
 
 @SuppressLint("Registered")
 class HomeFragment : Fragment(), View.OnClickListener {
-    lateinit var v : View
+    lateinit var v: View
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        v =  inflater.inflate(R.layout.fragment_home, container, false)
+        v = inflater.inflate(R.layout.fragment_home, container, false)
         return v
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    signOutButton.setOnClickListener(this)
-    verifyEmailButton.setOnClickListener(this)
+        super.onViewCreated(view, savedInstanceState)
+        signOutButton.setOnClickListener(this)
+        verifyEmailButton.setOnClickListener(this)
+        viewLeaderboard.setOnClickListener {
+            view.findNavController().navigate(R.id.action_navigation_home_to_leaderboardFragment)
+        }
     }
 
     override fun onClick(v: View) {
@@ -49,8 +53,10 @@ class HomeFragment : Fragment(), View.OnClickListener {
     }
 
     private fun updateUI() {
-            var intent = Intent(activity, LoginActivity::class.java)
-            startActivity(intent)
+
+        var intent = Intent(activity, LoginActivity::class.java)
+        startActivity(intent)
 
     }
+
 }
