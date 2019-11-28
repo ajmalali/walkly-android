@@ -1,33 +1,28 @@
-package com.walkly.walkly.ui.home
+package com.walkly.walkly.ui.profile
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.content.Intent.getIntent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseUser
 import com.walkly.walkly.LoginActivity
-import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
-import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_profile.*
 
 
 @SuppressLint("Registered")
-class HomeFragment : Fragment(), View.OnClickListener {
+class ProfileFragment : Fragment(), View.OnClickListener {
     lateinit var v: View
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        v = inflater.inflate(R.layout.fragment_home, container, false)
+        v = inflater.inflate(R.layout.fragment_profile, container, false)
         return v
     }
 

@@ -1,13 +1,13 @@
-package com.walkly.walkly.ui.notifications
+package com.walkly.walkly.ui.profile
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 
-class NotificationsViewModel : ViewModel() {
+class ProfileViewModel : ViewModel() {
 
     private val _text = MutableLiveData<String>().apply {
-        value = "This is notifications Fragment"
+        value = "This is home Fragment"
     }
     val text: LiveData<String> = _text
 }
