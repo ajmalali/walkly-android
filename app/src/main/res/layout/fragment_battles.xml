@@ -8,8 +8,9 @@
     <LinearLayout
         android:id="@+id/battleBoardHeader"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:background="#E6E6E6"
+        android:gravity="center"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@+id/battlesQuestsButtonsBar"
         app:layout_constraintEnd_toEndOf="parent"
@@ -18,10 +19,21 @@
         <!-- text on header -->
         <TextView
             android:id="@+id/textView"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:gravity="center"
             android:text="Battles"
+            android:textColor="#FF3B62"
+            android:textSize="30sp"
+            android:textStyle="bold" />
+        <!-- text on header -->
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Img"
             android:textAlignment="center"
             android:textColor="#FF3B62"
             android:textSize="30sp"
@@ -34,42 +46,75 @@
             android:contentDescription="battlesAndQuestsImage" />
     </LinearLayout>
 
-    <!-- battles/quests switch buttons bar -->
+    <!-- battles/quests switch buttons bar container -->
     <LinearLayout
         android:id="@+id/battlesQuestsButtonsBar"
         android:layout_width="match_parent"
-        android:layout_height="48dp"
-        android:background="#A0A0A0"
-        android:orientation="horizontal"
-        android:text="Battles"
+        android:layout_height="50dp"
+        android:background="#340055"
+        android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/listContainer"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
-        <!-- battles switch button  -->
-        <Button
-            android:id="@+id/battlesButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Battles"
-            android:textAllCaps="false"
-            android:textSize="16sp" />
-        <!-- quests switch button -->
-        <Button
-            android:id="@+id/questsButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="Quests"
-            android:textAllCaps="false"
-            android:textSize="16sp" />
+        app:layout_constraintStart_toStartOf="parent"
+        >
+        <!-- battles/quests switch buttons group -->
+        <RadioGroup
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
+            <!-- battles switch button  -->
+            <RadioButton
+                android:id="@+id/radio0"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/radio_selector"
+                android:button="@android:color/transparent"
+                android:checked="true"
+                android:gravity="center"
+                android:text="RadioButton1"
+                android:textColor="@drawable/radio_text_selector"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+            <!--<Button
+                android:id="@+id/battlesButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Battles"
+                android:textAllCaps="false"
+                android:textSize="16sp" />-->
+
+            <!-- quests switch button -->
+            <RadioButton
+                android:id="@+id/radio1"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:background="@drawable/radio_selector"
+                android:button="@android:color/transparent"
+                android:checked="false"
+                android:gravity="center"
+                android:text="RadioButton2"
+                android:textColor="@drawable/radio_text_selector"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+            <!--<Button
+                android:id="@+id/questsButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Quests"
+                android:textAllCaps="false"
+                android:textSize="16sp" />-->
+        </RadioGroup>
     </LinearLayout>
 
     <!-- battles/quests list container -->
     <LinearLayout
         android:id="@+id/listContainer"
         android:layout_width="match_parent"
-        android:layout_height="500dp"
+        android:layout_height="450dp"
         android:background="#757575"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
