@@ -22,10 +22,10 @@ class BattlesFragment : Fragment() {
         battlesViewModel =
             ViewModelProviders.of(this).get(BattlesViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_battles, container, false)
-        val textView: TextView = root.findViewById(R.id.text_notifications)
+        /*val textView: TextView = root.findViewById(R.id.text_notifications)
         battlesViewModel.text.observe(this, Observer {
             textView.text = it
-        })
+        })*/
         return root
     }
 }
