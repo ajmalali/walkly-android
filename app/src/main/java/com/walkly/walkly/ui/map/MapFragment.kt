@@ -2,6 +2,7 @@ package com.walkly.walkly.ui.map
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
@@ -34,6 +37,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
     private lateinit var mapViewModel: MapViewModel
     private lateinit var linearLayout: LinearLayout
     private lateinit var mapboxMap: MapboxMap
+    private val stamina = MutableLiveData<Long>()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,6 +51,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        
+        stamina.observe(this, Observer {stamina ->
+            Log.d("Stamina: ", stamina.toString())
+        })
+
         linearLayout = bottom_sheet
         //hide the bottom sheet
         BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_HIDDEN
