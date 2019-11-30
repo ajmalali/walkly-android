@@ -55,8 +55,7 @@
         android:gravity="center"
         app:layout_constraintBottom_toTopOf="@+id/listContainer"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        >
+        app:layout_constraintStart_toStartOf="parent">
         <!-- battles/quests switch buttons group -->
         <RadioGroup
             android:layout_width="match_parent"
@@ -115,155 +114,28 @@
         android:id="@+id/listContainer"
         android:layout_width="match_parent"
         android:layout_height="450dp"
-        android:background="#757575"
+        android:background="@color/battlesList"
         android:orientation="vertical"
+        android:paddingTop="20dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent">
 
-        <!-- space divider between the switch buttons bar and the list -->
-        <View
-            android:id="@+id/divider1"
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
-        <!-- list item1 container -->
-        <LinearLayout
-            android:id="@+id/battlesListItem1"
+        <ListView
+            android:id="@+id/recipe_list_view"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#C0C0C0"
-            android:minHeight="65dp"
-            android:orientation="horizontal">
-            <!-- item1 battle name -->
-            <TextView
-                android:id="@+id/battleNameItem1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Battle 1 Name"
-                android:textColor="#FF3B62"
-                android:textSize="16sp" />
-            <!-- item 1 battle host -->
-            <TextView
-                android:id="@+id/battleHostItem1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Battle 1 Host"
-                android:textColor="#FF3B62"
-                android:textSize="16sp" />
-            <!-- item1 number of players -->
-            <TextView
-                android:id="@+id/numOfPlayersItem1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Players: 1/4"
-                android:textColor="#FF3B62"
-                android:textSize="16sp" />
-        </LinearLayout>
-
-        <!-- space divider between item1 and item2 -->
-        <View
-            android:id="@+id/divider2"
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
-        <!-- list item2 container -->
-        <LinearLayout
-            android:id="@+id/battlesListItem2"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#C0C0C0"
-            android:minHeight="65dp"
-            android:orientation="horizontal">
-            <!-- item2 battle name -->
-            <TextView
-                android:id="@+id/battleNameItem2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Battle 1 Name"
-                android:textColor="#FF3B62"
-                android:textSize="16sp" />
-            <!-- item2 battle host -->
-            <TextView
-                android:id="@+id/battleHostItem2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Battle 1 Host"
-                android:textColor="#FF3B62"
-                android:textSize="16sp" />
-            <!-- item2 number of players -->
-            <TextView
-                android:id="@+id/numOfPlayersItem2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Players: 2/4"
-                android:textColor="#FF3B62"
-                android:textSize="16sp" />
-        </LinearLayout>
-
-        <!-- space divider between item2 and item3 -->
-        <View
-            android:id="@+id/divider3"
-            android:layout_width="match_parent"
-            android:layout_height="20dp" />
-        <!-- list item2 container -->
-        <LinearLayout
-            android:id="@+id/battlesListItem3"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="#C0C0C0"
-            android:minHeight="65dp"
-            android:orientation="horizontal">
-            <!-- item2 battle name -->
-            <TextView
-                android:id="@+id/battleNameItem3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Battle 1 Name"
-                android:textColor="#FF3B62"
-                android:textSize="16sp" />
-            <!-- item2 battle host -->
-            <TextView
-                android:id="@+id/battleHostItem3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Battle 1 Host"
-                android:textColor="#FF3B62"
-                android:textSize="16sp" />
-            <!-- item2 number of players -->
-            <TextView
-                android:id="@+id/numOfPlayersItem3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Players: 3/4"
-                android:textColor="#FF3B62"
-                android:textSize="16sp" />
-        </LinearLayout>
+            android:layout_marginBottom="20dp"
+            android:background="#DDDDDD"
+            android:divider="@color/battlesList"
+            android:dividerHeight="20dp"
+            android:entries="@array/battles"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:listSelector="#BBBBBB"
+            />
 
     </LinearLayout>
 
