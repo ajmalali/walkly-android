@@ -11,7 +11,6 @@ import androidx.lifecycle.ViewModelProviders
 import com.walkly.walkly.R
 import kotlinx.android.synthetic.main.fragment_battles.*
 
-
 class BattlesFragment : Fragment() {
 
     private lateinit var battlesViewModel: BattlesViewModel
@@ -49,7 +48,7 @@ class BattlesFragment : Fragment() {
 
         var adapter1 = ArrayAdapter (activity, R.layout.battleboard_item, R.id.label, list1)
         var adapter2 = ArrayAdapter (activity, R.layout.battleboard_item, R.id.label, list2)
-
+        list_view.adapter = adapter1
 
         battlesQuestsRadioButtons.setOnCheckedChangeListener { group, checkedId ->
             if (battlesButton.isChecked) {
