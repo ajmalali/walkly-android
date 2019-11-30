@@ -53,7 +53,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         super.onViewCreated(view, savedInstanceState)
 
         stamina.observe(this, Observer {stamina ->
-            Log.d("Stamina: ", stamina.toString())
+            if(stamina >= 300){
+                //3 balls
+            }else if(stamina >= 200 ){
+                //2 balls
+            }else if(stamina >= 100 ){
+                //1 ball
+            }else{
+                //no balls
+            }
+
         })
 
         linearLayout = bottom_sheet
