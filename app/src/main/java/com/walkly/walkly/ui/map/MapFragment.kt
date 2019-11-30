@@ -51,7 +51,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         stamina.observe(this, Observer {stamina ->
             Log.d("Stamina: ", stamina.toString())
         })
