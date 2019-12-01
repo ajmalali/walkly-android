@@ -35,7 +35,7 @@ class LeaderboardFragment : Fragment() {
 
         leaderboardViewModel.leaderboardItems.observe(viewLifecycleOwner, Observer { list ->
             list?.let {
-                adapter.data = list
+                adapter.submitList(list)
             }
         })
 
