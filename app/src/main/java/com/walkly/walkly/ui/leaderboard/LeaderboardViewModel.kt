@@ -11,10 +11,17 @@ private const val TAG = "LeaderboardViewModel"
 
 class LeaderboardViewModel : ViewModel() {
 
-    var leaderboardItems = MutableLiveData<List<LeaderboardItem>>()
+    val leaderboardItems = MutableLiveData<List<LeaderboardItem>>()
     private var list = mutableListOf<LeaderboardItem>()
 
     init {
+        initLeaderboard()
+    }
+
+    /*
+        Populates the leaderboard with top 10 users based on points
+     */
+    private fun initLeaderboard() {
         val db = FirebaseFirestore.getInstance()
         db.collection("users")
             .orderBy("points", Query.Direction.DESCENDING)
