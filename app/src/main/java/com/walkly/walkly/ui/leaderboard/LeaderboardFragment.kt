@@ -34,15 +34,11 @@ class LeaderboardFragment : Fragment() {
         binding.leaderboardRecyclerView.adapter = adapter
 
         leaderboardViewModel.leaderboardItems.observe(viewLifecycleOwner, Observer { list ->
-            Log.d("LeaderboardFragment", "CALLED OBSERVE")
+            list?.let {
                 adapter.data = list
+            }
         })
 
         return binding.root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
     }
 }
