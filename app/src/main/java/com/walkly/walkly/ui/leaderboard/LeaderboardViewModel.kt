@@ -11,17 +11,19 @@ private const val TAG = "LeaderboardViewModel"
 
 class LeaderboardViewModel : ViewModel() {
 
-    val leaderboardItems = MutableLiveData<List<LeaderboardItem>>()
+    // To prevent access from outside, leaderboardItems can not be changed directly
+    private val _leaderboardItems = MutableLiveData<List<LeaderboardItem>>()
+    val leaderboardItems: LiveData<List<LeaderboardItem>>
+        get() = _leaderboardItems
+
     private var list = mutableListOf<LeaderboardItem>()
 
     init {
-        initLeaderboard()
+        getTopTen()
     }
 
-    /*
-        Populates the leaderboard with top 10 users based on points
-     */
-    private fun initLeaderboard() {
+    // Populates the leaderboard with top 10 users based on points
+    private fun getTopTen() {
         val db = FirebaseFirestore.getInstance()
         db.collection("users")
             .orderBy("points", Query.Direction.DESCENDING)
@@ -32,7 +34,7 @@ class LeaderboardViewModel : ViewModel() {
                     list.add(document.toObject(LeaderboardItem::class.java))
                     Log.d(TAG, "${document.id} => ${document.data}")
                 }
-                leaderboardItems.value = list
+                _leaderboardItems.value = list
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents.", exception)
