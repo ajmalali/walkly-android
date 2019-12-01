@@ -27,7 +27,6 @@ class LeaderboardFragment : Fragment() {
 
         leaderboardViewModel = ViewModelProviders.of(this).get(LeaderboardViewModel::class.java)
 
-        binding.viewModel = leaderboardViewModel
         binding.lifecycleOwner = this
 
         val adapter = LeaderboardAdapter()
