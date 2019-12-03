@@ -25,7 +25,8 @@ class LeaderboardAdapter :
         val item = getItem(position)
         holder.position.text = (position + 1).toString()
         holder.userName.text = item.name
-        holder.userLevel.append(item.level.toString())
+        val level = "Level: ${item.level}"
+        holder.userLevel.text = level
         holder.userPoints.text = item.points.toString()
         holder.userImage.setImageResource(R.drawable.fui_ic_anonymous_white_24dp)
     }

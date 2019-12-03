@@ -2,6 +2,7 @@ package com.walkly.walkly.ui.leaderboard
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,8 @@ import androidx.lifecycle.Observer
 
 import com.walkly.walkly.R
 import com.walkly.walkly.databinding.FragmentLeaderboardBinding
+
+private const val TAG = "LeaderboardFragment"
 
 class LeaderboardFragment : Fragment() {
     private lateinit var leaderboardViewModel: LeaderboardViewModel
@@ -28,14 +31,26 @@ class LeaderboardFragment : Fragment() {
         val adapter = LeaderboardAdapter()
         binding.leaderboardRecyclerView.adapter = adapter
 
-        leaderboardViewModel.globalLeaderboard.observe(viewLifecycleOwner, Observer { list ->
+        leaderboardViewModel.globalLeaderboard.observe(this, Observer { list ->
             list?.let {
-                adapter.submitList(list)
+                Log.d(TAG, "Global leaderboard new list")
+                adapter.submitList(list.toMutableList())
+            }
+        })
+
+        leaderboardViewModel.friendsLeaderboard.observe(this, Observer { list ->
+            list?.let {
+                Log.d(TAG, "Friends leaderboard new list")
+                adapter.submitList(list.toMutableList())
             }
         })
 
         binding.globalLeaderboardButton.setOnClickListener {
             leaderboardViewModel.getGlobalLeaderboard()
+        }
+
+        binding.friendsLeaderboardButton.setOnClickListener {
+            leaderboardViewModel.getFriendsLeaderboard()
         }
 
         return binding.root
