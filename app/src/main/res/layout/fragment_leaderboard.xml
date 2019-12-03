@@ -14,13 +14,12 @@
         tools:context=".ui.leaderboard.LeaderboardFragment">
 
         <!-- header container -->
-        <LinearLayout
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/leaderboard_header"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="#F7F7F5"
             android:gravity="center"
-            android:orientation="horizontal"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -29,27 +28,35 @@
                 android:id="@+id/leaderboard_title"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
+                android:layout_marginTop="109dp"
+                android:layout_marginBottom="110dp"
                 android:gravity="center"
                 android:text="@string/title_leaderboard"
                 android:textColor="#FF3B62"
                 android:textSize="30sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:layout_constraintBottom_toBottomOf="@+id/leaderboard_image"
+                app:layout_constraintEnd_toStartOf="@+id/leaderboard_image"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
             <!-- image on header -->
             <ImageView
                 android:id="@+id/leaderboard_image"
-                android:layout_width="260dp"
+                android:layout_width="0dp"
                 android:layout_height="260dp"
-                android:layout_marginEnd="-30dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/leaderboard_title"
+                app:layout_constraintTop_toTopOf="parent"
                 app:srcCompat="@drawable/battleboardimg" />
-        </LinearLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <!-- battles/quests switch buttons bar container -->
         <LinearLayout
             android:id="@+id/leaderboard_buttons_bar"
             android:layout_width="match_parent"
             android:layout_height="50dp"
-            android:background="#340055"
+            android:background="@drawable/rounded_layout"
             android:gravity="center"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

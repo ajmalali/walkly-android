@@ -8,7 +8,6 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
-import java.util.*
 
 private const val TAG = "LeaderboardViewModel"
 
@@ -27,7 +26,7 @@ class LeaderboardViewModel : ViewModel() {
     private var tempFriendList = mutableListOf<LeaderboardItem>()
 
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val user = FirebaseAuth.getInstance().currentUser
+    private val userID = FirebaseAuth.getInstance().currentUser?.uid
 
     private val friendIds = mutableListOf<String>()
 
@@ -60,15 +59,21 @@ class LeaderboardViewModel : ViewModel() {
         }
     }
 
-    // Get friend ids from the current user
+    /*
+        Gets all friend IDs from the currently logged-in user.
+        Then creates the friend leaderboard list, 10 friends at a time because
+        the list in whereIn("id", list) query can only hold 10 items. This approach
+        does not require duplication of user documents and so can decrease the overall
+        number of reads and writes.
+     */
     fun getFriendsLeaderboard() {
         if (_friendsLeaderboard.value == null) {
             db.collection("users")
-                .document(user?.uid!!)
+                .document(userID!!)
                 .collection("friends")
                 .get()
                 .addOnSuccessListener { result ->
-                    friendIds.add(user.uid)
+                    friendIds.add(userID)
                     for (document in result) {
                         friendIds.add(document.id)
                     }
