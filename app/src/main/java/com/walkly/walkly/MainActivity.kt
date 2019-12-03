@@ -133,6 +133,8 @@ class MainActivity : AppCompatActivity(){
             }
         }
 
+        // TODO: if connected to internet cache rewards locally
+
     }
 
 

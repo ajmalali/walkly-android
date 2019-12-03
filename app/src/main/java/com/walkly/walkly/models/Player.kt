@@ -92,5 +92,20 @@ class Player (data: MutableLiveData<Long>) {
         }
     }
 
+    // TODO: implement the reward interface
+    fun getReward(enemyLevel: Int) : Reward {
+        TODO()
+    }
 
+    // TODO: returns the level and the current points in the level to map
+    data class Progress(val level: Int, val points: Int)
+    fun getProgress() : Progress{
+        TODO()
+    }
+
+    // TODO: calculate progress form points
+    // to save computation time calculate it and store it every time points change
+    fun calculateProgress(points: Int){
+        TODO()
+    }
 }
