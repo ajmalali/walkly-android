@@ -34,23 +34,27 @@ class LeaderboardFragment : Fragment() {
         leaderboardViewModel.globalLeaderboard.observe(this, Observer { list ->
             list?.let {
                 Log.d(TAG, "Global leaderboard new list")
-                adapter.submitList(list.toMutableList())
+                adapter.submitList(null)
+                adapter.submitList(list)
             }
         })
 
         leaderboardViewModel.friendsLeaderboard.observe(this, Observer { list ->
             list?.let {
                 Log.d(TAG, "Friends leaderboard new list")
-                adapter.submitList(list.toMutableList())
+                adapter.submitList(null)
+                adapter.submitList(list)
             }
         })
 
         binding.globalLeaderboardButton.setOnClickListener {
             leaderboardViewModel.getGlobalLeaderboard()
+            binding.leaderboardRecyclerView.smoothScrollToPosition(0)
         }
 
         binding.friendsLeaderboardButton.setOnClickListener {
             leaderboardViewModel.getFriendsLeaderboard()
+            binding.leaderboardRecyclerView.smoothScrollToPosition(0)
         }
 
         return binding.root

@@ -13,6 +13,86 @@
         android:background="@color/grey_300"
         tools:context=".ui.leaderboard.LeaderboardFragment">
 
+        <!-- header container -->
+        <LinearLayout
+            android:id="@+id/leaderboard_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#F7F7F5"
+            android:gravity="center"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+            <!-- text on header -->
+            <TextView
+                android:id="@+id/leaderboard_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:text="@string/title_leaderboard"
+                android:textColor="#FF3B62"
+                android:textSize="30sp"
+                android:textStyle="bold" />
+            <!-- image on header -->
+            <ImageView
+                android:id="@+id/leaderboard_image"
+                android:layout_width="260dp"
+                android:layout_height="260dp"
+                android:layout_marginEnd="-30dp"
+                app:srcCompat="@drawable/battleboardimg" />
+        </LinearLayout>
+
+        <!-- battles/quests switch buttons bar container -->
+        <LinearLayout
+            android:id="@+id/leaderboard_buttons_bar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="#340055"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/leaderboard_header"
+            app:layout_constraintVertical_bias="0.0">
+            <!-- battles/quests switch buttons group -->
+            <RadioGroup
+                android:id="@+id/leaderboard_radio_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:checkedButton="@id/global_leaderboard_button"
+                android:orientation="horizontal">
+                <!-- battles switch button  -->
+                <RadioButton
+                    android:id="@+id/global_leaderboard_button"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/radio_selector"
+                    android:button="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="@string/global"
+                    android:textColor="@drawable/radio_text_selector"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+                <!-- quests switch button -->
+                <RadioButton
+                    android:id="@+id/friends_leaderboard_button"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/radio_selector"
+                    android:button="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="@string/friends"
+                    android:textColor="@drawable/radio_text_selector"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </RadioGroup>
+        </LinearLayout>
+
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/leaderboard_recycler_view"
             android:layout_width="0dp"
@@ -21,28 +101,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/global_leaderboard_button" />
+            app:layout_constraintTop_toBottomOf="@+id/leaderboard_buttons_bar"
+            />
 
-        <Button
-            android:id="@+id/global_leaderboard_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="80dp"
-            android:layout_marginTop="16dp"
-            android:text="@string/global"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.0" />
-
-        <Button
-            android:id="@+id/friends_leaderboard_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="@string/friends"
-            app:layout_constraintBaseline_toBaselineOf="@+id/global_leaderboard_button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.502"
-            app:layout_constraintStart_toEndOf="@+id/global_leaderboard_button" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
