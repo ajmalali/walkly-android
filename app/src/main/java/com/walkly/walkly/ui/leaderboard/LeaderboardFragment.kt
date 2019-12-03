@@ -24,35 +24,43 @@ class LeaderboardFragment : Fragment() {
     ): View? {
 
         val binding: FragmentLeaderboardBinding = DataBindingUtil.inflate(inflater, R.layout.fragment_leaderboard, container, false)
-        leaderboardViewModel = ViewModelProviders.of(this).get(LeaderboardViewModel::class.java)
-
+        binding.progressBar.visibility = View.VISIBLE
         binding.lifecycleOwner = this
 
         val adapter = LeaderboardAdapter()
         binding.leaderboardRecyclerView.adapter = adapter
 
+        leaderboardViewModel = ViewModelProviders.of(this).get(LeaderboardViewModel::class.java)
+
         leaderboardViewModel.globalLeaderboard.observe(this, Observer { list ->
             list?.let {
-                Log.d(TAG, "Global leaderboard new list")
-                adapter.submitList(null)
+                Log.d(TAG, "Global leaderboard list observed")
+                // clear the list for the adapter
+//                adapter.submitList(null)
+                binding.progressBar.visibility = View.GONE
                 adapter.submitList(list)
             }
         })
 
         leaderboardViewModel.friendsLeaderboard.observe(this, Observer { list ->
             list?.let {
-                Log.d(TAG, "Friends leaderboard new list")
-                adapter.submitList(null)
+                Log.d(TAG, "Friends leaderboard list observed")
+//                adapter.submitList(null)
+                binding.progressBar.visibility = View.GONE
                 adapter.submitList(list)
             }
         })
 
         binding.globalLeaderboardButton.setOnClickListener {
+            adapter.submitList(null)
+            binding.progressBar.visibility = View.VISIBLE
             leaderboardViewModel.getGlobalLeaderboard()
             binding.leaderboardRecyclerView.smoothScrollToPosition(0)
         }
 
         binding.friendsLeaderboardButton.setOnClickListener {
+            adapter.submitList(null)
+            binding.progressBar.visibility = View.VISIBLE
             leaderboardViewModel.getFriendsLeaderboard()
             binding.leaderboardRecyclerView.smoothScrollToPosition(0)
         }

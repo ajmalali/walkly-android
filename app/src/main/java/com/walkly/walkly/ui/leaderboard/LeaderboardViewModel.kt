@@ -4,10 +4,13 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.google.android.gms.tasks.Task
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
+import com.google.firebase.firestore.QuerySnapshot
 
 private const val TAG = "LeaderboardViewModel"
 
@@ -94,18 +97,23 @@ class LeaderboardViewModel : ViewModel() {
     // Creates the complete friends leaderboard and sets the value of friendsLeaderboard
     private fun createFriendLeaderboard(friendIds: List<String>) {
         // Pass friend ids in chunks of 10 to getLeaderboardFromIds
+        val taskList = mutableListOf<Task<QuerySnapshot>>()
         for (idList in friendIds.chunked(10)) {
-            getLeaderboardFromIds(idList)
+            taskList.add(getLeaderboardFromIds(idList))
         }
 
-        tempFriendList = tempFriendList.sorted().toMutableList()
-        _friendsLeaderboard.value = tempFriendList
-        Log.d(TAG, "New friends leaderboard created: $tempFriendList")
+        Tasks.whenAllSuccess<Task<QuerySnapshot>>(taskList)
+            .addOnSuccessListener {
+                tempFriendList = tempFriendList.sorted().toMutableList()
+                _friendsLeaderboard.value = tempFriendList
+                Log.d(TAG, "New friends leaderboard created: $tempFriendList")
+            }
+
     }
 
     // Create a leaderboard from a given list of ids
-    private fun getLeaderboardFromIds(idList: List<String>) {
-        db.collection("users")
+    private fun getLeaderboardFromIds(idList: List<String>): Task<QuerySnapshot> {
+        return db.collection("users")
             .whereIn(FieldPath.documentId(), idList)
             .get()
             .addOnSuccessListener { result ->
@@ -114,7 +122,6 @@ class LeaderboardViewModel : ViewModel() {
                         document.toObject(LeaderboardItem::class.java).addId(document.id)
                     tempFriendList.add(item)
                 }
-
             }
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting global leaderboard documents.", exception)

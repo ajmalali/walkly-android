@@ -10,7 +10,8 @@ data class LeaderboardItem(val name: String = "", val level: Int = 0, val points
         return this
     }
 
+    // Compare to sort in descending order
     override fun compareTo(other: LeaderboardItem): Int {
-        return this.points - other.points
+        return other.points - this.points
     }
 }
