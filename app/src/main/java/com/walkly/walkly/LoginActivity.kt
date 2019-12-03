@@ -23,7 +23,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener  {
 
         // Buttons
         emailSignInButton.setOnClickListener(this)
-        noAcc.setOnClickListener(this)
+        signUp.setOnClickListener(this)
 
         // [START initialize_auth]
         // Initialize Firebase Auth
@@ -132,7 +132,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener  {
         val i = v.id
         when (i) {
             R.id.emailSignInButton -> signIn(fieldEmail.text.toString(), fieldPassword.text.toString())
-            R.id.noAcc -> signUp()
+            R.id.signUp -> signUp()
         }
     }
 
