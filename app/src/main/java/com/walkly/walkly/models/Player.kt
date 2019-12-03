@@ -8,13 +8,22 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.*
+import kotlin.random.Random
 
 class Player (data: MutableLiveData<Long>) {
 
+    // the difference between levels in points
+    private val LEVEL_INCREMENT = 150
+    // amount of points player gets for defeating enemy
+    private val ENEMY_LEVEL_POINTS = 100
+    // max level difference between battle level and battle reward.
+    private val LEVEL_DIFF = 3
     private var user: Map<String, Any>? = null
     private lateinit var userRef: DocumentReference
 
     private var stamina = 0L
+
+    private var points = 0L
 
     private var update = false
     private val job = Job()
@@ -57,6 +66,18 @@ class Player (data: MutableLiveData<Long>) {
                     )
                 }
 
+                // try to read points
+                try{
+                    points = user?.get("points") as Long
+                } catch (tce: TypeCastException) {
+                    points = 0L
+                    userRef.set(
+                        hashMapOf(
+                            "points" to 0L
+                        ), SetOptions.merge()
+                    )
+                }
+
             }
             .addOnFailureListener {
                 Log.e("init","firestore read", it)
@@ -94,18 +115,70 @@ class Player (data: MutableLiveData<Long>) {
 
     // TODO: implement the reward interface
     fun getReward(enemyLevel: Int) : Reward {
+
+        // increment players points
+        points += enemyLevel * ENEMY_LEVEL_POINTS
+        calculateProgress(points)
+
+        val r = java.util.Random().nextGaussian() * LEVEL_DIFF
+        val reward = calculateReward(enemyLevel + r.toInt())
+
+        // save reward to user rewards in the database
+
+        return reward
+    }
+
+    fun calculateReward(level: Int) : Reward{
         TODO()
+        // get reward from the database
     }
 
     // TODO: returns the level and the current points in the level to map
-    data class Progress(val level: Int, val points: Int)
+    data class Progress(val level: Long, val progress: Long)
     fun getProgress() : Progress{
-        TODO()
+        var level = 1L
+        var progress = 0L
+        userRef.get()
+            .addOnSuccessListener {
+                if (it.data?.get("points") == 0)
+                    return@addOnSuccessListener
+                else {
+                    level = it.data?.get("level") as Long
+                    progress = it.data?.get("progress") as Long
+                }
+            }
+        return Progress(level, progress)
+
     }
 
     // TODO: calculate progress form points
     // to save computation time calculate it and store it every time points change
-    fun calculateProgress(points: Int){
-        TODO()
+    fun calculateProgress(points: Long){
+        userRef.update("points", points)
+        var level  = 1L
+        var progress = 0L
+        userRef.get()
+            .addOnSuccessListener {
+                try {
+                    level = it.data?.get("level") as Long
+                    progress = it.data?.get("progress") as Long
+                } catch (tce: TypeCastException) {
+                    level = 0L
+                    progress= 0L
+                }
+                if (progress + points >= level * level * LEVEL_INCREMENT){
+                    level++
+                    progress = progress + points - level * LEVEL_INCREMENT
+                } else {
+                    progress += points
+                }
+
+                userRef.set(
+                    hashMapOf(
+                        "level" to level,
+                        "progress" to progress
+                    ), SetOptions.merge()
+                )
+            }
     }
 }
