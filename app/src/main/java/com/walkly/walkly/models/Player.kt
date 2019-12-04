@@ -132,7 +132,7 @@ class Player (data: MutableLiveData<Long>) {
         // initialize reference
         val itemsRef = firestore.collection(type)
         // create query to get the list of items that satisfies the condition
-        val query = itemsRef.whereEqualTo("level", level)
+        val query = itemsRef.whereEqualTo("level", level).get()
         // gets a random item from the list
         val list = arrayOf(query)
         val item = list.random() as Rewardd
