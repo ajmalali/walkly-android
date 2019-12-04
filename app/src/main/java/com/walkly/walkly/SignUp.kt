@@ -62,6 +62,14 @@ class SignUp : AppCompatActivity(), View.OnClickListener  {
     private fun validateForm(): Boolean {
         var valid = true
 
+        val name = fieldName.text.toString()
+        if (TextUtils.isEmpty(name)) {
+            fieldName.error = "Required."
+            valid = false
+        } else {
+            fieldName.error = null
+        }
+
         val email = fieldEmail.text.toString()
         if (TextUtils.isEmpty(email)) {
             fieldEmail.error = "Required."
