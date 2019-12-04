@@ -51,7 +51,7 @@
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <!-- battles/quests switch buttons bar container -->
+        <!-- global/friends switch buttons bar container -->
         <LinearLayout
             android:id="@+id/leaderboard_buttons_bar"
             android:layout_width="match_parent"
@@ -63,14 +63,14 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/leaderboard_header"
             app:layout_constraintVertical_bias="0.0">
-            <!-- battles/quests switch buttons group -->
+            <!-- global/friends switch buttons group -->
             <RadioGroup
                 android:id="@+id/leaderboard_radio_buttons"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:checkedButton="@id/global_leaderboard_button"
                 android:orientation="horizontal">
-                <!-- battles switch button  -->
+                <!-- global switch button  -->
                 <RadioButton
                     android:id="@+id/global_leaderboard_button"
                     android:layout_width="0dp"
@@ -83,7 +83,7 @@
                     android:textColor="@drawable/radio_text_selector"
                     android:textSize="16sp"
                     android:textStyle="bold" />
-                <!-- quests switch button -->
+                <!-- friends switch button -->
                 <RadioButton
                     android:id="@+id/friends_leaderboard_button"
                     android:layout_width="0dp"
