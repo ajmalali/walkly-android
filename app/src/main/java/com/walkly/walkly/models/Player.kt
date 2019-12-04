@@ -84,8 +84,6 @@ class Player (data: MutableLiveData<Long>) {
             }
     }
 
-
-
     fun stopStaminaUpdates() {
         update = false
     }
@@ -96,13 +94,11 @@ class Player (data: MutableLiveData<Long>) {
         }
     }
 
-
     fun syncModel(){
         userRef.update("stamina", stamina)
     }
 
     // TODO: boost stamina by distance
-
 
     suspend fun timeToStamin(){
         while (update && stamina < MAX_STAMINA){
@@ -113,24 +109,35 @@ class Player (data: MutableLiveData<Long>) {
         }
     }
 
+    data class Rewardd (val image: String, val level: Int, val name: String, val type: String, val value: Int)
+
     // TODO: implement the reward interface
-    fun getReward(enemyLevel: Int) : Reward {
+    fun getReward(enemyLevel: Int) : Rewardd {
 
         // increment players points
         points += enemyLevel * ENEMY_LEVEL_POINTS
         calculateProgress(points)
 
         val r = java.util.Random().nextGaussian() * LEVEL_DIFF
-        val reward = calculateReward(enemyLevel + r.toInt())
+        var type = arrayOf("equipments", "consumables").random()
+        val reward = calculateReward(enemyLevel + r.toInt(), type)
 
         // save reward to user rewards in the database
 
         return reward
     }
 
-    fun calculateReward(level: Int) : Reward{
-        TODO()
-        // get reward from the database
+    // gets Reward from the database, takes level as int, type is either consumables or equipments
+    fun calculateReward(level: Int, type: String) : Rewardd{
+        // initialize reference
+        val itemsRef = firestore.collection(type)
+        // create query to get the list of items that satisfies the condition
+        val query = itemsRef.whereEqualTo("level", level)
+        // gets a random item from the list
+        val list = arrayOf(query)
+        val item = list.random() as Rewardd
+        // returns the item
+        return item
     }
 
     // TODO: returns the level and the current points in the level to map
