@@ -86,19 +86,19 @@
         android:layout_marginTop="32dp"
         android:gravity="center"
         android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
         android:layout_marginBottom="32dp">
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/emailSignInButton"
-            android:layout_width="270dp"
-            android:layout_height="60dp"
-            android:background="@drawable/rounded_button"
-
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/button_selector"
+            android:gravity="center"
             android:text="@string/sign_in"
             android:textColor="#FFFFFF"
-            android:textSize="30sp" />
+            android:textSize="24sp" />
     </LinearLayout>
 
 

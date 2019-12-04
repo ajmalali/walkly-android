@@ -26,22 +26,22 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="vertical"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
         tools:layout_marginTop="88dp">
 
         <TextView
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:layout_weight="1"
             android:text="@string/name"
             android:textAlignment="textStart"
             android:textColor="@color/grey_300"
-            android:textSize="20sp"
-            android:layout_marginBottom="8dp" />
+            android:textSize="20sp" />
 
         <EditText
             android:id="@+id/fieldName"
@@ -58,14 +58,14 @@
             android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
             android:layout_weight="1"
             android:text="@string/email"
             android:textAlignment="textStart"
             android:textSize="20sp"
-            android:textColor="@color/grey_300"
-            android:layout_marginBottom="8dp" />
+            android:textColor="@color/grey_300" />
 
         <EditText
             android:id="@+id/fieldEmail"
@@ -82,7 +82,7 @@
             android:id="@+id/detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
+            android:layout_marginStart="16dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
@@ -108,18 +108,19 @@
         android:layout_height="wrap_content"
         android:gravity="center"
         android:orientation="horizontal"
-        android:paddingLeft="16dp"
-        android:paddingRight="16dp"
+        android:paddingLeft="32dp"
+        android:paddingRight="32dp"
         android:layout_marginTop="32dp">
 
-        <Button
+        <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/emailCreateAccountButton"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/button_horizontal_margin"
-            android:layout_marginEnd="@dimen/button_horizontal_margin"
-            android:layout_weight="1"
-            android:text="@string/create_account" />
+            android:background="@drawable/button_selector"
+            android:gravity="center"
+            android:text="@string/create_account"
+            android:textColor="#FFFFFF"
+            android:textSize="24sp"/>
     </LinearLayout>
 
 
