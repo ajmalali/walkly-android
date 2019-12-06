@@ -19,11 +19,15 @@ class Equipment(
     var value = _value
     var id = _id
 
-    val userEquipments = mutableListOf<Equipment>()
+    private val userEquipments = mutableListOf<Equipment>()
+    val listOfEquipments = mutableListOf<Equipment>()
+    private var userEquipment:Equipment = this
+        set(equip){
+            this.userEquipment = equip
+        }
 
     private var userRef: DocumentReference
     private var equipmentRef: CollectionReference
-    private var user: Map<String, Any>? = null
 
     private val auth = FirebaseAuth.getInstance()
     private val settings = FirebaseFirestoreSettings.Builder()
@@ -38,8 +42,17 @@ class Equipment(
         val uid = auth.currentUser?.uid
         Log.d("uid", uid)
         userRef = firestore.collection("users").document(uid!!)
-        equipmentRef = userRef.collection("equipments")
-        equipmentRef.get()
+        equipmentRef = firestore.collection("equipments")
+        //get all the equipment the user have
+        getUserEquipments()
+        //get used equipment
+        getUsedEquipment()
+        //get All Equipments
+        getAllEquipments()
+    }
+
+    fun getUserEquipments(){
+        userRef.collection("equipments").get()
             .addOnSuccessListener {
                 Log.d("init data", it.toString())
 
@@ -52,30 +65,69 @@ class Equipment(
                     // does not have equipments in the collection
                     // add new doc in the collection with the default no equipment values
                     // create new doc for stamina
-                    equipmentRef.document(this.id).set(
-                        hashMapOf(
-                            "image" to this.image,
-                            "level" to this.level,
-                            "name" to this.name,
-                            "type" to this.type,
-                            "value" to this.value
-                        ), SetOptions.merge()
-                    )
+                    addNewEquipmentInUserInventory(this)
                 }
-
             }
             .addOnFailureListener {
                 // the user doesn't have equipments collection
                 Log.e("init","firestore read", it)
-                userRef.collection("equipments").document(this.id).set(
-                    hashMapOf(
-                        "image" to this.image,
-                        "level" to this.level,
-                        "name" to this.name,
-                        "type" to this.type,
-                        "value" to this.value
-                    ), SetOptions.merge()
-                )
+                addNewEquipmentInUserInventory(this)
             }
     }
+
+    fun getAllEquipments() : MutableList<Equipment>{
+        equipmentRef.get()
+            .addOnSuccessListener {
+                for(doc in it){
+                    listOfEquipments.add(doc.toObject(Equipment::class.java))
+                    Log.d("Equipment CLASS", listOfEquipments.toTypedArray().toString())
+                }
+            }
+            .addOnFailureListener {
+                addNewEquipment(this)
+                listOfEquipments.add(equipmentRef.document(this.id).get().result!!.toObject(Equipment::class.java)!!)
+            }
+        return listOfEquipments
+    }
+
+    fun addNewEquipmentInUserInventory(equip: Equipment){
+        userRef.collection("equipments").document(equip.id).set(
+            hashMapOf(
+                "image" to equip.image,
+                "level" to equip.level,
+                "name" to equip.name,
+                "type" to equip.type,
+                "value" to equip.value
+            ), SetOptions.merge()
+        )
+    }
+
+    fun addNewEquipment(equip:Equipment) : MutableList<Equipment>{
+        equipmentRef.document(equip.id).set(hashMapOf(
+            "image" to equip.image,
+            "level" to equip.level,
+            "name" to equip.name,
+            "type" to equip.type,
+            "value" to equip.value
+        ), SetOptions.merge())
+        listOfEquipments.add(equipmentRef.document(equip.id).get().result!!.toObject(Equipment::class.java)!!)
+        return listOfEquipments
+    }
+
+    fun getUsedEquipment():Equipment{
+        userRef.get()
+            .addOnSuccessListener {
+                var usedEquipmentRef = it.get("equipment").toString()
+                equipmentRef.document(usedEquipmentRef).get()
+                    .addOnSuccessListener {result ->
+                        userEquipment = result.toObject(Equipment::class.java)!!
+                    }
+                    .addOnFailureListener{result ->
+                        userEquipment = this
+
+                    }
+            }
+        return userEquipment
+    }
+
 }
