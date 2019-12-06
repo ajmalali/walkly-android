@@ -1,9 +1,8 @@
 package com.walkly.walkly.models
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.DocumentReference
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.FirebaseFirestoreSettings
+import com.google.firebase.firestore.*
 
 class Equipment(
     _image: String = "equipment",
@@ -20,8 +19,12 @@ class Equipment(
     var value = _value
     var id = _id
 
+    val userEquipments = mutableListOf<Equipment>()
+
+    private var userRef: DocumentReference
+    private var equipmentRef: CollectionReference
     private var user: Map<String, Any>? = null
-    private lateinit var userRef: DocumentReference
+
     private val auth = FirebaseAuth.getInstance()
     private val settings = FirebaseFirestoreSettings.Builder()
         .setPersistenceEnabled(true)
@@ -31,5 +34,48 @@ class Equipment(
         it.firestoreSettings = settings
     }
 
-    init {}
+    init {
+        val uid = auth.currentUser?.uid
+        Log.d("uid", uid)
+        userRef = firestore.collection("users").document(uid!!)
+        equipmentRef = userRef.collection("equipments")
+        equipmentRef.get()
+            .addOnSuccessListener {
+                Log.d("init data", it.toString())
+
+                // try read users equipments from the user doc
+                try {
+                    for(doc in it) {
+                        userEquipments.add(doc as Equipment)
+                    }
+                } catch (tce: kotlin.TypeCastException) {
+                    // does not have equipments in the collection
+                    // add new doc in the collection with the default no equipment values
+                    // create new doc for stamina
+                    equipmentRef.document(this.id).set(
+                        hashMapOf(
+                            "image" to this.image,
+                            "level" to this.level,
+                            "name" to this.name,
+                            "type" to this.type,
+                            "value" to this.value
+                        ), SetOptions.merge()
+                    )
+                }
+
+            }
+            .addOnFailureListener {
+                // the user doesn't have equipments collection
+                Log.e("init","firestore read", it)
+                userRef.collection("equipments").document(this.id).set(
+                    hashMapOf(
+                        "image" to this.image,
+                        "level" to this.level,
+                        "name" to this.name,
+                        "type" to this.type,
+                        "value" to this.value
+                    ), SetOptions.merge()
+                )
+            }
+    }
 }
