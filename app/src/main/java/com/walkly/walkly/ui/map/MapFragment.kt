@@ -27,6 +27,7 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
+import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_map.*
@@ -47,6 +48,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
     ): View? {
         Mapbox.getInstance(activity!!.applicationContext, getString(R.string.access_token))
         v =  inflater.inflate(R.layout.fragment_map, container, false)
+        (activity as MainActivity).stamina.observe(this, Observer {
+            Log.d("stamina from map", it.toString())
+        })
         return v
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
