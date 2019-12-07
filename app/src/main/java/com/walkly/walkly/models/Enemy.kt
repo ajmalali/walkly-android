@@ -20,14 +20,17 @@ class Enemy() {
         this.location.longitude  = 0.0
     }
 
-    fun generateRandomEnemies(l : Location): Array<Enemy>{
-        //get
-        var enemy1: Enemy = Enemy()
-        var enemy2: Enemy = Enemy()
-        var enemy3: Enemy = Enemy()
+    companion object {
+        fun generateRandomEnemies(l : Location): Array<Enemy>{
+            //get
+            var enemy1: Enemy = Enemy()
+            var enemy2: Enemy = Enemy()
+            var enemy3: Enemy = Enemy()
 
-        return arrayOf(enemy1, enemy2, enemy3)
+            return arrayOf(enemy1, enemy2, enemy3)
+        }
     }
+
 
     fun setEnemyLocation(lat: Double, long: Double){
         this.location.latitude= lat
