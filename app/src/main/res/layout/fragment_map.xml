@@ -46,7 +46,9 @@
             mapbox:layout_constraintHorizontal_bias="0.372"
             mapbox:layout_constraintStart_toStartOf="parent"
             mapbox:layout_constraintTop_toTopOf="parent"
-            mapbox:layout_constraintVertical_bias="0.235" />
+            mapbox:layout_constraintVertical_bias="0.235"
+            android:backgroundTint="#00FFFEFE"
+            android:progressDrawable="@drawable/levelbar" />
 
         <RadioButton
             android:id="@+id/radioButton5"
