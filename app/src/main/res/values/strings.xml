@@ -38,4 +38,18 @@
     <string name="global">Global</string>
     <string name="friends">Friends</string>
 
+    <string-array name="battles">
+        <item name="battle">Battle 1</item>
+        <item name="battle">Battle 2</item>
+        <item name="battle">Battle 3</item>
+        <item name="battle">Battle 4</item>
+        <item name="battle">Battle 5</item>
+    </string-array>
+
+    <string-array name="quests">
+        <item name="quest">Quest 1</item>
+        <item name="quest">Quest 2</item>
+        <item name="quest">Quest 3</item>
+    </string-array>
+
 </resources>
