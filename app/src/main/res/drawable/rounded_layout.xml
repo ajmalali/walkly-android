@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--rounded layout used in leaderboard and battleboard -->
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <solid android:color="#340055"/>
+    <corners android:radius="10dp"/>
+</shape>
