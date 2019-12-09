@@ -43,45 +43,49 @@
             android:progress="50"
             mapbox:layout_constraintBottom_toBottomOf="parent"
             mapbox:layout_constraintEnd_toEndOf="parent"
-            mapbox:layout_constraintHorizontal_bias="0.372"
+            mapbox:layout_constraintHorizontal_bias="0.379"
             mapbox:layout_constraintStart_toStartOf="parent"
             mapbox:layout_constraintTop_toTopOf="parent"
             mapbox:layout_constraintVertical_bias="0.235"
             android:backgroundTint="#00FFFEFE"
             android:progressDrawable="@drawable/levelbar" />
 
-        <RadioButton
-            android:id="@+id/radioButton5"
+        <ImageView
+            android:id="@+id/my_image_view"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="56dp"
+            android:layout_marginLeft="56dp"
             android:layout_marginTop="4dp"
-            android:layout_weight="1"
-            android:buttonTint="#FFFFFF"
-            mapbox:layout_constraintStart_toEndOf="@+id/radioButton4"
-            mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
-
-        <RadioButton
-            android:id="@+id/radioButton4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="52dp"
-            android:layout_marginLeft="52dp"
-            android:layout_marginTop="4dp"
-            android:layout_weight="1"
-            android:buttonTint="#FFFFFF"
+            android:background="@drawable/staminacircle"
             mapbox:layout_constraintStart_toStartOf="parent"
             mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
 
-        <RadioButton
-            android:id="@+id/radioButton6"
 
+        <ImageView
+            android:id="@+id/my_image_view2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
             android:layout_marginTop="4dp"
-            android:layout_weight="1"
-            android:buttonTint="#FFFFFF"
-            mapbox:layout_constraintStart_toEndOf="@+id/radioButton5"
+            android:background="@drawable/staminacircle"
+            mapbox:layout_constraintStart_toEndOf="@+id/my_image_view"
             mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+
+        <ImageView
+            android:id="@+id/my_image_view3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/staminacircle"
+            mapbox:layout_constraintStart_toEndOf="@+id/my_image_view2"
+            mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+
+
+
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     <include layout="@layout/bottom_sheet_layout"></include>
