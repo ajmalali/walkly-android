@@ -22,7 +22,8 @@ class Player (data: MutableLiveData<Long>) {
     // max level difference between battle level and battle reward.
     private val LEVEL_DIFF = 3
     private var user: Map<String, Any>? = null
-    private lateinit var userRef: DocumentReference
+    var userRef: DocumentReference
+    val equipment = MutableLiveData<Equipment>()
 
     private var stamina = 0L
 
@@ -71,6 +72,7 @@ class Player (data: MutableLiveData<Long>) {
                     )
                 }
 
+
                 // try to read points
                 try{
                     points = user?.get("points") as Long
@@ -85,6 +87,10 @@ class Player (data: MutableLiveData<Long>) {
                     Log.d(POINT_REWARDS_TAG, "not previous points")
                     Log.d(POINT_REWARDS_TAG, "init points set to " + points.toString())
                 }
+
+                val equipmentId = user?.get("equipment") as String
+                equipment.value = Equipment(equipmentId)
+
 
             }
             .addOnFailureListener {
