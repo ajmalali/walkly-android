@@ -8,11 +8,6 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings
 
 class Enemy(id: String) {
 
-//    var name: String = ""
-//    var HP: Long = 0
-//    var damage: Long = 0
-//    var level: Long = 0
-
     val name = MutableLiveData<String>()
     val image = MutableLiveData<String>()
     val HP = MutableLiveData<Long>()
@@ -41,17 +36,17 @@ class Enemy(id: String) {
 
     }
 
-//    companion object {
-//        fun generateRandomEnemies(l : Location): Array<Enemy>{
-//            //get
-//            var enemy1: Enemy = Enemy()
-//            var enemy2: Enemy = Enemy()
-//            var enemy3: Enemy = Enemy()
-//
-//            return arrayOf(enemy1, enemy2, enemy3)
-//        }
-//    }
+    companion object {
+        fun generateRandomEnemies(): Array<Enemy>{
 
+            // NOT RANDOM
+            var enemy1 = Enemy("5xweqqy2u76aYHhVBiSQ")
+            var enemy2 = Enemy("eMrAhRisPQ30qgovteS2")
+            var enemy3 = Enemy("pxkYf10BTVnLDc7QWmhQ")
+
+            return arrayOf(enemy1, enemy2, enemy3)
+        }
+    }
 
 //    fun setEnemyLocation(lat: Double, long: Double){
 //        this.location.latitude= lat
