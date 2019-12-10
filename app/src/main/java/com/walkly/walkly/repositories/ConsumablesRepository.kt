@@ -11,7 +11,7 @@ private const val TAG = "ConsumableRepository"
 object ConsumablesRepository {
 
     private val db = FirebaseFirestore.getInstance()
-    private var consumableList = mutableListOf<Consumable>()
+    val consumableList = mutableListOf<Consumable>()
 
     // Get consumables of the current user
     fun getConsumables(callback: (List<Consumable>) -> Unit) {
@@ -24,6 +24,7 @@ object ConsumablesRepository {
                 for (document in result) {
                     val consumable = document.toObject(Consumable::class.java)
                     consumableList.add(consumable)
+                    Log.d(TAG, "Added $document")
                 }
 
                 callback(consumableList)

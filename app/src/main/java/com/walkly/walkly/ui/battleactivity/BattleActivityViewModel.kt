@@ -14,10 +14,13 @@ class BattleActivityViewModel: ViewModel() {
     val consumables: LiveData<List<Consumable>>
         get() = _consumables
 
+    init {
+        getConsumables()
+    }
 
     private fun getConsumables() {
         if (_consumables.value != null) {
-            return
+            _consumables.value =  ConsumablesRepository.consumableList
         }
 
         ConsumablesRepository.getConsumables { list ->
