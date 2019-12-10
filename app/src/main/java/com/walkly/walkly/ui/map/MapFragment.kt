@@ -2,6 +2,7 @@ package com.walkly.walkly.ui.map
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,6 +23,7 @@ import com.mapbox.mapboxsdk.location.modes.RenderMode
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
+import com.mapbox.mapboxsdk.plugins.annotation.Symbol
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
 import com.walkly.walkly.R
@@ -34,6 +36,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
     private lateinit var mapViewModel: MapViewModel
     private lateinit var linearLayout: LinearLayout
     private lateinit var mapboxMap: MapboxMap
+    private lateinit var  symbol1: Symbol
+    private lateinit var  symbol2: Symbol
+    private lateinit var  symbol3: Symbol
+    private lateinit var  camera: LatLng
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,36 +60,76 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         mapView?.getMapAsync(this)
     }
     override fun onMapReady(mapboxMap: MapboxMap) {
+
+
         this.mapboxMap = mapboxMap
+
         mapboxMap.uiSettings.isLogoEnabled = false
         mapboxMap.setStyle(Style.Builder().fromUri("mapbox://styles/mapbox/cjerxnqt3cgvp2rmyuxbeqme7"))
         {
             // Map is set up and the style has loaded. Now you can add data or make other map adjustments
             enableLocationComponent(it)
             val symbolManager = SymbolManager(mapView, mapboxMap, it)
-            val camera = mapboxMap.cameraPosition.target
+            camera = mapboxMap.cameraPosition.target
 
             //this is where to generate icons
-            //TODO: create a function to automate the process
-            //TODO: find a way to use custom icons in the API
-            //TODO: how to link the icon with the battle instance?
-            symbolManager.create(
-                SymbolOptions()
-                .withLatLng(LatLng(camera.latitude+0.001, camera.longitude+0.001))
-                .withIconImage("zoo-15")
-                .withIconSize(2.5f))
+//            //TODO: create a function to automate the process
+//            //TODO: find a way to use custom icons in the API
+//            //TODO: how to link the icon with the battle instance?
+//            symbol1 = symbolManager.create(
+//                SymbolOptions()
+//                .withLatLng(LatLng(camera.latitude+0.001, camera.longitude+0.001))
+//                .withIconImage("zoo-15")
+//                .withIconSize(2.5f))
+//
+//            symbol2 = symbolManager.create(SymbolOptions()
+//                .withLatLng(LatLng(camera.latitude+0.0010, camera.longitude))
+//                .withIconImage("fire-station-15")
+//                .withIconSize(2.5f))
+//
+//            symbol3 = symbolManager.create(SymbolOptions()
+//                .withLatLng(LatLng(camera.latitude, camera.longitude+0.001))
+//                .withIconImage("rocket-15")
+//                .withIconSize(2.5f))
 
-            symbolManager.create(SymbolOptions()
-                .withLatLng(LatLng(camera.latitude+0.0010, camera.longitude))
-                .withIconImage("fire-station-15")
-                .withIconSize(2.5f))
-
-            symbolManager.create(SymbolOptions()
-                .withLatLng(LatLng(camera.latitude, camera.longitude+0.001))
-                .withIconImage("rocket-15")
-                .withIconSize(2.5f))
 
 
+            mapboxMap.addOnCameraMoveListener {
+                Log.d("mapchange:", "onCameraMove")
+                camera = mapboxMap.cameraPosition.target
+//                symbol1.latLng.latitude = camera.latitude+0.001
+//                symbol1.latLng.longitude = camera.longitude+0.001
+                //TODO: create a function to automate the process
+                //TODO: find a way to use custom icons in the API
+                //TODO: how to link the icon with the battle instance?
+                symbol1 = symbolManager.create(
+                    SymbolOptions()
+                        .withLatLng(LatLng(camera.latitude+0.001, camera.longitude+0.001))
+                        .withIconImage("zoo-15")
+                        .withIconSize(2.5f))
+
+                symbol2 = symbolManager.create(SymbolOptions()
+                    .withLatLng(LatLng(camera.latitude+0.0010, camera.longitude))
+                    .withIconImage("fire-station-15")
+                    .withIconSize(2.5f))
+
+                symbol3 = symbolManager.create(SymbolOptions()
+                    .withLatLng(LatLng(camera.latitude, camera.longitude+0.001))
+                    .withIconImage("rocket-15")
+                    .withIconSize(2.5f))
+                Log.d("mapchange:", camera.toString())
+
+
+            }
+
+            mapboxMap.addOnCameraMoveCancelListener {
+                Log.d("mapchange:", "onCameraMoveCanceled")
+
+            }
+
+            mapboxMap.addOnCameraIdleListener {
+                Log.d("idle:", "idle")
+            }
 
 
             symbolManager?.addClickListener { symbol ->
@@ -98,7 +145,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
             // }
 
         }
+
     }
+
 
     @SuppressLint("MissingPermission")
     private fun enableLocationComponent(loadedMapStyle: Style) {
