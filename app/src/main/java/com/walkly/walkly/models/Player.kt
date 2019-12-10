@@ -12,7 +12,8 @@ import kotlinx.coroutines.*
 class Player (data: MutableLiveData<Long>) {
 
     private var user: Map<String, Any>? = null
-    private lateinit var userRef: DocumentReference
+    var userRef: DocumentReference
+    val equipment = MutableLiveData<Equipment>()
 
     private var stamina = 0L
 
@@ -56,6 +57,9 @@ class Player (data: MutableLiveData<Long>) {
                         ), SetOptions.merge()
                     )
                 }
+
+                val equipmentId = user?.get("equipment") as String
+                equipment.value = Equipment(equipmentId)
 
             }
             .addOnFailureListener {
