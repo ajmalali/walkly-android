@@ -8,23 +8,19 @@ import com.walkly.walkly.repositories.ConsumablesRepository
 
 private const val TAG = "BattleActivityViewModel"
 
-class BattleActivityViewModel: ViewModel() {
+class BattleActivityViewModel : ViewModel() {
 
     private val _consumables = MutableLiveData<List<Consumable>>()
     val consumables: LiveData<List<Consumable>>
         get() = _consumables
 
-    init {
-        getConsumables()
-    }
-
-    private fun getConsumables() {
+    fun getConsumables() {
         if (_consumables.value != null) {
-            _consumables.value =  ConsumablesRepository.consumableList
-        }
-
-        ConsumablesRepository.getConsumables { list ->
-            _consumables.value = list
+            _consumables.value = ConsumablesRepository.consumableList
+        } else {
+            ConsumablesRepository.getConsumables { list ->
+                _consumables.value = list
+            }
         }
     }
 

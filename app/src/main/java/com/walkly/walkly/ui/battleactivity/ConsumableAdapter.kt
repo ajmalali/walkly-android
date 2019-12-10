@@ -1,6 +1,7 @@
 package com.walkly.walkly.ui.battleactivity
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
@@ -30,11 +31,15 @@ class ConsumableAdapter : ListAdapter<Consumable, ConsumableAdapter.ConsumableVi
         holder.consumableValue.text = item.value.toString()
     }
 
-    class ConsumableViewHolder(binding: ConsumableBinding) : RecyclerView.ViewHolder(binding.root) {
+    class ConsumableViewHolder(binding: ConsumableBinding) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
         val consumableName: TextView = binding.consumableName
         val consumableType: TextView = binding.consumableType
         val consumableValue: TextView = binding.consumableValue
         val consumableImage: ImageView = binding.consumableImage
+
+        override fun onClick(p0: View?) {
+
+        }
     }
 
     class ConsumableCallback : DiffUtil.ItemCallback<Consumable>() {
@@ -50,5 +55,4 @@ class ConsumableAdapter : ListAdapter<Consumable, ConsumableAdapter.ConsumableVi
         }
 
     }
-
 }
