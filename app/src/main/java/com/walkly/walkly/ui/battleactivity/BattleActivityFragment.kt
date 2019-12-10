@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.fragment_battle_activity.*
 
 class BattleActivityFragment : Fragment() {
     private lateinit var battleActivityViewModel: BattleActivityViewModel
+    private val consumablesBottomSheet = ConsumablesBottomSheetDialog()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,6 +32,10 @@ class BattleActivityFragment : Fragment() {
 
             }
         })
+
+        binding.useItems.setOnClickListener {
+            consumablesBottomSheet.show(fragmentManager, "ConsumablesBottomSheet")
+        }
 
         return binding.root
     }
