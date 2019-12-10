@@ -37,10 +37,9 @@ class ConsumableAdapter : ListAdapter<Consumable, ConsumableAdapter.ConsumableVi
         val consumableImage: ImageView = binding.consumableImage
     }
 
-    // TODO: Change name check to ID check
     class ConsumableCallback : DiffUtil.ItemCallback<Consumable>() {
         override fun areItemsTheSame(oldItem: Consumable, newItem: Consumable): Boolean {
-            return oldItem.name == newItem.name
+            return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(

@@ -22,7 +22,7 @@ object ConsumablesRepository {
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
-                    val consumable = document.toObject(Consumable::class.java)
+                    val consumable = document.toObject(Consumable::class.java).addId(document.id)
                     consumableList.add(consumable)
                     Log.d(TAG, "Added $document")
                 }
