@@ -48,23 +48,37 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
     ): View? {
         Mapbox.getInstance(activity!!.applicationContext, getString(R.string.access_token))
         v =  inflater.inflate(R.layout.fragment_map, container, false)
-        (activity as MainActivity).stamina.observe(this, Observer {
-            Log.d("stamina from map", it.toString())
-        })
         return v
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        stamina.observe(this, Observer {stamina ->
-            if(stamina >= 300){
+        (activity as MainActivity).stamina.observe(this, Observer {
+            Log.d("stamina from map2", it.toString())
+
+            if(it >= 300){
                 //3 balls
-            }else if(stamina >= 200 ){
+                stamina1full.visibility = View.VISIBLE
+                stamina2full.visibility = View.VISIBLE
+                stamina3full.visibility = View.VISIBLE
+
+            }else if(it >= 200 ){
                 //2 balls
-            }else if(stamina >= 100 ){
+                stamina1full.visibility = View.VISIBLE
+                stamina2full.visibility = View.VISIBLE
+                stamina3full.visibility = View.INVISIBLE
+
+            }else if(it >= 100){
                 //1 ball
+                stamina1full.visibility = View.VISIBLE
+                stamina2full.visibility = View.INVISIBLE
+                stamina3full.visibility = View.INVISIBLE
+
             }else{
                 //no balls
+                stamina1full.visibility = View.INVISIBLE
+                stamina2full.visibility = View.INVISIBLE
+                stamina3full.visibility = View.INVISIBLE
             }
 
         })

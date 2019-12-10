@@ -51,36 +51,72 @@
             android:progressDrawable="@drawable/levelbar" />
 
         <ImageView
-            android:id="@+id/my_image_view"
+            android:id="@+id/stamina1full"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="56dp"
             android:layout_marginLeft="56dp"
             android:layout_marginTop="4dp"
             android:background="@drawable/staminacircle"
+            android:visibility="invisible"
             mapbox:layout_constraintStart_toStartOf="parent"
             mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
 
 
         <ImageView
-            android:id="@+id/my_image_view2"
+            android:id="@+id/stamina2full"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="6dp"
             android:layout_marginTop="4dp"
             android:background="@drawable/staminacircle"
-            mapbox:layout_constraintStart_toEndOf="@+id/my_image_view"
+            android:visibility="invisible"
+            mapbox:layout_constraintStart_toEndOf="@+id/stamina1full"
             mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
 
         <ImageView
-            android:id="@+id/my_image_view3"
+            android:id="@+id/stamina3full"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginLeft="6dp"
             android:layout_marginTop="4dp"
             android:background="@drawable/staminacircle"
-            mapbox:layout_constraintStart_toEndOf="@+id/my_image_view2"
+            android:visibility="invisible"
+            mapbox:layout_constraintStart_toEndOf="@+id/stamina2full"
             mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+
+        <ImageView
+            android:id="@+id/stamina1empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="56dp"
+            android:layout_marginLeft="56dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/staminacircleempty"
+            mapbox:layout_constraintStart_toStartOf="parent"
+            mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+
+
+        <ImageView
+            android:id="@+id/stamina2empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/staminacircleempty"
+            mapbox:layout_constraintStart_toEndOf="@+id/stamina1empty"
+            mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+
+        <ImageView
+            android:id="@+id/stamina3empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/staminacircleempty"
+            mapbox:layout_constraintStart_toEndOf="@+id/stamina2empty"
+            mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+
 
 
 
