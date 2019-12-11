@@ -61,8 +61,8 @@ class DistanceUtil (activity: Activity, startTime: Long, interval: Long, data: M
 
         while (update){
             endTime = Calendar.getInstance().timeInMillis
-            Log.d("start time: ", startTime.toString())
-            Log.d("end time: ", endTime.toString())
+//            Log.d("start time: ", startTime.toString())
+//            Log.d("end time: ", endTime.toString())
 
             val readRequest = DataReadRequest.Builder()
                 .aggregate(DataType.TYPE_DISTANCE_DELTA, DataType.AGGREGATE_DISTANCE_DELTA)
@@ -74,17 +74,19 @@ class DistanceUtil (activity: Activity, startTime: Long, interval: Long, data: M
                 Fitness.getHistoryClient(activity, it)
                     .readData(readRequest)
                     .addOnSuccessListener {
-                        Log.d(REQUEST_TAG, "SUCCESS")
+//                        Log.d(REQUEST_TAG, "SUCCESS")
+//                        Log.d("Distance API", "success")
                         floatDistance(it)
+
                     }
                     .addOnFailureListener {
                         Log.e(REQUEST_TAG, "FAILURE")
                     }
                     .addOnCompleteListener {
-                        Log.d(REQUEST_TAG, "COMPLETE")
-                        Log.d(REQUEST_TAG, endTime.toString())
+//                        Log.d(REQUEST_TAG, "COMPLETE")
+//                        Log.d(REQUEST_TAG, endTime.toString())
                         lastRead = endTime
-                        Log.d(REQUEST_TAG, lastRead.toString())
+//                        Log.d(REQUEST_TAG, lastRead.toString())
                     }
             }
             delay(interval)
@@ -94,10 +96,15 @@ class DistanceUtil (activity: Activity, startTime: Long, interval: Long, data: M
     }
 
     private fun floatDistance(response: DataReadResponse?){
+//        Log.d("distance", "in floatDistance")
         response?.buckets.let { buckets ->
+//            Log.d("distance", "in let block")
             for (bucket in buckets!!){
+//                Log.d("distance", "first loop")
                 for (dataSet in bucket.dataSets){
+//                    Log.d("distance", "second loop")
                     for (dp in dataSet.dataPoints){
+//                        Log.d("distance", "third loop")
                         val value = dp.getValue(Field.FIELD_DISTANCE).asFloat()
                         Log.d("value", value.toString())
                         data.value = value
