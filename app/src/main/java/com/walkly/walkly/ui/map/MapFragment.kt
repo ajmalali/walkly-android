@@ -1,6 +1,7 @@
 package com.walkly.walkly.ui.map
 
 import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -26,12 +27,17 @@ import com.mapbox.mapboxsdk.location.modes.RenderMode
 import com.mapbox.mapboxsdk.maps.MapboxMap
 import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
+import com.mapbox.mapboxsdk.plugins.annotation.Symbol
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
 import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
+import com.walkly.walkly.models.Enemy
+import com.walkly.walkly.models.Enemy.Companion.generateRandomEnemies
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_map.*
+import java.net.URL
+import kotlin.random.Random
 
 class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
     lateinit var v : View
@@ -39,7 +45,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
     private lateinit var mapViewModel: MapViewModel
     private lateinit var linearLayout: LinearLayout
     private lateinit var mapboxMap: MapboxMap
-    private val stamina = MutableLiveData<Long>()
+    private lateinit var  symbol1: Symbol
+    private lateinit var  symbol2: Symbol
+    private lateinit var  symbol3: Symbol
+    private lateinit var  camera: LatLng
+    private lateinit var  enemies: Array<Enemy>
 
 
     override fun onCreateView(
@@ -94,52 +104,112 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         }
     }
     override fun onMapReady(mapboxMap: MapboxMap) {
+        enemies = generateRandomEnemies()
         this.mapboxMap = mapboxMap
         mapboxMap.uiSettings.isLogoEnabled = false
+        mapboxMap.uiSettings.isZoomGesturesEnabled = false
+        mapboxMap.uiSettings.isQuickZoomGesturesEnabled = false
+        mapboxMap.uiSettings.isScrollGesturesEnabled = false
+        //mapboxMap.uiSettings.is
         mapboxMap.setStyle(Style.Builder().fromUri("mapbox://styles/mapbox/cjerxnqt3cgvp2rmyuxbeqme7"))
         {
             // Map is set up and the style has loaded. Now you can add data or make other map adjustments
             enableLocationComponent(it)
             val symbolManager = SymbolManager(mapView, mapboxMap, it)
-            val camera = mapboxMap.cameraPosition.target
+            camera = mapboxMap.cameraPosition.target
 
             //this is where to generate icons
-            //TODO: create a function to automate the process
-            //TODO: find a way to use custom icons in the API
-            //TODO: how to link the icon with the battle instance?
-            symbolManager.create(
-                SymbolOptions()
-                .withLatLng(LatLng(camera.latitude+0.001, camera.longitude+0.001))
-                .withIconImage("zoo-15")
-                .withIconSize(2.5f))
+//            //TODO: create a function to automate the process
+//            //TODO: find a way to use custom icons in the API
+//            //TODO: how to link the icon with the battle instance?
+//            symbol1 = symbolManager.create(
+//                SymbolOptions()
+//                .withLatLng(LatLng(camera.latitude+0.001, camera.longitude+0.001))
+//                .withIconImage("zoo-15")
+//                .withIconSize(2.5f))
+//
+//            symbol2 = symbolManager.create(SymbolOptions()
+//                .withLatLng(LatLng(camera.latitude+0.0010, camera.longitude))
+//                .withIconImage("fire-station-15")
+//                .withIconSize(2.5f))
+//
+//            symbol3 = symbolManager.create(SymbolOptions()
+//                .withLatLng(LatLng(camera.latitude, camera.longitude+0.001))
+//                .withIconImage("rocket-15")
+//                .withIconSize(2.5f))
 
-            symbolManager.create(SymbolOptions()
-                .withLatLng(LatLng(camera.latitude+0.0010, camera.longitude))
-                .withIconImage("fire-station-15")
-                .withIconSize(2.5f))
-
-            symbolManager.create(SymbolOptions()
-                .withLatLng(LatLng(camera.latitude, camera.longitude+0.001))
-                .withIconImage("rocket-15")
-                .withIconSize(2.5f))
 
 
+            mapboxMap.addOnCameraMoveListener {
+                Log.d("mapchange:", "onCameraMove")
+                camera = mapboxMap.cameraPosition.target
+                //TODO: create a function to automate the process
+                //TODO: find a way to use custom icons in the API
+                //TODO: how to link the icon with the battle instance?
+                symbol1 = symbolManager.create(
+                    SymbolOptions()
+                        .withLatLng(LatLng(camera.latitude+0.001, camera.longitude+0.001))
+                        .withIconImage("zoo-15")
+                        .withIconSize(2.5f))
+
+                symbol2 = symbolManager.create(SymbolOptions()
+                    .withLatLng(LatLng(camera.latitude+0.0010, camera.longitude))
+                    .withIconImage("fire-station-15")
+                    .withIconSize(2.5f))
+
+                symbol3 = symbolManager.create(SymbolOptions()
+                    .withLatLng(LatLng(camera.latitude, camera.longitude+0.001))
+                    .withIconImage("rocket-15")
+                    .withIconSize(2.5f))
+                Log.d("mapchange:", camera.toString())
+
+
+            }
+
+            mapboxMap.addOnCameraMoveCancelListener {
+                Log.d("mapchange:", "onCameraMoveCanceled")
+
+            }
+
+            mapboxMap.addOnCameraIdleListener {
+                Log.d("idle:", "idle")
+                enemies[0].name.observe(this, Observer {
+                    Log.d("enmy:", it.toString())
+                })
+
+
+            }
 
 
             symbolManager?.addClickListener { symbol ->
                 //for each battle icon on screen
                 //if symbol.LatLng == Battles[i].LatLng
                 //display dialogue box with battle details and prompt the user to start battle
+                var curen = enemies[Random.nextInt(0,2)]
+                curen.name.observe(this, Observer {
+                    bottom_sheet_text.setText(it.toString())
+                })
+                curen.level.observe(this, Observer {
+                    bottom_sheet_lvl.setText("Level: "+ it.toString())
+                })
+                curen.HP.observe(this, Observer {
+                    bottom_sheet_health.setText("HP: "+it.toString())
+                })
+
+                //TODO: img here
+                //bottom_sheet_imageView.setImageDrawable(ContextCompat.getDrawable(activity!!.applicationContext, android.R.drawable.ic_)
+
                 BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_COLLAPSED
-                val TV:TextView = bottom_sheet_text
                 //Get the battle name from Battles[i] and set this variable to it
                 //Same for the image
-                TV.setText(symbol.latLng.toString())
+                //TV.setText(symbol.latLng.toString())
             }
             // }
 
         }
+
     }
+
 
     @SuppressLint("MissingPermission")
     private fun enableLocationComponent(loadedMapStyle: Style) {
