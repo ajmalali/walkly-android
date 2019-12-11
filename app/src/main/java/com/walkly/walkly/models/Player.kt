@@ -24,6 +24,7 @@ class Player (data: MutableLiveData<Long>) {
     private var user: Map<String, Any>? = null
     var userRef: DocumentReference
     val equipment = MutableLiveData<Equipment>()
+    val level = MutableLiveData<Long>()
 
     private var stamina = 0L
 
@@ -86,6 +87,18 @@ class Player (data: MutableLiveData<Long>) {
                     )
                     Log.d(POINT_REWARDS_TAG, "not previous points")
                     Log.d(POINT_REWARDS_TAG, "init points set to " + points.toString())
+                }
+
+                // try to read level
+                try {
+                    level.value = user?.get("level") as Long
+                } catch (tce : TypeCastException) {
+                    level.value = 1L
+                    userRef.set(
+                        hashMapOf(
+                            "level" to 1L
+                        ), SetOptions.merge()
+                    )
                 }
 
                 val equipmentId = user?.get("equipment") as String
