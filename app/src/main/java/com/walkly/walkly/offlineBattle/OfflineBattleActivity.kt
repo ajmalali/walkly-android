@@ -1,15 +1,12 @@
 package com.walkly.walkly.offlineBattle
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.navigation.findNavController
 import com.bumptech.glide.Glide
+import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
 import kotlinx.android.synthetic.main.fragment_battle_activity.*
@@ -48,6 +45,11 @@ class OfflineBattle: AppCompatActivity() {
             Log.d("steps = ", it.toString())
         })
 
+        leaveBattle.setOnClickListener {
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+            finish()
+        }
 
 
     }
