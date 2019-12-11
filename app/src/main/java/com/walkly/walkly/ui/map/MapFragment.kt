@@ -10,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
@@ -51,6 +52,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_HIDDEN
         mapView?.onCreate(savedInstanceState)
         mapView?.getMapAsync(this)
+        button2.setOnClickListener {
+            view.findNavController().navigate(R.id.action_navigation_map_to_Battle_Activity_Fragment)
+        }
     }
     override fun onMapReady(mapboxMap: MapboxMap) {
         this.mapboxMap = mapboxMap

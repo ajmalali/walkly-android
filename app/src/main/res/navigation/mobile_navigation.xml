@@ -19,13 +19,28 @@
         android:id="@+id/navigation_map"
         android:name="com.walkly.walkly.ui.map.MapFragment"
         android:label="@string/title_dashboard"
-        tools:layout="@layout/fragment_map" />
+        tools:layout="@layout/fragment_map" >
+        <action
+            android:id="@+id/action_navigation_map_to_Battle_Activity_Fragment"
+            app:destination="@id/Battle_Activity_Fragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_battles"
         android:name="com.walkly.walkly.ui.battles.BattlesFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_battles" />
+
+    <fragment
+        android:id="@+id/Battle_Activity_Fragment"
+        android:name="com.walkly.walkly.ui.battleactivity.BattleActivityFragment"
+        android:label="Battle_activity_fragment"
+        tools:layout="@layout/fragment_battle_activity" >
+        <action
+            android:id="@+id/action_Battle_Activity_Fragment_to_navigation_map"
+            app:destination="@id/navigation_map" />
+    </fragment>
+
     <fragment
         android:id="@+id/leaderboardFragment"
         android:name="com.walkly.walkly.ui.leaderboard.LeaderboardFragment"
