@@ -1,6 +1,7 @@
 package com.walkly.walkly.ui.map
 
 import android.annotation.SuppressLint
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -32,6 +33,8 @@ import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.models.Enemy.Companion.generateRandomEnemies
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_map.*
+import java.net.URL
+import kotlin.random.Random
 
 class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
     lateinit var v : View
@@ -67,6 +70,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         enemies = generateRandomEnemies()
         this.mapboxMap = mapboxMap
         mapboxMap.uiSettings.isLogoEnabled = false
+        mapboxMap.uiSettings.isZoomGesturesEnabled = false
+        mapboxMap.uiSettings.isQuickZoomGesturesEnabled = false
+        mapboxMap.uiSettings.isScrollGesturesEnabled = false
+        //mapboxMap.uiSettings.is
         mapboxMap.setStyle(Style.Builder().fromUri("mapbox://styles/mapbox/cjerxnqt3cgvp2rmyuxbeqme7"))
         {
             // Map is set up and the style has loaded. Now you can add data or make other map adjustments
@@ -129,7 +136,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
 
             mapboxMap.addOnCameraIdleListener {
                 Log.d("idle:", "idle")
-                Log.d("enmy:", enemies.size.toString())
                 enemies[0].name.observe(this, Observer {
                     Log.d("enmy:", it.toString())
                 })
@@ -142,8 +148,21 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                 //for each battle icon on screen
                 //if symbol.LatLng == Battles[i].LatLng
                 //display dialogue box with battle details and prompt the user to start battle
+                var curen = enemies[Random.nextInt(0,2)]
+                curen.name.observe(this, Observer {
+                    bottom_sheet_text.setText(it.toString())
+                })
+                curen.level.observe(this, Observer {
+                    bottom_sheet_lvl.setText("Level: "+ it.toString())
+                })
+                curen.HP.observe(this, Observer {
+                    bottom_sheet_health.setText("HP: "+it.toString())
+                })
+
+                //TODO: img here
+                //bottom_sheet_imageView.setImageDrawable(ContextCompat.getDrawable(activity!!.applicationContext, android.R.drawable.ic_)
+
                 BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_COLLAPSED
-                bottom_sheet_text.setText( symbol.latLng.toString())
                 //Get the battle name from Battles[i] and set this variable to it
                 //Same for the image
                 //TV.setText(symbol.latLng.toString())
