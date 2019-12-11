@@ -138,7 +138,6 @@
                 android:layout_marginEnd="@dimen/button_horizontal_margin"
                 android:layout_weight="1.0"
                 android:text="Leave Battle"
-                android:background="@drawable/rounded_button"
                 />
 
         </LinearLayout>
