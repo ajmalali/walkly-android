@@ -29,7 +29,6 @@ class ProfileFragment : Fragment(), View.OnClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         signOutButton.setOnClickListener(this)
-        verifyEmailButton.setOnClickListener(this)
         viewLeaderboard.setOnClickListener {
             view.findNavController().navigate(R.id.action_navigation_home_to_leaderboardFragment)
         }
