@@ -1,11 +1,12 @@
 package com.walkly.walkly.ui.battleactivity
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -38,25 +39,29 @@ class ConsumablesBottomSheetDialog(val fragment: BattleActivityFragment) : Botto
 
         adapter = ConsumableAdapter(consumableList, this)
         binding.consumableRecyclerView.adapter = adapter
+
         binding.progressBar.visibility = View.VISIBLE
 
         battleActivityViewModel = ViewModelProviders.of(fragment).get(BattleActivityViewModel::class.java)
 
+        battleActivityViewModel.consumables.observe(this, Observer { list ->
+            binding.progressBar.visibility = View.GONE
+            binding.errorMessage.visibility = View.GONE
+
+            if (list.isEmpty()) {
+                binding.errorMessage.visibility = View.VISIBLE
+            } else {
+                adapter.consumableList = list
+                adapter.notifyDataSetChanged()
+            }
+        })
+
         return binding.root
     }
 
-    // TODO: FIX
-    fun updateList(list: List<Consumable>?) {
-        binding.progressBar.visibility = View.GONE
-        if (consumableList.size != list!!.size) {
-            consumableList = list.toMutableList()
-            adapter.consumableList = consumableList
-            adapter.notifyDataSetChanged()
-        }
-    }
-
     override fun onConsumableClick(position: Int) {
-        battleActivityViewModel.selectConsumable(consumableList[position])
+        val consumable = adapter.consumableList[position]
+        battleActivityViewModel.selectConsumable(consumable)
         dismiss()
     }
 }

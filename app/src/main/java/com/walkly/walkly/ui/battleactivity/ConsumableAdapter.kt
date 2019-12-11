@@ -41,7 +41,6 @@ class ConsumableAdapter(var consumableList: List<Consumable>, private val listen
         override fun onClick(p0: View?) {
             listener.onConsumableClick(adapterPosition)
         }
-
     }
 
     override fun getItemCount(): Int {

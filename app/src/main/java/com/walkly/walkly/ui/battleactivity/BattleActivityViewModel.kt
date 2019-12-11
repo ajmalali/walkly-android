@@ -19,7 +19,11 @@ class BattleActivityViewModel : ViewModel() {
     val selectedConsumable: LiveData<Consumable>
         get() = _selectedConsumable
 
-    fun getConsumables() {
+    init {
+        getConsumables()
+    }
+
+    private fun getConsumables() {
         if (_consumables.value != null) {
             _consumables.value = ConsumablesRepository.consumableList
         } else {
@@ -31,13 +35,11 @@ class BattleActivityViewModel : ViewModel() {
 
     fun selectConsumable(consumable: Consumable) {
         _selectedConsumable.value = consumable
-        Log.d(TAG, "$consumable")
-        Log.d(TAG, "${_consumables.value}")
     }
 
-    fun removeConsumable() {
-        ConsumablesRepository.removeConsumable(selectedConsumable.value!!) {
-            _consumables.value = it
+    fun removeSelectedConsumable() {
+        ConsumablesRepository.removeConsumable(selectedConsumable.value!!) { updatedList ->
+            _consumables.value = updatedList
         }
     }
 
