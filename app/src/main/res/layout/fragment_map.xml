@@ -43,43 +43,85 @@
             android:progress="50"
             mapbox:layout_constraintBottom_toBottomOf="parent"
             mapbox:layout_constraintEnd_toEndOf="parent"
-            mapbox:layout_constraintHorizontal_bias="0.372"
+            mapbox:layout_constraintHorizontal_bias="0.379"
             mapbox:layout_constraintStart_toStartOf="parent"
             mapbox:layout_constraintTop_toTopOf="parent"
-            mapbox:layout_constraintVertical_bias="0.235" />
+            mapbox:layout_constraintVertical_bias="0.235"
+            android:backgroundTint="#00FFFEFE"
+            android:progressDrawable="@drawable/levelbar" />
 
-        <RadioButton
-            android:id="@+id/radioButton5"
+        <ImageView
+            android:id="@+id/stamina1full"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginStart="56dp"
+            android:layout_marginLeft="56dp"
             android:layout_marginTop="4dp"
-            android:layout_weight="1"
-            android:buttonTint="#FFFFFF"
-            mapbox:layout_constraintStart_toEndOf="@+id/radioButton4"
-            mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
-
-        <RadioButton
-            android:id="@+id/radioButton4"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="52dp"
-            android:layout_marginLeft="52dp"
-            android:layout_marginTop="4dp"
-            android:layout_weight="1"
-            android:buttonTint="#FFFFFF"
+            android:background="@drawable/staminacircle"
+            android:visibility="invisible"
             mapbox:layout_constraintStart_toStartOf="parent"
             mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
 
-        <RadioButton
-            android:id="@+id/radioButton6"
 
+        <ImageView
+            android:id="@+id/stamina2full"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
             android:layout_marginTop="4dp"
-            android:layout_weight="1"
-            android:buttonTint="#FFFFFF"
-            mapbox:layout_constraintStart_toEndOf="@+id/radioButton5"
+            android:background="@drawable/staminacircle"
+            android:visibility="invisible"
+            mapbox:layout_constraintStart_toEndOf="@+id/stamina1full"
             mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+
+        <ImageView
+            android:id="@+id/stamina3full"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/staminacircle"
+            android:visibility="invisible"
+            mapbox:layout_constraintStart_toEndOf="@+id/stamina2full"
+            mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+
+        <ImageView
+            android:id="@+id/stamina1empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="56dp"
+            android:layout_marginLeft="56dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/staminacircleempty"
+            mapbox:layout_constraintStart_toStartOf="parent"
+            mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+
+
+        <ImageView
+            android:id="@+id/stamina2empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/staminacircleempty"
+            mapbox:layout_constraintStart_toEndOf="@+id/stamina1empty"
+            mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+
+        <ImageView
+            android:id="@+id/stamina3empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="6dp"
+            android:layout_marginTop="4dp"
+            android:background="@drawable/staminacircleempty"
+            mapbox:layout_constraintStart_toEndOf="@+id/stamina2empty"
+            mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+
+
+
+
+
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
     <include layout="@layout/bottom_sheet_layout"></include>

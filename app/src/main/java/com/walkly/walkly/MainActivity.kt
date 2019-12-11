@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity(){
 
     private val currentLocation = MutableLiveData<Location>()
     private val walkedDistance = MutableLiveData<Float>()
-    private val stamina = MutableLiveData<Long>()
+    val stamina = MutableLiveData<Long>()
 
     private val auth = FirebaseAuth.getInstance()
 

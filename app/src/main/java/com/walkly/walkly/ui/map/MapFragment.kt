@@ -2,6 +2,7 @@ package com.walkly.walkly.ui.map
 
 import android.annotation.SuppressLint
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,8 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mapbox.android.core.permissions.PermissionsListener
@@ -25,6 +28,7 @@ import com.mapbox.mapboxsdk.maps.OnMapReadyCallback
 import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
+import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_map.*
@@ -35,6 +39,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
     private lateinit var mapViewModel: MapViewModel
     private lateinit var linearLayout: LinearLayout
     private lateinit var mapboxMap: MapboxMap
+    private val stamina = MutableLiveData<Long>()
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -47,6 +53,37 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        (activity as MainActivity).stamina.observe(this, Observer {
+            Log.d("stamina from map2", it.toString())
+
+            if(it >= 300){
+                //3 balls
+                stamina1full.visibility = View.VISIBLE
+                stamina2full.visibility = View.VISIBLE
+                stamina3full.visibility = View.VISIBLE
+
+            }else if(it >= 200 ){
+                //2 balls
+                stamina1full.visibility = View.VISIBLE
+                stamina2full.visibility = View.VISIBLE
+                stamina3full.visibility = View.INVISIBLE
+
+            }else if(it >= 100){
+                //1 ball
+                stamina1full.visibility = View.VISIBLE
+                stamina2full.visibility = View.INVISIBLE
+                stamina3full.visibility = View.INVISIBLE
+
+            }else{
+                //no balls
+                stamina1full.visibility = View.INVISIBLE
+                stamina2full.visibility = View.INVISIBLE
+                stamina3full.visibility = View.INVISIBLE
+            }
+
+        })
+
         linearLayout = bottom_sheet
         //hide the bottom sheet
         BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_HIDDEN
