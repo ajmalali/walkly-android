@@ -122,21 +122,7 @@ class MainActivity : AppCompatActivity(){
             stamina.observe(this, Observer {stamina ->
                 Log.d("Stamina: ", stamina.toString())
             })
-            var equipment = Equipment().getAllEquipments()
-            Log.d("last LOg", equipment.size.toString())
-            for (equip in equipment)
-                Log.d("last LOg", equip.toString())
 
-            Log.d("getUsedEquipment",Equipment().getUsedEquipment().toString())
-            var equi = Equipment().addNewEquipmentInUserInventory(Equipment("equipment","shield",4,"defense", 1, "uha"))
-            for(i in equi)
-                Log.d("addNewEquipmentser", i.toString())
-            var test1 = Equipment().addNewEquipment(Equipment("equipment","shield",4,"defense", 1, "test"))
-            for(i in test1)
-                Log.d("addNewEquipment1",i.toString())
-            var test2 = Equipment().addNewEquipment(Equipment("asdasd","asdasd",4,"asdasd", 1, "test"))
-            for (i in test2)
-                Log.d("addNewEquipment2",i.toString())
 
         } else {
             auth.addAuthStateListener {
