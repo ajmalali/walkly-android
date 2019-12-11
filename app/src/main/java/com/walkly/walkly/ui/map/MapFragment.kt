@@ -142,6 +142,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
 
             mapboxMap.addOnCameraMoveListener {
                 Log.d("mapchange:", "onCameraMove")
+                symbolManager.deleteAll()
                 camera = mapboxMap.cameraPosition.target
                 //TODO: create a function to automate the process
                 //TODO: find a way to use custom icons in the API

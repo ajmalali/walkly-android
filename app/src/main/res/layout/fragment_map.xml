@@ -19,8 +19,6 @@
             mapbox:layout_constraintEnd_toEndOf="parent"
             mapbox:layout_constraintHorizontal_bias="1.0"
             mapbox:layout_constraintStart_toStartOf="parent"
-            mapbox:mapbox_cameraTargetLat="26.3145"
-            mapbox:mapbox_cameraTargetLng="50.1459"
             mapbox:mapbox_cameraZoom="16">
 
         </com.mapbox.mapboxsdk.maps.MapView>
