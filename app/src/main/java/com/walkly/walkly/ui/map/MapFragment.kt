@@ -11,6 +11,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
@@ -27,6 +28,8 @@ import com.mapbox.mapboxsdk.plugins.annotation.Symbol
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
 import com.walkly.walkly.R
+import com.walkly.walkly.models.Enemy
+import com.walkly.walkly.models.Enemy.Companion.generateRandomEnemies
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_map.*
 
@@ -40,6 +43,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
     private lateinit var  symbol2: Symbol
     private lateinit var  symbol3: Symbol
     private lateinit var  camera: LatLng
+    private lateinit var  enemies: Array<Enemy>
 
 
     override fun onCreateView(
@@ -60,10 +64,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         mapView?.getMapAsync(this)
     }
     override fun onMapReady(mapboxMap: MapboxMap) {
-
-
+        enemies = generateRandomEnemies()
         this.mapboxMap = mapboxMap
-
         mapboxMap.uiSettings.isLogoEnabled = false
         mapboxMap.setStyle(Style.Builder().fromUri("mapbox://styles/mapbox/cjerxnqt3cgvp2rmyuxbeqme7"))
         {
@@ -97,8 +99,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
             mapboxMap.addOnCameraMoveListener {
                 Log.d("mapchange:", "onCameraMove")
                 camera = mapboxMap.cameraPosition.target
-//                symbol1.latLng.latitude = camera.latitude+0.001
-//                symbol1.latLng.longitude = camera.longitude+0.001
                 //TODO: create a function to automate the process
                 //TODO: find a way to use custom icons in the API
                 //TODO: how to link the icon with the battle instance?
@@ -129,6 +129,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
 
             mapboxMap.addOnCameraIdleListener {
                 Log.d("idle:", "idle")
+                Log.d("enmy:", enemies.size.toString())
+                enemies[0].name.observe(this, Observer {
+                    Log.d("enmy:", it.toString())
+                })
+
+
             }
 
 
@@ -137,10 +143,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                 //if symbol.LatLng == Battles[i].LatLng
                 //display dialogue box with battle details and prompt the user to start battle
                 BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_COLLAPSED
-                val TV:TextView = bottom_sheet_text
+                bottom_sheet_text.setText( symbol.latLng.toString())
                 //Get the battle name from Battles[i] and set this variable to it
                 //Same for the image
-                TV.setText(symbol.latLng.toString())
+                //TV.setText(symbol.latLng.toString())
             }
             // }
 
