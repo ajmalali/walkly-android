@@ -18,36 +18,43 @@ object ConsumablesRepository {
     // Get consumables of the current user
     fun getConsumables(callback: (List<Consumable>) -> Unit) {
         userDocument.collection("consumables")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    val consumable = document.toObject(Consumable::class.java).addId(document.id)
-                    consumableList.add(consumable)
-                    Log.d(TAG, "Added $document")
-                }
+                .get()
+                .addOnSuccessListener { result ->
+                    for (document in result) {
+                        val consumable = document.toObject(Consumable::class.java).addId(document.id)
+                        consumableList.add(consumable)
+                        Log.d(TAG, "Added $document")
+                    }
 
-                callback(consumableList)
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "Error getting documents: ", exception)
-            }
+                    callback(consumableList)
+                }
+                .addOnFailureListener { exception ->
+                    Log.d(TAG, "Error getting documents: ", exception)
+                }
     }
 
-    // Remove the given comsumable from the current user
-    fun removeConsumable(callback: (List<Consumable>) -> Unit) {
+    // Remove the given consumable from the current user
+    fun removeConsumable(consumable: Consumable, callback: (List<Consumable>) -> Unit) {
         userDocument.collection("consumables")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    val consumable = document.toObject(Consumable::class.java).addId(document.id)
-                    consumableList.add(consumable)
-                    Log.d(TAG, "Added $document")
+                .document(consumable.id)
+                .delete()
+                .addOnSuccessListener {
+                    consumableList.remove(consumable)
+                    callback(consumableList)
                 }
+                .addOnFailureListener { exception ->
+                    Log.d(TAG, "Error deleting documents: ", exception)
+                }
+    }
 
-                callback(consumableList)
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "Error getting documents: ", exception)
-            }
+    fun initConsumable() {
+        var ref = userDocument.collection("consumables").document()
+        ref.set(Consumable("consumable2", 2, "image", "health", 40).addId(ref.id))
+
+        ref = userDocument.collection("consumables").document()
+        ref.set(Consumable("consumable2", 3, "image", "attack", 30).addId(ref.id))
+
+        ref = userDocument.collection("consumables").document()
+        ref.set(Consumable("consumable3", 4, "image", "health", 40).addId(ref.id))
     }
 }

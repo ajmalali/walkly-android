@@ -5,54 +5,50 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.walkly.walkly.R
-import com.walkly.walkly.databinding.ConsumableBinding
 import com.walkly.walkly.models.Consumable
 
-
-class ConsumableAdapter : ListAdapter<Consumable, ConsumableAdapter.ConsumableViewHolder>(ConsumableCallback()) {
+class ConsumableAdapter(var consumableList: List<Consumable>, private val listener: OnConsumableUseListener) : RecyclerView.Adapter<ConsumableAdapter.ConsumableViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ConsumableViewHolder {
 
         val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = ConsumableBinding.inflate(layoutInflater, parent, false)
+        val view: View = layoutInflater.inflate(R.layout.consumable, parent, false)
 
-        return ConsumableViewHolder(binding)
+        return ConsumableViewHolder(view, listener)
     }
 
     override fun onBindViewHolder(holder: ConsumableViewHolder, position: Int) {
-        val item = getItem(position)
+        val item = consumableList[position]
         holder.consumableImage.setImageResource(R.drawable.consumable1)
         holder.consumableName.text = item.name
         holder.consumableType.text = item.type
         holder.consumableValue.text = item.value.toString()
     }
 
-    class ConsumableViewHolder(binding: ConsumableBinding) : RecyclerView.ViewHolder(binding.root), View.OnClickListener {
-        val consumableName: TextView = binding.consumableName
-        val consumableType: TextView = binding.consumableType
-        val consumableValue: TextView = binding.consumableValue
-        val consumableImage: ImageView = binding.consumableImage
+    class ConsumableViewHolder(itemView: View, private val listener: OnConsumableUseListener): RecyclerView.ViewHolder(itemView), View.OnClickListener {
+        val consumableName: TextView = itemView.findViewById(R.id.consumable_name)
+        val consumableType: TextView = itemView.findViewById(R.id.consumable_type)
+        val consumableValue: TextView = itemView.findViewById(R.id.consumable_value)
+        val consumableImage: ImageView = itemView.findViewById(R.id.consumable_image)
+
+
+        init {
+            itemView.setOnClickListener(this)
+        }
 
         override fun onClick(p0: View?) {
-
+            listener.onConsumableClick(adapterPosition)
         }
+
     }
 
-    class ConsumableCallback : DiffUtil.ItemCallback<Consumable>() {
-        override fun areItemsTheSame(oldItem: Consumable, newItem: Consumable): Boolean {
-            return oldItem.id == newItem.id
-        }
+    override fun getItemCount(): Int {
+       return consumableList.size
+    }
 
-        override fun areContentsTheSame(
-            oldItem: Consumable,
-            newItem: Consumable
-        ): Boolean {
-            return oldItem == newItem
-        }
-
+    interface OnConsumableUseListener {
+        fun onConsumableClick(position: Int)
     }
 }

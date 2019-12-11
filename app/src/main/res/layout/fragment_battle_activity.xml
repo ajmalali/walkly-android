@@ -13,6 +13,17 @@
         android:orientation="vertical">
 
 
+        <Button
+            android:id="@+id/add_consumables"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:background="@drawable/rounded_button"
+            android:text="Add Random Consumables"
+            app:layout_constraintEnd_toEndOf="@+id/leaveBattle"
+            app:layout_constraintStart_toStartOf="@+id/leaveBattle"
+            app:layout_constraintTop_toBottomOf="@+id/leaveBattle" />
+
         <LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
