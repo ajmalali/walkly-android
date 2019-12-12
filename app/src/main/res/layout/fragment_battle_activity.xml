@@ -13,17 +13,6 @@
         android:orientation="vertical">
 
 
-        <Button
-            android:id="@+id/add_consumables"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/rounded_button"
-            android:text="Add Random Consumables"
-            app:layout_constraintEnd_toEndOf="@+id/leaveBattle"
-            app:layout_constraintStart_toStartOf="@+id/leaveBattle"
-            app:layout_constraintTop_toBottomOf="@+id/leaveBattle" />
-
         <LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
@@ -143,18 +132,6 @@
             app:layout_constraintTop_toBottomOf="@+id/player_health_bar" />
 
         <Button
-            android:id="@+id/leaveBattle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
-            android:background="@drawable/rounded_button"
-            android:text="@string/leave_battle"
-            app:layout_constraintEnd_toEndOf="@+id/use_items"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="@+id/use_items"
-            app:layout_constraintTop_toBottomOf="@+id/use_items" />
-
-        <Button
             android:id="@+id/use_items"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -165,6 +142,20 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/player_step_bar"
             app:layout_constraintTop_toBottomOf="@+id/player_step_bar" />
+
+        <Button
+            android:id="@+id/leaveBattle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@drawable/rounded_button"
+            android:text="@string/leave_battle"
+            android:layout_marginBottom="16dp"
+            android:backgroundTint="@color/grey_500"
+            android:textColor="#000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@+id/use_items"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/use_items" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

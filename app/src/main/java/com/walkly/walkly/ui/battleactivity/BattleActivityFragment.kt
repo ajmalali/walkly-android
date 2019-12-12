@@ -43,10 +43,6 @@ class BattleActivityFragment : Fragment() {
             battleActivityViewModel.removeSelectedConsumable()
         })
 
-        binding.addConsumables.setOnClickListener {
-            ConsumablesRepository.initConsumable()
-        }
-
         return binding.root
     }
 
