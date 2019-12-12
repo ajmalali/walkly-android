@@ -1,10 +1,10 @@
 package com.walkly.walkly.ui.battleactivity
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -14,7 +14,7 @@ import com.walkly.walkly.R
 import com.walkly.walkly.databinding.ConsumablesBottomSheetBinding
 import com.walkly.walkly.models.Consumable
 
-class ConsumablesBottomSheetDialog(val fragment: BattleActivityFragment) : BottomSheetDialogFragment(), ConsumableAdapter.OnConsumableUseListener {
+class ConsumablesBottomSheetDialog(val activity: AppCompatActivity) : BottomSheetDialogFragment(), ConsumableAdapter.OnConsumableUseListener {
 
     private lateinit var binding: ConsumablesBottomSheetBinding
     private lateinit var adapter: ConsumableAdapter
@@ -42,7 +42,7 @@ class ConsumablesBottomSheetDialog(val fragment: BattleActivityFragment) : Botto
 
         binding.progressBar.visibility = View.VISIBLE
 
-        battleActivityViewModel = ViewModelProviders.of(fragment).get(BattleActivityViewModel::class.java)
+        battleActivityViewModel = ViewModelProviders.of(activity).get(BattleActivityViewModel::class.java)
 
         battleActivityViewModel.consumables.observe(this, Observer { list ->
             binding.progressBar.visibility = View.GONE

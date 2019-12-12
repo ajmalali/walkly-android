@@ -30,7 +30,7 @@ class BattleActivityFragment : Fragment() {
         binding = DataBindingUtil.inflate(inflater, R.layout.fragment_battle_activity, container, false)
         binding.lifecycleOwner = this
 
-        consumablesBottomSheet = ConsumablesBottomSheetDialog(this)
+//        consumablesBottomSheet = ConsumablesBottomSheetDialog(this)
 
         battleActivityViewModel = ViewModelProviders.of(this).get(BattleActivityViewModel::class.java)
 
