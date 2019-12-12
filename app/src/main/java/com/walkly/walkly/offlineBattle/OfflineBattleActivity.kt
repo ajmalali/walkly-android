@@ -6,6 +6,7 @@ import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.Window
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -20,14 +21,18 @@ class OfflineBattle: AppCompatActivity() {
 
     private lateinit  var viewModel: OfflineBattleViewModel
 
-    val enemy = Enemy("5xweqqy2u76aYHhVBiSQ")
+
     private lateinit var loseDialog: AlertDialog
     private lateinit var leaveDialog: AlertDialog
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
         setContentView(R.layout.fragment_battle_activity)
+
+        val bundle = intent.extras
+        val enemy = Enemy(bundle.getString("enemyId"))
 
         use_items.setOnClickListener {
             Toast.makeText(this, "coming in 418", Toast.LENGTH_LONG)

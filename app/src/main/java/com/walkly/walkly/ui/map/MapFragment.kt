@@ -1,6 +1,7 @@
 package com.walkly.walkly.ui.map
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
@@ -35,6 +36,7 @@ import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.models.Enemy.Companion.generateRandomEnemies
+import com.walkly.walkly.offlineBattle.OfflineBattle
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_map.*
 import java.net.URL
@@ -69,8 +71,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_HIDDEN
         mapView?.onCreate(savedInstanceState)
         mapView?.getMapAsync(this)
-        button2.setOnClickListener {
-            view.findNavController().navigate(R.id.action_navigation_map_to_Battle_Activity_Fragment)
+        join_button.setOnClickListener {
+//            view.findNavController().navigate(R.id.action_navigation_map_to_Battle_Activity_Fragment)
+            val intent = Intent(activity, OfflineBattle::class.java)
+            val bundle = Bundle()
+            bundle.putString("enemyId", enemies.random().id.value)
+            intent.putExtras(bundle)
+            startActivity(intent)
+            activity?.finish()
         }
     }
     override fun onMapReady(mapboxMap: MapboxMap) {
@@ -149,6 +157,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
 
 
             }
+
+
 
 
             symbolManager?.addClickListener { symbol ->
