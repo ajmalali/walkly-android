@@ -37,9 +37,9 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
     private val stamina = MutableLiveData<Long>()
     private val auth = FirebaseAuth.getInstance()
 
-    private var baseEnemyHP = 0L
+    private var baseEnemyHP = 0.0
     private var enemyDamage = 0L
-    private var currentEnemyHp = 0L
+    private var currentEnemyHp = 0.0
     private var enemyHpPercentage = 100L
     private var basePlayerHP = 1L
     private var currnetPlayerHP = 0L
@@ -74,9 +74,9 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
         })
         // get the starting enemy HP
         enemy.HP.observe(activity, androidx.lifecycle.Observer {
-            baseEnemyHP = it
+            baseEnemyHP = it.toDouble()
             currentEnemyHp = baseEnemyHP
-            enemyHP.value = baseEnemyHP
+            enemyHP.value = baseEnemyHP.toLong()
         })
         // get enemy image
         enemy.image.observe(activity, androidx.lifecycle.Observer {
@@ -91,8 +91,8 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
 
         // reduce enemy HP by distance walked * equipment value
         walkedDistance.observe(activity, androidx.lifecycle.Observer {
-            currentEnemyHp -= (it * playerDamage).toLong()
-            enemyHpPercentage = (currentEnemyHp * 100) / baseEnemyHP
+            currentEnemyHp -= it / playerDamage
+            enemyHpPercentage = ((currentEnemyHp * 100.0) / baseEnemyHP).toLong()
             enemyHP.value = enemyHpPercentage
             Log.d(D_TAG, "distance = " + it)
         })

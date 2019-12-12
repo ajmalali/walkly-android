@@ -24,6 +24,7 @@ class OfflineBattle: AppCompatActivity() {
 
     private lateinit var loseDialog: AlertDialog
     private lateinit var leaveDialog: AlertDialog
+    private lateinit var winDialog: AlertDialog
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,6 +52,9 @@ class OfflineBattle: AppCompatActivity() {
 
         viewModel.enemyHP.observe(this, Observer {
             enemy_health_bar.progress = it.toInt()
+            if (it <= 0){
+                winDialog.show()
+            }
         })
 
         viewModel.enemyImage.observe(this, Observer {
@@ -89,6 +93,13 @@ class OfflineBattle: AppCompatActivity() {
             })
             .create()
 
+        winDialog = AlertDialog.Builder(this)
+            .setTitle("You Won!!")
+            .setMessage("congrats you won the battle")
+            .setPositiveButton("OK", DialogInterface.OnClickListener{dialog, id ->
+                endGame()
+            })
+            .create()
     }
     fun endGame(){
         val intent = Intent(this, MainActivity::class.java)
