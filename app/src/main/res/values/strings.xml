@@ -34,6 +34,7 @@
 
     <string name="signing_up">Sign up</string>
     <string name="access_token">pk.eyJ1Ijoic3dlNDE3IiwiYSI6ImNrMjh5M2tscjA4MXgzbXBlcnN2anE5azEifQ.p1tQcm24uNjRDNHN0n1gtA</string>
+<<<<<<< HEAD
     <string name="level">Level:  </string>
     <string name="global">Global</string>
     <string name="friends">Friends</string>
@@ -51,5 +52,13 @@
         <item name="quest">Quest 2</item>
         <item name="quest">Quest 3</item>
     </string-array>
+
+    <string name="versus">VS</string>
+    <string name="enemy_health">Enemy Health</string>
+    <string name="player_health">Your Health</string>
+    <string name="leave_battle">Leave Battle</string>
+    <string name="use_items">Use Items</string>
+    <string name="no_items_error_message">You don\'t have any items</string>
+
 
 </resources>
