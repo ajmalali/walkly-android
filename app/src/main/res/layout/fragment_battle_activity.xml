@@ -40,13 +40,13 @@
                 android:textAlignment="center"
                 android:textSize="40sp" />
 
-            <ImageView
+            <pl.droidsonroids.gif.GifImageView
                 android:id="@+id/boss_bitmoji"
                 android:layout_width="201dp"
                 android:layout_height="188dp"
                 android:layout_marginTop="44dp"
                 android:contentDescription="bitmoji"
-                app:srcCompat="@drawable/boss1" />
+                android:src="@drawable/boss1" />
         </LinearLayout>
 
         <TextView
