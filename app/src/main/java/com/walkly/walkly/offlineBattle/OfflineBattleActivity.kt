@@ -1,5 +1,8 @@
 package com.walkly.walkly.offlineBattle
 
+import android.app.AlertDialog
+import android.app.Dialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -18,6 +21,7 @@ class OfflineBattle: AppCompatActivity() {
     private lateinit  var viewModel: OfflineBattleViewModel
 
     val enemy = Enemy("pxkYf10BTVnLDc7QWmhQ")
+    private lateinit var loseDialog: AlertDialog
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -34,6 +38,9 @@ class OfflineBattle: AppCompatActivity() {
 
         viewModel.playerHP.observe(this, Observer {
             player_health_bar.progress = it.toInt()
+            if (it <= 0){
+                loseDialog.show()
+            }
         })
 
         viewModel.enemyHP.observe(this, Observer {
@@ -58,6 +65,16 @@ class OfflineBattle: AppCompatActivity() {
             startActivity(intent)
             finish()
         }
+
+        loseDialog = AlertDialog.Builder(this)
+            .setTitle("Game Over")
+            .setMessage("you lost the game")
+            .setPositiveButton("OK", DialogInterface.OnClickListener{ dialog, id ->
+                val intent = Intent(this, MainActivity::class.java)
+                startActivity(intent)
+                finish()
+            })
+            .create()
 
 
     }
