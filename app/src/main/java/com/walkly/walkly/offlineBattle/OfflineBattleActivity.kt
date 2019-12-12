@@ -3,17 +3,20 @@ package com.walkly.walkly.offlineBattle
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
+import com.walkly.walkly.ui.battleactivity.ConsumablesBottomSheetDialog
 import kotlinx.android.synthetic.main.fragment_battle_activity.*
 
 class OfflineBattle: AppCompatActivity() {
 
     private lateinit  var viewModel: OfflineBattleViewModel
+
     val enemy = Enemy("pxkYf10BTVnLDc7QWmhQ")
 
 
@@ -21,27 +24,32 @@ class OfflineBattle: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment_battle_activity)
 
+        use_items.setOnClickListener {
+            Toast.makeText(this, "coming in 418", Toast.LENGTH_LONG)
+                .show()
+        }
+
         viewModel = OfflineBattleViewModel(this, enemy)
         viewModel.startBattle()
 
         viewModel.playerHP.observe(this, Observer {
-            playerHpBar.progress = it.toInt()
+            player_health_bar.progress = it.toInt()
         })
 
         viewModel.enemyHP.observe(this, Observer {
-            enemyHpBar.progress = it.toInt()
+            enemy_health_bar.progress = it.toInt()
         })
 
         viewModel.enemyImage.observe(this, Observer {
             Glide.with(this)
                 .load(it)
-                .into(imageViewBoss)
+                .into(boss_bitmoji)
         })
 
         // NOTE TESTED
         // Since starting time is now where the walked distance = 0
         viewModel.walkedDistance.observe(this, Observer {
-            stepsBar.progress = it.toInt()
+            player_step_bar.progress = it.toInt()
             Log.d("steps = ", it.toString())
         })
 

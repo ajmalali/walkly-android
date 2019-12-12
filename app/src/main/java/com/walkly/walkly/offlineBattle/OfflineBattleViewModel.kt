@@ -22,7 +22,7 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
     private val activity = activity
 
     // used to specify how fact enemy hits
-    private val FREQuNCY = 1000L
+    private val FREQuNCY = 3000L
     // used to convert player level to HP
     private val HP_MULTIPLAYER = 100
 
@@ -39,7 +39,9 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
 
     private var baseEnemyHP = 0L
     private var enemyDamage = 0L
-    private var basePlayerHP = 0L
+    private var currentEnemyHp = 0L
+    private var enemyHpPercentage = 100L
+    private var basePlayerHP = 1L
     private var currnetPlayerHP = 0L
     private var playerDamage = 0L
 
@@ -73,6 +75,7 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
         // get the starting enemy HP
         enemy.HP.observe(activity, androidx.lifecycle.Observer {
             baseEnemyHP = it
+            currentEnemyHp = baseEnemyHP
             enemyHP.value = baseEnemyHP
         })
         // get enemy image
@@ -88,7 +91,9 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
 
         // reduce enemy HP by distance walked * equipment value
         walkedDistance.observe(activity, androidx.lifecycle.Observer {
-            enemyHP.value = (baseEnemyHP - it * playerDamage).toLong()
+            currentEnemyHp -= (it * playerDamage).toLong()
+            enemyHpPercentage = (currentEnemyHp * 100) / baseEnemyHP
+            enemyHP.value = enemyHpPercentage
             Log.d(D_TAG, "distance = " + it)
         })
 
@@ -102,18 +107,21 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
         distanceUtil = DistanceUtil(activity, Calendar.getInstance().timeInMillis, 500, walkedDistance)
         distanceUtil.startUpdates()
 
-//        scope.launch {
-//            damagePlayer()
-//        }
+        scope.launch {
+            damagePlayer()
+        }
     }
 
     // WARNING: won't work while screen is off
     suspend fun damagePlayer(){
+        var playerHppercentage = 100L
         while (true){
             delay(FREQuNCY)
+            Log.d(D_TAG, "current player hp = " + currnetPlayerHP)
             currnetPlayerHP -= enemyDamage
-            currnetPlayerHP = (currnetPlayerHP / basePlayerHP) * 100
-            playerHP.value = currnetPlayerHP
+            playerHppercentage = (currnetPlayerHP * 100) / basePlayerHP
+//            currnetPlayerHP = ((currnetPlayerHP - enemyDamage) * 100) / basePlayerHP
+            playerHP.value = playerHppercentage
         }
     }
 }
