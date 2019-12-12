@@ -20,8 +20,9 @@ class OfflineBattle: AppCompatActivity() {
 
     private lateinit  var viewModel: OfflineBattleViewModel
 
-    val enemy = Enemy("pxkYf10BTVnLDc7QWmhQ")
+    val enemy = Enemy("5xweqqy2u76aYHhVBiSQ")
     private lateinit var loseDialog: AlertDialog
+    private lateinit var leaveDialog: AlertDialog
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,21 +62,32 @@ class OfflineBattle: AppCompatActivity() {
         })
 
         leaveBattle.setOnClickListener {
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
-            finish()
+            leaveDialog.show()
         }
 
         loseDialog = AlertDialog.Builder(this)
             .setTitle("Game Over")
             .setMessage("you lost the game")
             .setPositiveButton("OK", DialogInterface.OnClickListener{ dialog, id ->
-                val intent = Intent(this, MainActivity::class.java)
-                startActivity(intent)
-                finish()
+                endGame()
             })
             .create()
 
+        leaveDialog = AlertDialog.Builder(this)
+            .setTitle("Leaving The Battle")
+            .setMessage("Are you sure? You will lose progress.")
+            .setPositiveButton("Leave", DialogInterface.OnClickListener{ dialog, id ->
+                endGame()
+            })
+            .setNegativeButton("Stay", DialogInterface.OnClickListener{dialog, id ->
+                dialog.dismiss()
+            })
+            .create()
 
+    }
+    fun endGame(){
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }
