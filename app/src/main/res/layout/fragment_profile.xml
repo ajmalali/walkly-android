@@ -5,82 +5,82 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-   <LinearLayout
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:orientation="vertical">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
 
-      <TextView
-          android:id="@+id/welcomeString"
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:text="Hello"
-          android:textColor="@color/common_google_signin_btn_text_dark_focused"
-          android:textSize="24sp"
-          android:textAlignment="center"
-          android:paddingTop="20dp"
-          android:paddingBottom="20dp"/>
+        <TextView
+            android:id="@+id/welcomeString"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Hello Abdullah"
+            android:textColor="@color/common_google_signin_btn_text_dark_focused"
+            android:textSize="24sp"
+            android:textAlignment="center"
+            android:paddingTop="20dp"
+            android:paddingBottom="20dp"/>
 
-      <ImageView
-          android:id="@+id/imageView2"
-          android:layout_width="match_parent"
-          android:layout_height="400dp"
-          app:srcCompat="@drawable/bitmoji1"
-          />
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="match_parent"
+            android:layout_height="400dp"
+            app:srcCompat="@drawable/bitmoji1"
+            />
 
-      <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:orientation="horizontal">
-
-
-         <Button
-             android:id="@+id/viewLeaderboard"
-             android:layout_width="150dp"
-             android:layout_height="50dp"
-             android:layout_weight="1"
-             android:layout_margin="10dp"
-             android:text="@string/view_leaderboard" />
-
-         <Button
-             android:id="@+id/viewFriends"
-             android:layout_width="150dp"
-             android:layout_height="50dp"
-             android:layout_weight="1"
-             android:layout_margin="10dp"
-             android:text="view friends" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
 
-      </LinearLayout>
+            <Button
+                android:id="@+id/viewLeaderboard"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:text="@string/view_leaderboard" />
 
-      <LinearLayout
-          android:layout_width="match_parent"
-          android:layout_height="wrap_content"
-          android:orientation="horizontal">
-
-
-         <Button
-             android:id="@+id/achievements"
-             android:layout_width="150dp"
-             android:layout_height="50dp"
-             android:layout_weight="1"
-             android:layout_margin="10dp"
-             android:text="achievements" />
-
-         <Button
-             android:id="@+id/signOutButton"
-             android:layout_width="150dp"
-             android:layout_height="50dp"
-             android:layout_weight="1"
-             android:layout_margin="10dp"
-             android:text="@string/sign_out"
-             />
+            <Button
+                android:id="@+id/viewFriends"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:text="view friends" />
 
 
-      </LinearLayout>
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
 
 
-   </LinearLayout>
+            <Button
+                android:id="@+id/achievements"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:text="achievements" />
+
+            <Button
+                android:id="@+id/signOutButton"
+                android:layout_width="150dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:layout_margin="10dp"
+                android:text="@string/sign_out"
+                />
+
+
+        </LinearLayout>
+
+
+    </LinearLayout>
 
 </LinearLayout>

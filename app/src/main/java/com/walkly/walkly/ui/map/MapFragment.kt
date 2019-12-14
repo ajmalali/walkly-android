@@ -1,23 +1,18 @@
 package com.walkly.walkly.ui.map
 
+
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-
-import androidx.navigation.findNavController
-
 import androidx.lifecycle.Observer
-
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
@@ -33,13 +28,13 @@ import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.plugins.annotation.Symbol
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
+import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.models.Enemy.Companion.generateRandomEnemies
 import com.walkly.walkly.offlineBattle.OfflineBattle
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_map.*
-import java.net.URL
 import kotlin.random.Random
 
 class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
@@ -66,6 +61,37 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        (activity as MainActivity).stamina.observe(this, Observer {
+            Log.d("stamina from map2", it.toString())
+
+            if(it >= 300){
+                //3 balls
+                stamina1full.visibility = View.VISIBLE
+                stamina2full.visibility = View.VISIBLE
+                stamina3full.visibility = View.VISIBLE
+
+            }else if(it >= 200 ){
+                //2 balls
+                stamina1full.visibility = View.VISIBLE
+                stamina2full.visibility = View.VISIBLE
+                stamina3full.visibility = View.INVISIBLE
+
+            }else if(it >= 100){
+                //1 ball
+                stamina1full.visibility = View.VISIBLE
+                stamina2full.visibility = View.INVISIBLE
+                stamina3full.visibility = View.INVISIBLE
+
+            }else{
+                //no balls
+                stamina1full.visibility = View.INVISIBLE
+                stamina2full.visibility = View.INVISIBLE
+                stamina3full.visibility = View.INVISIBLE
+            }
+
+        })
+
         linearLayout = bottom_sheet
         //hide the bottom sheet
         BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_HIDDEN
@@ -177,7 +203,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                 })
 
                 //TODO: img here
-                //bottom_sheet_imageView.setImageDrawable(ContextCompat.getDrawable(activity!!.applicationContext, android.R.drawable.ic_)
+                /*var image = ContextCompat.getDrawable(activity!!.applicationContext, R.drawable.zen)
+                bottom_sheet_imageView.setImageDrawable(image)*/
 
                 BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_COLLAPSED
                 //Get the battle name from Battles[i] and set this variable to it

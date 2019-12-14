@@ -147,6 +147,7 @@
             android:id="@+id/leaveBattle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+
             android:background="@drawable/rounded_button"
             android:text="@string/leave_battle"
             android:layout_marginBottom="16dp"
@@ -157,5 +158,9 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="@+id/use_items" />
 
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 </layout>

@@ -5,46 +5,69 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:gravity="center_horizontal"
-    android:orientation="vertical"
+    android:orientation="horizontal"
     android:id="@+id/bottom_sheet"
     android:padding="16dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
     app:behavior_hideable="true"
-    app:behavior_peekHeight="200dp"
+    app:behavior_peekHeight="145dp"
     android:background="#FFFFFF"
     >
 
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        >
 
-    <ImageView
-        android:id="@+id/bottom_sheet_imageView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:srcCompat="@mipmap/ic_launcher" />
+        <pl.droidsonroids.gif.GifImageView
+            android:id="@+id/bossgif"
+            android:layout_width="150dp"
+            android:layout_height="115dp"
+            android:src="@drawable/boss1" />
 
-    <TextView
-        android:id="@+id/bottom_sheet_text"
+    </LinearLayout>
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Battle Title"
-        android:textSize="16sp" />
-    <TextView
-        android:id="@+id/bottom_sheet_lvl"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Battle Title"
-        android:textSize="16sp" />
-    <TextView
-        android:id="@+id/bottom_sheet_health"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Battle Title"
-        android:textSize="16sp" />
+        android:orientation="vertical"
+        android:layout_weight="1">
+        <TextView
+            android:id="@+id/bottom_sheet_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Battle Title"
+            android:layout_marginBottom="6dp"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/bottom_sheet_lvl"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:text="Battle Title"
+            android:textSize="16sp" />
+        <TextView
+            android:id="@+id/bottom_sheet_health"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="6dp"
+            android:text="Battle Title"
+            android:textSize="16sp" />
 
 
-    <Button
-        android:id="@+id/join_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Join" />
+
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/join_button"
+            android:layout_width="match_parent"
+            android:gravity="center"
+            android:layout_height="wrap_content"
+            android:paddingTop="2dp"
+            android:paddingBottom="2dp"
+            android:text="Join" />
+
+    </LinearLayout>
+
+
 
 </LinearLayout>

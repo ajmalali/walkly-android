@@ -21,7 +21,6 @@ class OfflineBattle: AppCompatActivity() {
 
     private lateinit  var viewModel: OfflineBattleViewModel
 
-
     private lateinit var loseDialog: AlertDialog
     private lateinit var leaveDialog: AlertDialog
     private lateinit var winDialog: AlertDialog
