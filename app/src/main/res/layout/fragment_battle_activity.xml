@@ -159,7 +159,6 @@
             app:layout_constraintStart_toStartOf="@+id/use_items" />
 
 
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
