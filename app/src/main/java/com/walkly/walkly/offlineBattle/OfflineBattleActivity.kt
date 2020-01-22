@@ -10,6 +10,8 @@ import android.view.Window
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
@@ -19,7 +21,8 @@ import kotlinx.android.synthetic.main.fragment_battle_activity.*
 
 class OfflineBattle: AppCompatActivity() {
 
-    private lateinit  var viewModel: OfflineBattleViewModel
+    private lateinit var viewModel: OfflineBattleViewModel
+    private lateinit var viewModelFactory: OfflineBattleViewModelFactory
 
     private lateinit var loseDialog: AlertDialog
     private lateinit var leaveDialog: AlertDialog
@@ -38,8 +41,12 @@ class OfflineBattle: AppCompatActivity() {
             Toast.makeText(this, "coming in 418", Toast.LENGTH_LONG)
                 .show()
         }
+        viewModelFactory = OfflineBattleViewModelFactory(this, enemy)
 
-        viewModel = OfflineBattleViewModel(this, enemy)
+//        viewModel = OfflineBattleViewModel(this, enemy)
+        viewModel = ViewModelProviders.of(this, viewModelFactory)
+            .get(OfflineBattleViewModel::class.java)
+
         viewModel.startBattle()
 
         viewModel.playerHP.observe(this, Observer {
