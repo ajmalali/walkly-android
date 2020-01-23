@@ -4,12 +4,15 @@ import android.app.Activity
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.walkly.walkly.models.Consumable
 import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.models.Equipment
 import com.walkly.walkly.models.Player
+import com.walkly.walkly.repositories.ConsumablesRepository
 import com.walkly.walkly.utilities.DistanceUtil
 import kotlinx.coroutines.*
 import java.time.temporal.TemporalAmount
@@ -50,9 +53,18 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
     val enemyHP = MutableLiveData<Long>()
     val playerHP = MutableLiveData<Long>()
 
+    private val _consumables = MutableLiveData<List<Consumable>>()
+    val consumables: LiveData<List<Consumable>>
+        get() = _consumables
 
+    private val _selectedConsumable = MutableLiveData<Consumable>()
+    val selectedConsumable: LiveData<Consumable>
+        get() = _selectedConsumable
 
     init {
+
+        getConsumables()
+
         // BAD DESIGN: should get refactored
         if (auth.currentUser != null) {
             player = Player(stamina)
@@ -122,6 +134,26 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
             playerHppercentage = (currnetPlayerHP * 100) / basePlayerHP
 //            currnetPlayerHP = ((currnetPlayerHP - enemyDamage) * 100) / basePlayerHP
             playerHP.value = playerHppercentage
+        }
+    }
+
+    private fun getConsumables() {
+        if (_consumables.value != null) {
+            _consumables.value = ConsumablesRepository.consumableList
+        } else {
+            ConsumablesRepository.getConsumables { list ->
+                _consumables.value = list
+            }
+        }
+    }
+
+    fun selectConsumable(consumable: Consumable) {
+        _selectedConsumable.value = consumable
+    }
+
+    fun removeSelectedConsumable() {
+        ConsumablesRepository.removeConsumable(selectedConsumable.value!!) { updatedList ->
+            _consumables.value = updatedList
         }
     }
 }

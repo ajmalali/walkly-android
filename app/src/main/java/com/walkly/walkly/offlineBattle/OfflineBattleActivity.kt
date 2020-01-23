@@ -19,14 +19,16 @@ import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.ui.battleactivity.ConsumablesBottomSheetDialog
 import kotlinx.android.synthetic.main.fragment_battle_activity.*
 
-class OfflineBattle: AppCompatActivity() {
+class OfflineBattle : AppCompatActivity() {
 
-    private lateinit var viewModel: OfflineBattleViewModel
+    lateinit var viewModel: OfflineBattleViewModel
     private lateinit var viewModelFactory: OfflineBattleViewModelFactory
 
     private lateinit var loseDialog: AlertDialog
     private lateinit var leaveDialog: AlertDialog
     private lateinit var winDialog: AlertDialog
+
+    private lateinit var consumablesBottomSheetDialog: ConsumablesBottomSheetDialog
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -37,28 +39,39 @@ class OfflineBattle: AppCompatActivity() {
         val bundle = intent.extras
         val enemy = Enemy(bundle.getString("enemyId"))
 
-        use_items.setOnClickListener {
-            Toast.makeText(this, "coming in 418", Toast.LENGTH_LONG)
-                .show()
-        }
+        consumablesBottomSheetDialog = ConsumablesBottomSheetDialog(this)
+
+
         viewModelFactory = OfflineBattleViewModelFactory(this, enemy)
 
 //        viewModel = OfflineBattleViewModel(this, enemy)
         viewModel = ViewModelProviders.of(this, viewModelFactory)
             .get(OfflineBattleViewModel::class.java)
 
+        use_items.setOnClickListener {
+            //            Toast.makeText(this, "coming in 418", Toast.LENGTH_LONG)
+//                .show()
+            consumablesBottomSheetDialog.show(supportFragmentManager, "consumableSheet")
+        }
+
+        viewModel.selectedConsumable.observe(this, Observer {
+            useConsumable(it.type, it.value)
+            viewModel.removeSelectedConsumable()
+        })
+
+
         viewModel.startBattle()
 
         viewModel.playerHP.observe(this, Observer {
             player_health_bar.progress = it.toInt()
-            if (it <= 0){
+            if (it <= 0) {
                 loseDialog.show()
             }
         })
 
         viewModel.enemyHP.observe(this, Observer {
             enemy_health_bar.progress = it.toInt()
-            if (it <= 0){
+            if (it <= 0) {
                 winDialog.show()
             }
         })
@@ -83,7 +96,7 @@ class OfflineBattle: AppCompatActivity() {
         loseDialog = AlertDialog.Builder(this)
             .setTitle("Game Over")
             .setMessage("you lost the game")
-            .setPositiveButton("OK", DialogInterface.OnClickListener{ dialog, id ->
+            .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, id ->
                 endGame()
             })
             .create()
@@ -91,10 +104,10 @@ class OfflineBattle: AppCompatActivity() {
         leaveDialog = AlertDialog.Builder(this)
             .setTitle("Leaving The Battle")
             .setMessage("Are you sure? You will lose progress.")
-            .setPositiveButton("Leave", DialogInterface.OnClickListener{ dialog, id ->
+            .setPositiveButton("Leave", DialogInterface.OnClickListener { dialog, id ->
                 endGame()
             })
-            .setNegativeButton("Stay", DialogInterface.OnClickListener{dialog, id ->
+            .setNegativeButton("Stay", DialogInterface.OnClickListener { dialog, id ->
                 dialog.dismiss()
             })
             .create()
@@ -102,14 +115,22 @@ class OfflineBattle: AppCompatActivity() {
         winDialog = AlertDialog.Builder(this)
             .setTitle("You Won!!")
             .setMessage("congrats you won the battle")
-            .setPositiveButton("OK", DialogInterface.OnClickListener{dialog, id ->
+            .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, id ->
                 endGame()
             })
             .create()
     }
-    fun endGame(){
+
+    fun endGame() {
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
+    }
+
+    private fun useConsumable(consumableType: String, consumableValue: Int) {
+        when (consumableType.toLowerCase()) {
+            "attack" -> enemy_health_bar.progress -= consumableValue
+            "health" -> player_health_bar.progress += consumableValue
+        }
     }
 }

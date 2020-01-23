@@ -13,13 +13,15 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.walkly.walkly.R
 import com.walkly.walkly.databinding.ConsumablesBottomSheetBinding
 import com.walkly.walkly.models.Consumable
+import com.walkly.walkly.offlineBattle.OfflineBattle
+import com.walkly.walkly.offlineBattle.OfflineBattleViewModel
 
 class ConsumablesBottomSheetDialog(val activity: AppCompatActivity) : BottomSheetDialogFragment(), ConsumableAdapter.OnConsumableUseListener {
 
     private lateinit var binding: ConsumablesBottomSheetBinding
     private lateinit var adapter: ConsumableAdapter
     private var consumableList = mutableListOf<Consumable>()
-    private lateinit var battleActivityViewModel: BattleActivityViewModel
+    private lateinit var battleActivityViewModel: OfflineBattleViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,7 +44,9 @@ class ConsumablesBottomSheetDialog(val activity: AppCompatActivity) : BottomShee
 
         binding.progressBar.visibility = View.VISIBLE
 
-        battleActivityViewModel = ViewModelProviders.of(activity).get(BattleActivityViewModel::class.java)
+//        battleActivityViewModel = ViewModelProviders.of(activity).get(BattleActivityViewModel::class.java)
+
+        battleActivityViewModel = (activity as OfflineBattle).viewModel
 
         battleActivityViewModel.consumables.observe(this, Observer { list ->
             binding.progressBar.visibility = View.GONE
