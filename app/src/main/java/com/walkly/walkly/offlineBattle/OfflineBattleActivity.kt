@@ -34,6 +34,8 @@ class OfflineBattle : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
+        supportActionBar?.hide()
+
         setContentView(R.layout.fragment_battle_activity)
 
         val bundle = intent.extras
