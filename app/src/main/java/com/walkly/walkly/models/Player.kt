@@ -13,7 +13,7 @@ import kotlin.math.floor
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
-class Player (data: MutableLiveData<Long>) {
+object Player  {
 
     // the difference between levels in points
     private val LEVEL_INCREMENT = 150
@@ -34,7 +34,8 @@ class Player (data: MutableLiveData<Long>) {
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
 
-    private val data = data
+    val data = MutableLiveData<Long>()
+
     private val INTERVAL = 36000L    // update every 36 seconds
     private val MAX_STAMINA = 300   // max of 3 stamina points
     private val POINT_REWARDS_TAG = "points & reward"
@@ -101,8 +102,8 @@ class Player (data: MutableLiveData<Long>) {
                     )
                 }
 
-                val equipmentId = user?.get("equipment") as String
-                equipment.value = Equipment(equipmentId)
+//                val equipmentId = user?.get("equipment") as String
+//                equipment.value = Equipment(equipmentId)
 
 
             }

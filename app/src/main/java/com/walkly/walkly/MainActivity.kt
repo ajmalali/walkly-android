@@ -31,13 +31,12 @@ class MainActivity : AppCompatActivity(){
 
     private lateinit var locationUtil: LocationUtil
     private lateinit var distanceUtil: DistanceUtil
-    private lateinit var player: Player
 
     private val cal = Calendar.getInstance()
 
     private val currentLocation = MutableLiveData<Location>()
     private val walkedDistance = MutableLiveData<Float>()
-    val stamina = MutableLiveData<Long>()
+    val stamina = Player.data
 
     private val auth = FirebaseAuth.getInstance()
 
@@ -118,7 +117,7 @@ class MainActivity : AppCompatActivity(){
         // the authentication activity shall not has this code to avoid auth checking in if statements
 
         if (auth.currentUser != null){
-            player = Player(stamina)
+
             stamina.observe(this, Observer {stamina ->
                 Log.d("Stamina: ", stamina.toString())
             })
@@ -127,11 +126,11 @@ class MainActivity : AppCompatActivity(){
         } else {
             auth.addAuthStateListener {
                 if (it.currentUser != null){
-                    player = Player(stamina)
+
                     stamina.observe(this, Observer {stamina ->
                         Log.d("Stamina: ", stamina.toString())
                     })
-                    player.startStaminaUpdates()
+                    Player.startStaminaUpdates()
                 }
             }
         }
@@ -147,14 +146,14 @@ class MainActivity : AppCompatActivity(){
         distanceUtil.stopUpdates()
 
         if (auth.currentUser != null)
-            player.stopStaminaUpdates()
+            Player.stopStaminaUpdates()
     }
 
     override fun onStop() {
         super.onStop()
 
         if (auth.currentUser != null)
-            player.syncModel()
+            Player.syncModel()
     }
 
     override fun onResume() {
@@ -163,6 +162,6 @@ class MainActivity : AppCompatActivity(){
         distanceUtil.startUpdates()
 
         if (auth.currentUser != null)
-            player.startStaminaUpdates()
+            Player.startStaminaUpdates()
     }
 }

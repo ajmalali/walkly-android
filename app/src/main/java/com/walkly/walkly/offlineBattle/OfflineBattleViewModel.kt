@@ -29,12 +29,11 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
 
-    private lateinit var player: Player
     private lateinit var distanceUtil: DistanceUtil
     val walkedDistance = MutableLiveData<Float>()
 
     // BAD DESIGN: should get refactored
-    private val stamina = MutableLiveData<Long>()
+
     private val auth = FirebaseAuth.getInstance()
 
     private var baseEnemyHP = 0.0
@@ -55,16 +54,16 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
     init {
         // BAD DESIGN: should get refactored
         if (auth.currentUser != null) {
-            player = Player(stamina)
+
             // get damage player can do based on equipment
-            player.equipment.observe(activity, androidx.lifecycle.Observer {
+            Player.equipment.observe(activity, androidx.lifecycle.Observer {
                 it.value.observe(activity, androidx.lifecycle.Observer {value ->
                     playerDamage = value
                 })
             })
         }
         // get the starting player HP
-        player.level.observe(activity, androidx.lifecycle.Observer {
+        Player.level.observe(activity, androidx.lifecycle.Observer {
             basePlayerHP = it * HP_MULTIPLAYER
             currnetPlayerHP = basePlayerHP
             playerHP.value = (currnetPlayerHP / basePlayerHP) * 100
