@@ -67,6 +67,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
             user_level.text = "LEVEL $it"
         })
 
+        progressBar2.progress = Player.getProgress()
+
         Player.stamina.observe(this, Observer {
             Log.d("stamina from map2", it.toString())
 

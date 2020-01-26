@@ -196,7 +196,10 @@ object Player  {
 
     // TODO: returns the level and the current points in the level to map
     data class Progress(val level: Long, val progress: Long)
-    fun getProgress() : Progress{
+    fun getProgress() : Int{
+
+        return 75
+
         var level = 1L
         var progress = 0L
         userRef.get()
@@ -208,7 +211,7 @@ object Player  {
                     progress = it.data?.get("progress") as Long
                 }
             }
-        return Progress(level, progress)
+//        return Progress(level, progress)
 
     }
 
