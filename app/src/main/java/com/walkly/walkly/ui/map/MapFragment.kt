@@ -63,6 +63,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        Player.level.observe(this, Observer {
+            user_level.text = "LEVEL $it"
+        })
+
         Player.stamina.observe(this, Observer {
             Log.d("stamina from map2", it.toString())
 
