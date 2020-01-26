@@ -26,7 +26,7 @@ object Player  {
     val equipment = MutableLiveData<Equipment>()
     val level = MutableLiveData<Long>()
 
-    private var stamina = 0L
+//    var stamina = 0L
 
     private var points = 0L
 
@@ -34,7 +34,7 @@ object Player  {
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
 
-    val data = MutableLiveData<Long>()
+    val  stamina: MutableLiveData<Long>
 
     private val INTERVAL = 36000L    // update every 36 seconds
     private val MAX_STAMINA = 300   // max of 3 stamina points
@@ -51,6 +51,10 @@ object Player  {
     }
 
     init {
+
+        stamina = MutableLiveData()
+        stamina.value = 0L
+
         val uid = auth.currentUser?.uid
         Log.d("uid", uid)
         userRef = firestore.collection("users").document(uid!!)
@@ -61,11 +65,11 @@ object Player  {
 
                 // try read users stamina from firestore
                 try {
-                    stamina = user?.get("stamina") as Long
+                    stamina.value = user?.get("stamina") as Long
                 } catch (tce: kotlin.TypeCastException) {
                     // does not have stamina
                     // set it to 0
-                    stamina = 0L
+                    stamina.value = 0L
                     // create new field for stamina
                     userRef.set(
                         hashMapOf(
@@ -123,17 +127,18 @@ object Player  {
     }
 
     fun syncModel(){
-        userRef.update("stamina", stamina)
+        userRef.update("stamina", stamina.value)
     }
 
     // TODO: boost stamina by distance
 
     suspend fun timeToStamin(){
-        while (update && stamina < MAX_STAMINA){
+
+        while (update && stamina.value?.compareTo(MAX_STAMINA) == -1){
             delay(INTERVAL)
 
-            stamina++
-            data.value = stamina
+            stamina.value = (stamina?.value)?.plus(1L)
+
         }
     }
 
