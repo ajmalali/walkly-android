@@ -32,6 +32,7 @@ import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.models.Enemy.Companion.generateRandomEnemies
+import com.walkly.walkly.models.Player
 import com.walkly.walkly.offlineBattle.OfflineBattle
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_map.*
@@ -62,7 +63,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as MainActivity).stamina.observe(this, Observer {
+        Player.level.observe(this, Observer {
+            user_level.text = "LEVEL $it"
+        })
+
+        progressBar2.progress = Player.getProgress()
+
+        Player.stamina.observe(this, Observer {
             Log.d("stamina from map2", it.toString())
 
             if(it >= 300){

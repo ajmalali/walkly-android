@@ -13,7 +13,7 @@ import kotlin.math.floor
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
-class Player (data: MutableLiveData<Long>) {
+object Player  {
 
     // the difference between levels in points
     private val LEVEL_INCREMENT = 150
@@ -26,7 +26,7 @@ class Player (data: MutableLiveData<Long>) {
     val equipment = MutableLiveData<Equipment>()
     val level = MutableLiveData<Long>()
 
-    private var stamina = 0L
+//    var stamina = 0L
 
     private var points = 0L
 
@@ -34,7 +34,8 @@ class Player (data: MutableLiveData<Long>) {
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
 
-    private val data = data
+    val  stamina: MutableLiveData<Long>
+
     private val INTERVAL = 36000L    // update every 36 seconds
     private val MAX_STAMINA = 300   // max of 3 stamina points
     private val POINT_REWARDS_TAG = "points & reward"
@@ -50,6 +51,10 @@ class Player (data: MutableLiveData<Long>) {
     }
 
     init {
+
+        stamina = MutableLiveData()
+        stamina.value = 0L
+
         val uid = auth.currentUser?.uid
         Log.d("uid", uid)
         userRef = firestore.collection("users").document(uid!!)
@@ -60,11 +65,11 @@ class Player (data: MutableLiveData<Long>) {
 
                 // try read users stamina from firestore
                 try {
-                    stamina = user?.get("stamina") as Long
+                    stamina.value = user?.get("stamina") as Long
                 } catch (tce: kotlin.TypeCastException) {
                     // does not have stamina
                     // set it to 0
-                    stamina = 0L
+                    stamina.value = 0L
                     // create new field for stamina
                     userRef.set(
                         hashMapOf(
@@ -101,8 +106,8 @@ class Player (data: MutableLiveData<Long>) {
                     )
                 }
 
-                val equipmentId = user?.get("equipment") as String
-                equipment.value = Equipment(equipmentId)
+//                val equipmentId = user?.get("equipment") as String
+//                equipment.value = Equipment(equipmentId)
 
 
             }
@@ -122,17 +127,18 @@ class Player (data: MutableLiveData<Long>) {
     }
 
     fun syncModel(){
-        userRef.update("stamina", stamina)
+        userRef.update("stamina", stamina.value)
     }
 
     // TODO: boost stamina by distance
 
     suspend fun timeToStamin(){
-        while (update && stamina < MAX_STAMINA){
+
+        while (update && stamina.value?.compareTo(MAX_STAMINA) == -1){
             delay(INTERVAL)
 
-            stamina++
-            data.value = stamina
+            stamina.value = (stamina?.value)?.plus(1L)
+
         }
     }
 
@@ -190,7 +196,10 @@ class Player (data: MutableLiveData<Long>) {
 
     // TODO: returns the level and the current points in the level to map
     data class Progress(val level: Long, val progress: Long)
-    fun getProgress() : Progress{
+    fun getProgress() : Int{
+
+        return 75
+
         var level = 1L
         var progress = 0L
         userRef.get()
@@ -202,7 +211,7 @@ class Player (data: MutableLiveData<Long>) {
                     progress = it.data?.get("progress") as Long
                 }
             }
-        return Progress(level, progress)
+//        return Progress(level, progress)
 
     }
 
