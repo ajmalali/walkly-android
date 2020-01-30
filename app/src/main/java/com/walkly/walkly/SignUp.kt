@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.UserProfileChangeRequest
 import kotlinx.android.synthetic.main.activity_signup.*
 
 class SignUp : AppCompatActivity(), View.OnClickListener  {
@@ -48,8 +49,22 @@ class SignUp : AppCompatActivity(), View.OnClickListener  {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "createUserWithEmail:success")
+
+                    // set profile name
+                    val update = UserProfileChangeRequest.Builder()
+                        .setDisplayName(fieldName.text.toString())
+                        .setPhotoUri(null)
+                        .build()
+
                     val user = auth.currentUser
+
+                    user?.updateProfile(update)
+                        ?.addOnSuccessListener {
+                            Log.i(TAG, "user name was updated")
+                        }
+
                     updateUI(user)
+
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "createUserWithEmail:failure", task.exception)
