@@ -1,18 +1,19 @@
-package com.walkly.walkly
+package com.walkly.walkly.auth
 
 import android.content.Intent
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.UserProfileChangeRequest
-import kotlinx.android.synthetic.main.activity_signup.*
+import com.walkly.walkly.MainActivity
+import com.walkly.walkly.R
+import kotlinx.android.synthetic.main.activity_login.*
 
-class SignUp : AppCompatActivity(), View.OnClickListener  {
+class LoginActivity : AppCompatActivity(), View.OnClickListener  {
 
     // [START declare_auth]
     private lateinit var auth: FirebaseAuth
@@ -23,12 +24,19 @@ class SignUp : AppCompatActivity(), View.OnClickListener  {
 
         supportActionBar?.hide()
 
-        setContentView(R.layout.activity_signup)
-        emailCreateAccountButton.setOnClickListener(this)
-        auth = FirebaseAuth.getInstance()
+        setContentView(R.layout.activity_login)
 
+        // Buttons
+        emailSignInButton.setOnClickListener(this)
+        signUp.setOnClickListener(this)
+
+        // [START initialize_auth]
+        // Initialize Firebase Auth
+        auth = FirebaseAuth.getInstance()
+        // [END initialize_auth]
     }
 
+    // [START on_start_check_user]
     public override fun onStart() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
@@ -49,22 +57,8 @@ class SignUp : AppCompatActivity(), View.OnClickListener  {
                 if (task.isSuccessful) {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(TAG, "createUserWithEmail:success")
-
-                    // set profile name
-                    val update = UserProfileChangeRequest.Builder()
-                        .setDisplayName(fieldName.text.toString())
-                        .setPhotoUri(null)
-                        .build()
-
                     val user = auth.currentUser
-
-                    user?.updateProfile(update)
-                        ?.addOnSuccessListener {
-                            Log.i(TAG, "user name was updated")
-                        }
-
                     updateUI(user)
-
                 } else {
                     // If sign in fails, display a message to the user.
                     Log.w(TAG, "createUserWithEmail:failure", task.exception)
@@ -77,16 +71,36 @@ class SignUp : AppCompatActivity(), View.OnClickListener  {
         // [END create_user_with_email]
     }
 
+    private fun signIn(email: String, password: String) {
+        Log.d(TAG, "signIn:$email")
+        if (!validateForm()) {
+            return
+        }
+
+
+        // [START sign_in_with_email]
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    // Sign in success, update UI with the signed-in user's information
+                    Log.d(TAG, "signInWithEmail:success")
+                    val user = auth.currentUser
+                    updateUI(user)
+                } else {
+                    // If sign in fails, display a message to the user.
+                    Log.w(TAG, "signInWithEmail:failure", task.exception)
+                    Toast.makeText(baseContext, "Authentication failed.",
+                        Toast.LENGTH_SHORT).show()
+                    updateUI(null)
+                }
+            }
+        // [END sign_in_with_email]
+    }
+
+
+
     private fun validateForm(): Boolean {
         var valid = true
-
-        val name = fieldName.text.toString()
-        if (TextUtils.isEmpty(name)) {
-            fieldName.error = "Required."
-            valid = false
-        } else {
-            fieldName.error = null
-        }
 
         val email = fieldEmail.text.toString()
         if (TextUtils.isEmpty(email)) {
@@ -113,13 +127,21 @@ class SignUp : AppCompatActivity(), View.OnClickListener  {
             startActivity(intent)
         }
     }
+
+    private fun signUp(){
+        var intent = Intent(this, SignUpActivity::class.java)
+        startActivity(intent)
+    }
+
     override fun onClick(v: View) {
         val i = v.id
         when (i) {
-            R.id.emailCreateAccountButton -> createAccount(fieldEmail.text.toString(), fieldPassword.text.toString())
+            R.id.emailSignInButton -> signIn(fieldEmail.text.toString(), fieldPassword.text.toString())
+            R.id.signUp -> signUp()
         }
     }
+
     companion object {
-        private const val TAG = "SIGNUP"
+        private const val TAG = "LOGIN"
     }
 }

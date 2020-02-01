@@ -1,14 +1,11 @@
-package com.walkly.walkly.ui.battleactivity
+package com.walkly.walkly.offlineBattle
 
-import android.content.Context
 import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.core.content.ContextCompat
-import androidx.core.content.ContextCompat.getColor
 import androidx.recyclerview.widget.RecyclerView
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Consumable
@@ -20,7 +17,10 @@ class ConsumableAdapter(var consumableList: List<Consumable>, private val listen
         val layoutInflater = LayoutInflater.from(parent.context)
         val view: View = layoutInflater.inflate(R.layout.consumable, parent, false)
 
-        return ConsumableViewHolder(view, listener)
+        return ConsumableViewHolder(
+            view,
+            listener
+        )
     }
 
     override fun onBindViewHolder(holder: ConsumableViewHolder, position: Int) {

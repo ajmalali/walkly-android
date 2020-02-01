@@ -1,22 +1,17 @@
 package com.walkly.walkly.offlineBattle
 
 import android.app.AlertDialog
-import android.app.Dialog
 import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.Window
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
-import com.walkly.walkly.ui.battleactivity.ConsumablesBottomSheetDialog
 import kotlinx.android.synthetic.main.fragment_battle_activity.*
 
 class OfflineBattle : AppCompatActivity() {
@@ -41,7 +36,8 @@ class OfflineBattle : AppCompatActivity() {
         val bundle = intent.extras
         val enemy = Enemy(bundle.getString("enemyId"))
 
-        consumablesBottomSheetDialog = ConsumablesBottomSheetDialog(this)
+        consumablesBottomSheetDialog =
+            ConsumablesBottomSheetDialog(this)
 
 
         viewModelFactory = OfflineBattleViewModelFactory(this, enemy)

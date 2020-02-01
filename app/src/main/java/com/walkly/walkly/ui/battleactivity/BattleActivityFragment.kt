@@ -11,7 +11,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import com.walkly.walkly.R
 import com.walkly.walkly.databinding.FragmentBattleActivityBinding
-import com.walkly.walkly.repositories.ConsumablesRepository
+import com.walkly.walkly.offlineBattle.ConsumablesBottomSheetDialog
 import kotlinx.android.synthetic.main.fragment_battle_activity.*
 
 private const val TAG = "BattleActivityFragment"
