@@ -64,50 +64,24 @@ object Player  {
                 Log.d("init data", user.toString())
 
                 // try read users stamina from firestore
-                try {
+
                     stamina.value = user?.get("stamina") as Long
-                } catch (tce: kotlin.TypeCastException) {
-                    // does not have stamina
-                    // set it to 0
-                    stamina.value = 0L
-                    // create new field for stamina
-                    userRef.set(
-                        hashMapOf(
-                            "stamina" to 0L
-                        ), SetOptions.merge()
-                    )
-                }
+
 
 
                 // try to read points
-                try{
+
                     points = user?.get("points") as Long
                     Log.d(POINT_REWARDS_TAG, "init old points = " + points.toString())
-                } catch (tce: TypeCastException) {
-                    points = 0L
-                    userRef.set(
-                        hashMapOf(
-                            "points" to 0L
-                        ), SetOptions.merge()
-                    )
-                    Log.d(POINT_REWARDS_TAG, "not previous points")
-                    Log.d(POINT_REWARDS_TAG, "init points set to " + points.toString())
-                }
+
 
                 // try to read level
-                try {
-                    level.value = user?.get("level") as Long
-                } catch (tce : TypeCastException) {
-                    level.value = 1L
-                    userRef.set(
-                        hashMapOf(
-                            "level" to 1L
-                        ), SetOptions.merge()
-                    )
-                }
 
-//                val equipmentId = user?.get("equipment") as String
-//                equipment.value = Equipment(equipmentId)
+                    level.value = user?.get("level") as Long
+
+
+                val equipmentId = user?.get("equipped_weapon") as String
+                equipment.value = Equipment(equipmentId)
 
 
             }
@@ -223,23 +197,12 @@ object Player  {
         var progress = 0L
         userRef.get()
             .addOnSuccessListener {
-                try {
+
                     level = it.data?.get("level") as Long
                     progress = it.data?.get("progress") as Long
                     Log.d(POINT_REWARDS_TAG, "current level is " + level.toString())
                     Log.d(POINT_REWARDS_TAG, "current progress is " + progress.toString())
-                } catch (tce: TypeCastException) {
-                    Log.d(POINT_REWARDS_TAG, "level & progress are not set")
-                    level = 1L
-                    progress= 0L
 
-                    userRef.set(
-                        hashMapOf(
-                            "level" to level,
-                            "progress" to progress
-                        ), SetOptions.merge()
-                    )
-                }
 
                 // 150 * n(n+1)/2
 

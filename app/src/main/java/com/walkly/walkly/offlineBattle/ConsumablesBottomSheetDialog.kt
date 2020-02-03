@@ -1,4 +1,4 @@
-package com.walkly.walkly.ui.battleactivity
+package com.walkly.walkly.offlineBattle
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -7,12 +7,12 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.walkly.walkly.R
 import com.walkly.walkly.databinding.ConsumablesBottomSheetBinding
 import com.walkly.walkly.models.Consumable
+import com.walkly.walkly.offlineBattle.ConsumableAdapter
 import com.walkly.walkly.offlineBattle.OfflineBattle
 import com.walkly.walkly.offlineBattle.OfflineBattleViewModel
 
@@ -39,7 +39,10 @@ class ConsumablesBottomSheetDialog(val activity: AppCompatActivity) : BottomShee
         binding.consumableRecyclerView.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
 
-        adapter = ConsumableAdapter(consumableList, this)
+        adapter = ConsumableAdapter(
+            consumableList,
+            this
+        )
         binding.consumableRecyclerView.adapter = adapter
 
         binding.progressBar.visibility = View.VISIBLE

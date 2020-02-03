@@ -4,14 +4,13 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.google.firebase.auth.FirebaseAuth
-import com.walkly.walkly.LoginActivity
+import com.walkly.walkly.auth.LoginActivity
 import com.walkly.walkly.R
 import kotlinx.android.synthetic.main.fragment_profile.*
 

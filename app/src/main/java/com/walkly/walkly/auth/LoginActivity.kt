@@ -1,4 +1,4 @@
-package com.walkly.walkly
+package com.walkly.walkly.auth
 
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
@@ -9,6 +9,8 @@ import android.view.View
 import android.widget.Toast
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
+import com.walkly.walkly.MainActivity
+import com.walkly.walkly.R
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : AppCompatActivity(), View.OnClickListener  {
@@ -127,7 +129,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener  {
     }
 
     private fun signUp(){
-        var intent = Intent(this, SignUp::class.java)
+        var intent = Intent(this, SignUpActivity::class.java)
         startActivity(intent)
     }
 
