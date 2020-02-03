@@ -1,11 +1,9 @@
 package com.walkly.walkly.offlineBattle
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
@@ -99,27 +97,28 @@ class OfflineBattle : AppCompatActivity() {
 
         leaveBattle.setOnClickListener {
             leaveDialog.show()
+            leaveDialog.findViewById<Button>(R.id.btn_leave)
+                .setOnClickListener {
+                    endGame()
+                }
+            leaveDialog.findViewById<Button>(R.id.btn_stay)
+                .setOnClickListener {
+                    leaveDialog.dismiss()
+                }
         }
 
         loseDialog = AlertDialog.Builder(this)
-            .setView(R.layout.fragment_battle_lose)
+            .setView(R.layout.dialog_battle_lost)
             .create()
 
         leaveDialog = AlertDialog.Builder(this)
-            .setTitle("Leaving The Battle")
-            .setMessage("Are you sure? You will lose progress.")
-            .setPositiveButton("Leave", DialogInterface.OnClickListener { dialog, id ->
-                endGame()
-            })
-            .setNegativeButton("Stay", DialogInterface.OnClickListener { dialog, id ->
-                dialog.dismiss()
-            })
+            .setView(R.layout.dialog_battle_leave)
             .create()
 
         // TODO: construct dialog based real reward
 
         winDialog = AlertDialog.Builder(this)
-            .setView(R.layout.fragment_battle_win)
+            .setView(R.layout.dialog_battle_won)
             .create()
 
     }
