@@ -125,6 +125,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener  {
         if (user != null) {
             var intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
 

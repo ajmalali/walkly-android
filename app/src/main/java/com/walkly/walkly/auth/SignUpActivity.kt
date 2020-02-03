@@ -119,6 +119,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener  {
         if (user != null) {
             val intent = Intent(this, MainActivity::class.java)
             startActivity(intent)
+            finish()
         }
     }
     override fun onClick(v: View) {
