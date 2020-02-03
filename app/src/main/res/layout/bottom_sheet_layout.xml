@@ -11,7 +11,7 @@
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
     app:behavior_hideable="true"
     app:behavior_peekHeight="145dp"
-    android:background="#FFFFFF"
+    android:background="#DDDDDD"
     >
 
     <LinearLayout
@@ -62,8 +62,8 @@
             android:layout_width="match_parent"
             android:gravity="center"
             android:layout_height="wrap_content"
-            android:paddingTop="2dp"
-            android:paddingBottom="2dp"
+            android:paddingTop="4dp"
+            android:paddingBottom="4dp"
             android:text="Join" />
 
     </LinearLayout>

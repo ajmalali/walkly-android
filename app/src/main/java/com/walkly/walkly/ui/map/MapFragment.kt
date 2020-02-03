@@ -3,6 +3,7 @@ package com.walkly.walkly.ui.map
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import com.bumptech.glide.load.resource.drawable.DrawableResource
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
@@ -68,8 +70,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
 
         progressBar2.progress = Player.getProgress()
 
+        val btn_bg = join_button.background
+
         Player.stamina.observe(this, Observer {
             Log.d("stamina from map2", it.toString())
+
+            join_button.isClickable = true
+            join_button.background.alpha = 255
 
             if(it >= 300){
                 //3 balls
@@ -94,6 +101,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                 stamina1full.visibility = View.INVISIBLE
                 stamina2full.visibility = View.INVISIBLE
                 stamina3full.visibility = View.INVISIBLE
+
+                // player cannot join a battle
+                join_button.isClickable = false
+                join_button.background.alpha = 100
             }
 
         })
