@@ -226,4 +226,9 @@ object Player  {
                 Log.d(POINT_REWARDS_TAG, "points updated to " + points.toString())
             }
     }
+
+    fun joinedBattle(){
+        stamina.value = stamina.value?.minus(100L)
+        syncModel()
+    }
 }

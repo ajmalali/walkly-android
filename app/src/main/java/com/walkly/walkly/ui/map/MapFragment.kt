@@ -28,7 +28,6 @@ import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.plugins.annotation.Symbol
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
-import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.models.Enemy.Companion.generateRandomEnemies
@@ -106,6 +105,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         mapView?.getMapAsync(this)
         join_button.setOnClickListener {
 //            view.findNavController().navigate(R.id.action_navigation_map_to_Battle_Activity_Fragment)
+
+            // decreasing energy on battle join
+            Player.joinedBattle()
+
             val intent = Intent(activity, OfflineBattle::class.java)
             val bundle = Bundle()
             bundle.putString("enemyId", enemies.random().id.value)
