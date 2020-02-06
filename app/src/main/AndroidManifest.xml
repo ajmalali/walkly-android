@@ -17,15 +17,18 @@
 
         </activity>
         <activity
-            android:parentActivityName=".LoginActivity"
-            android:name=".SignUp" />
+            android:parentActivityName=".auth.LoginActivity"
+            android:name=".auth.SignUpActivity" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".auth.LoginActivity"
             android:label="@string/app_name">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity android:name=".offlineBattle.OfflineBattle">
+
         </activity>
 
 

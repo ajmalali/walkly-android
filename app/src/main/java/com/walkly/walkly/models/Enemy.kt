@@ -8,6 +8,7 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings
 
 class Enemy(id: String) {
 
+    val id = MutableLiveData<String>()
     val name = MutableLiveData<String>()
     val image = MutableLiveData<String>()
     val HP = MutableLiveData<Long>()
@@ -27,6 +28,7 @@ class Enemy(id: String) {
         val enemyRef = firestore.collection("enemies").document(id)
         enemyRef.get()
             .addOnSuccessListener {
+                this.id.value = id
                 name.value = it.data?.get("name") as String
                 image.value = it.data?.get("image") as String
                 HP.value = it.data?.get("health") as Long

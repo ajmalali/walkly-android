@@ -1,20 +1,18 @@
 package com.walkly.walkly.ui.map
 
+
 import android.annotation.SuppressLint
-import android.graphics.BitmapFactory
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
-import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.navigation.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
@@ -34,9 +32,10 @@ import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.models.Enemy.Companion.generateRandomEnemies
+import com.walkly.walkly.models.Player
+import com.walkly.walkly.offlineBattle.OfflineBattle
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_map.*
-import java.net.URL
 import kotlin.random.Random
 
 class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
@@ -64,7 +63,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        (activity as MainActivity).stamina.observe(this, Observer {
+        Player.level.observe(this, Observer {
+            user_level.text = "LEVEL $it"
+        })
+
+        progressBar2.progress = Player.getProgress()
+
+        Player.stamina.observe(this, Observer {
             Log.d("stamina from map2", it.toString())
 
             if(it >= 300){
@@ -99,8 +104,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_HIDDEN
         mapView?.onCreate(savedInstanceState)
         mapView?.getMapAsync(this)
-        button2.setOnClickListener {
-            view.findNavController().navigate(R.id.action_navigation_map_to_Battle_Activity_Fragment)
+        join_button.setOnClickListener {
+//            view.findNavController().navigate(R.id.action_navigation_map_to_Battle_Activity_Fragment)
+            val intent = Intent(activity, OfflineBattle::class.java)
+            val bundle = Bundle()
+            bundle.putString("enemyId", enemies.random().id.value)
+            intent.putExtras(bundle)
+            startActivity(intent)
+            activity?.finish()
         }
     }
     override fun onMapReady(mapboxMap: MapboxMap) {
@@ -182,6 +193,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
             }
 
 
+
+
             symbolManager?.addClickListener { symbol ->
                 //for each battle icon on screen
                 //if symbol.LatLng == Battles[i].LatLng
@@ -198,7 +211,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                 })
 
                 //TODO: img here
-                //bottom_sheet_imageView.setImageDrawable(ContextCompat.getDrawable(activity!!.applicationContext, android.R.drawable.ic_)
+                /*var image = ContextCompat.getDrawable(activity!!.applicationContext, R.drawable.zen)
+                bottom_sheet_imageView.setImageDrawable(image)*/
 
                 BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_COLLAPSED
                 //Get the battle name from Battles[i] and set this variable to it

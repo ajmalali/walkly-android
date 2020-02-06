@@ -31,6 +31,19 @@
         android:background="@drawable/gradient"
         mapbox:layout_constraintTop_toTopOf="parent">
 
+        <TextView
+            android:id="@+id/user_level"
+            android:layout_width="75dp"
+            android:layout_height="wrap_content"
+            mapbox:layout_constraintStart_toStartOf="parent"
+            mapbox:layout_constraintEnd_toStartOf="@id/progressBar2"
+            mapbox:layout_constraintTop_toTopOf="@id/progressBar2"
+            android:text="LEVEL 1"
+            android:layout_marginLeft="16dp"
+            android:textColor="#FFFFFF"
+            android:textStyle="bold"
+            />
+
         <ProgressBar
             android:id="@+id/progressBar2"
             style="?android:attr/progressBarStyleHorizontal"
@@ -46,7 +59,9 @@
             mapbox:layout_constraintTop_toTopOf="parent"
             mapbox:layout_constraintVertical_bias="0.235"
             android:backgroundTint="#00FFFEFE"
-            android:progressDrawable="@drawable/levelbar" />
+            android:progressDrawable="@drawable/levelbar"
+            android:layout_marginLeft="16dp"
+            />
 
         <ImageView
             android:id="@+id/stamina1full"

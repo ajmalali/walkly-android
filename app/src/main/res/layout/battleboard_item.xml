@@ -8,6 +8,7 @@
     android:layout_gravity="center"
     android:layout_weight="1"
     android:gravity="center"
+    android:textAlignment="center"
     android:textColor="@drawable/list_text_selector"
     android:textSize="16sp"
     android:layout_marginBottom="20dp"

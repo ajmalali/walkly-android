@@ -33,16 +33,15 @@ class BattlesFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         var battlesList = arrayOf(
-            "One",
-            "Two",
-            "Three",
-            "Four",
-            "Five"
+            "Battle 1                    Abduallah                3/4 Players",
+            "Battle 2                    Ahmad                    1/4 Players",
+            "Battle 3                    Omar                     2/4 Players",
+            "Battle 4                    Abduallah                1/4 Players",
+            "Battle 5                    Mohammed                 4/4 Players"
         )
         var questsList = arrayOf(
-            "One",
-            "Two",
-            "Three"
+            "Walk 200 Steps                           138/200Steps",
+            "Win 10 Battles                           4/10 Battles"
         )
 
         var battleAdapter = ArrayAdapter (activity, R.layout.battleboard_item, R.id.label, battlesList)
