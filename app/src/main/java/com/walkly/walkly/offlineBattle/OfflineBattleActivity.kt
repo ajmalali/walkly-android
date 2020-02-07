@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide
 import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
+import com.walkly.walkly.models.Player
 import kotlinx.android.synthetic.main.fragment_battle_activity.*
 
 class OfflineBattle : AppCompatActivity() {
@@ -74,6 +75,7 @@ class OfflineBattle : AppCompatActivity() {
         viewModel.enemyHP.observe(this, Observer {
             enemy_health_bar.progress = it.toInt()
             if (it <= 0) {
+                enemy.level.value?.toInt()?.let { it1 -> Player.updatePoints(it1) }
                 winDialog.show()
                 winDialog.findViewById<Button>(R.id.btn_collect)
                     .setOnClickListener {

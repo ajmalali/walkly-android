@@ -68,7 +68,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
             user_level.text = "LEVEL $it"
         })
 
-        progressBar2.progress = Player.getProgress()
+        Player.progress.observe(this, Observer {
+            progressBar2.progress = it.toInt()
+        })
+
 
         val btn_bg = join_button.background
 
