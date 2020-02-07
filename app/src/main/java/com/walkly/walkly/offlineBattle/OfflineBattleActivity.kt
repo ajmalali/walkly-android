@@ -1,10 +1,10 @@
 package com.walkly.walkly.offlineBattle
 
 import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
@@ -64,6 +64,10 @@ class OfflineBattle : AppCompatActivity() {
             player_health_bar.progress = it.toInt()
             if (it <= 0) {
                 loseDialog.show()
+                loseDialog.findViewById<Button>(R.id.button1)
+                    .setOnClickListener {
+                        endGame()
+                    }
             }
         })
 
@@ -71,6 +75,10 @@ class OfflineBattle : AppCompatActivity() {
             enemy_health_bar.progress = it.toInt()
             if (it <= 0) {
                 winDialog.show()
+                winDialog.findViewById<Button>(R.id.btn_collect)
+                    .setOnClickListener {
+                        endGame()
+                    }
             }
         })
 
@@ -89,34 +97,30 @@ class OfflineBattle : AppCompatActivity() {
 
         leaveBattle.setOnClickListener {
             leaveDialog.show()
+            leaveDialog.findViewById<Button>(R.id.btn_leave)
+                .setOnClickListener {
+                    endGame()
+                }
+            leaveDialog.findViewById<Button>(R.id.btn_stay)
+                .setOnClickListener {
+                    leaveDialog.dismiss()
+                }
         }
 
         loseDialog = AlertDialog.Builder(this)
-            .setTitle("Game Over")
-            .setMessage("you lost the game")
-            .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, id ->
-                endGame()
-            })
+            .setView(R.layout.dialog_battle_lost)
             .create()
 
         leaveDialog = AlertDialog.Builder(this)
-            .setTitle("Leaving The Battle")
-            .setMessage("Are you sure? You will lose progress.")
-            .setPositiveButton("Leave", DialogInterface.OnClickListener { dialog, id ->
-                endGame()
-            })
-            .setNegativeButton("Stay", DialogInterface.OnClickListener { dialog, id ->
-                dialog.dismiss()
-            })
+            .setView(R.layout.dialog_battle_leave)
             .create()
 
+        // TODO: construct dialog based real reward
+
         winDialog = AlertDialog.Builder(this)
-            .setTitle("You Won!!")
-            .setMessage("congrats you won the battle")
-            .setPositiveButton("OK", DialogInterface.OnClickListener { dialog, id ->
-                endGame()
-            })
+            .setView(R.layout.dialog_battle_won)
             .create()
+
     }
 
     fun endGame() {

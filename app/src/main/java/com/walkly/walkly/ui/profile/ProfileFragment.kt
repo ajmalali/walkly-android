@@ -65,7 +65,7 @@ class ProfileFragment : Fragment(), View.OnClickListener {
 
         var intent = Intent(activity, LoginActivity::class.java)
         startActivity(intent)
-
+        activity?.finish()
     }
 
 }

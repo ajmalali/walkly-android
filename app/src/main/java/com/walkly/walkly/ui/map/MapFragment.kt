@@ -3,6 +3,7 @@ package com.walkly.walkly.ui.map
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -13,6 +14,7 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import com.bumptech.glide.load.resource.drawable.DrawableResource
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
@@ -28,7 +30,6 @@ import com.mapbox.mapboxsdk.maps.Style
 import com.mapbox.mapboxsdk.plugins.annotation.Symbol
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
-import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.models.Enemy.Companion.generateRandomEnemies
@@ -69,8 +70,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
 
         progressBar2.progress = Player.getProgress()
 
+        val btn_bg = join_button.background
+
         Player.stamina.observe(this, Observer {
             Log.d("stamina from map2", it.toString())
+
+            join_button.isClickable = true
+            join_button.background.alpha = 255
 
             if(it >= 300){
                 //3 balls
@@ -95,6 +101,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                 stamina1full.visibility = View.INVISIBLE
                 stamina2full.visibility = View.INVISIBLE
                 stamina3full.visibility = View.INVISIBLE
+
+                // player cannot join a battle
+                join_button.isClickable = false
+                join_button.background.alpha = 100
             }
 
         })
@@ -106,6 +116,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         mapView?.getMapAsync(this)
         join_button.setOnClickListener {
 //            view.findNavController().navigate(R.id.action_navigation_map_to_Battle_Activity_Fragment)
+
+            // decreasing energy on battle join
+            Player.joinedBattle()
+
             val intent = Intent(activity, OfflineBattle::class.java)
             val bundle = Bundle()
             bundle.putString("enemyId", enemies.random().id.value)
