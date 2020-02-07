@@ -6,12 +6,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
-import com.google.firebase.firestore.SetOptions
 import kotlinx.coroutines.*
 import kotlin.math.ceil
 import kotlin.math.floor
-import kotlin.math.roundToInt
-import kotlin.random.Random
 
 object Player  {
 
@@ -25,6 +22,8 @@ object Player  {
     var userRef: DocumentReference
     val equipment = MutableLiveData<Equipment>()
     val level = MutableLiveData<Long>()
+    val stamina = MutableLiveData<Long>()
+    val progress = MutableLiveData<Long>()
 
 //    var stamina = 0L
 
@@ -34,7 +33,7 @@ object Player  {
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
 
-    val  stamina: MutableLiveData<Long>
+
 
     private val INTERVAL = 36000L    // update every 36 seconds
     private val MAX_STAMINA = 300   // max of 3 stamina points
@@ -52,42 +51,33 @@ object Player  {
 
     init {
 
-        stamina = MutableLiveData()
         stamina.value = 0L
+        progress.value = 0L
 
         val uid = auth.currentUser?.uid
         Log.d("uid", uid)
         userRef = firestore.collection("users").document(uid!!)
-        userRef.get()
-            .addOnSuccessListener {
-                user = it.data
-                Log.d("init data", user.toString())
 
-                // try read users stamina from firestore
+        userRef.addSnapshotListener { snapshot, exception ->
 
-                    stamina.value = user?.get("stamina") as Long
-
-
-
-                // try to read points
-
-                    points = user?.get("points") as Long
-                    Log.d(POINT_REWARDS_TAG, "init old points = " + points.toString())
-
-
-                // try to read level
-
-                    level.value = user?.get("level") as Long
-
-
-                val equipmentId = user?.get("equipped_weapon") as String
-                equipment.value = Equipment(equipmentId)
-
-
+            if (exception != null){
+                Log.e("Player", "listening exception", exception)
+                return@addSnapshotListener
             }
-            .addOnFailureListener {
-                Log.e("init","firestore read", it)
+
+            if (snapshot != null && snapshot.exists()) {
+
+                stamina.value = snapshot.data?.get("stamina") as Long
+                level.value = snapshot.data?.get("level") as Long
+                progress.value = snapshot.data?.get("progress") as Long
+                points = snapshot.data?.get("points") as Long
+                equipment.value = Equipment(snapshot.data?.get("equipped_weapon") as String)
+
+            } else {
+                Log.d("Player", "listener data is null")
             }
+
+        }
     }
 
     fun stopStaminaUpdates() {
@@ -104,7 +94,6 @@ object Player  {
         userRef.update("stamina", stamina.value)
     }
 
-    // TODO: boost stamina by distance
 
     suspend fun timeToStamin(){
 
@@ -125,9 +114,9 @@ object Player  {
 
         // increment players points
         Log.d(POINT_REWARDS_TAG, "old points = " + points.toString())
-        points = enemyLevel * ENEMY_LEVEL_POINTS
+        val points = enemyLevel * ENEMY_LEVEL_POINTS
         Log.d(POINT_REWARDS_TAG, "new points = " + points.toString())
-        calculateProgress(points)
+        //updatePoints(points)
 
 
         val rand = java.util.Random()
@@ -168,63 +157,30 @@ object Player  {
         return item
     }
 
-    // TODO: returns the level and the current points in the level to map
-    data class Progress(val level: Long, val progress: Long)
-    fun getProgress() : Int{
 
-        return 75
-
-        var level = 1L
-        var progress = 0L
-        userRef.get()
-            .addOnSuccessListener {
-                if (it.data?.get("points") == 0)
-                    return@addOnSuccessListener
-                else {
-                    level = it.data?.get("level") as Long
-                    progress = it.data?.get("progress") as Long
-                }
-            }
-//        return Progress(level, progress)
-
-    }
 
     // TODO: calculate progress form points
     // to save computation time calculate it and store it every time points change
-    fun calculateProgress(points: Long){
-
-        var level  = 1L
-        var progress = 0L
-        userRef.get()
-            .addOnSuccessListener {
-
-                    level = it.data?.get("level") as Long
-                    progress = it.data?.get("progress") as Long
-                    Log.d(POINT_REWARDS_TAG, "current level is " + level.toString())
-                    Log.d(POINT_REWARDS_TAG, "current progress is " + progress.toString())
+    fun updatePoints(enemyLevel: Int){
 
 
-                // 150 * n(n+1)/2
+        val level: Long
+        val progress: Long
+        val sumPoints = this.points + enemyLevel * ENEMY_LEVEL_POINTS
 
-                // NOTE: progress is points - previous level * 150 it is not percentage
-                if ((this.points + points) >= level * (level + 1) / 2 * LEVEL_INCREMENT){
-                    progress = (this.points + points) - (level * (level + 1) / 2 * LEVEL_INCREMENT)
-                    level++
-                } else {
-                    progress += points
-                }
+        level = floor(sumPoints / 150.0 + 1).toLong()
+        progress = sumPoints - (level - 1) * 150
 
 
+        userRef.update(
+            hashMapOf(
+                "level" to level,
+                "progress" to progress,
+                "points" to sumPoints
+            ) as Map<String, Any>
+        )
 
-                userRef.update("level", level)
-                userRef.update("progress", progress)
 
-                Log.d(POINT_REWARDS_TAG, "saved level to " + level.toString())
-                Log.d(POINT_REWARDS_TAG, "saved progress to " + progress.toString())
-
-                userRef.update("points", (this.points + points))
-                Log.d(POINT_REWARDS_TAG, "points updated to " + points.toString())
-            }
     }
 
     fun joinedBattle(){
