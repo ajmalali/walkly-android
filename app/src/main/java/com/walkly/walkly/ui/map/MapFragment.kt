@@ -14,8 +14,10 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableResource
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.gson.JsonObject
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
 import com.mapbox.mapboxsdk.Mapbox
@@ -117,19 +119,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_HIDDEN
         mapView?.onCreate(savedInstanceState)
         mapView?.getMapAsync(this)
-        join_button.setOnClickListener {
-//            view.findNavController().navigate(R.id.action_navigation_map_to_Battle_Activity_Fragment)
-
-            // decreasing energy on battle join
-            Player.joinedBattle()
-
-            val intent = Intent(activity, OfflineBattle::class.java)
-            val bundle = Bundle()
-            bundle.putString("enemyId", enemies.random().id.value)
-            intent.putExtras(bundle)
-            startActivity(intent)
-            activity?.finish()
-        }
     }
     override fun onMapReady(mapboxMap: MapboxMap) {
         enemies = generateRandomEnemies()
@@ -146,50 +135,41 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
             val symbolManager = SymbolManager(mapView, mapboxMap, it)
             camera = mapboxMap.cameraPosition.target
 
-            //this is where to generate icons
-//            //TODO: create a function to automate the process
-//            //TODO: find a way to use custom icons in the API
-//            //TODO: how to link the icon with the battle instance?
-//            symbol1 = symbolManager.create(
-//                SymbolOptions()
-//                .withLatLng(LatLng(camera.latitude+0.001, camera.longitude+0.001))
-//                .withIconImage("zoo-15")
-//                .withIconSize(2.5f))
-//
-//            symbol2 = symbolManager.create(SymbolOptions()
-//                .withLatLng(LatLng(camera.latitude+0.0010, camera.longitude))
-//                .withIconImage("fire-station-15")
-//                .withIconSize(2.5f))
-//
-//            symbol3 = symbolManager.create(SymbolOptions()
-//                .withLatLng(LatLng(camera.latitude, camera.longitude+0.001))
-//                .withIconImage("rocket-15")
-//                .withIconSize(2.5f))
-
-
-
             mapboxMap.addOnCameraMoveListener {
                 Log.d("mapchange:", "onCameraMove")
                 symbolManager.deleteAll()
                 camera = mapboxMap.cameraPosition.target
                 //TODO: create a function to automate the process
                 //TODO: find a way to use custom icons in the API
-                //TODO: how to link the icon with the battle instance?
+                var enemy_1_json = JsonObject()
+                enemy_1_json.addProperty("num",0)
+                var enemy_2_json = JsonObject()
+                enemy_2_json.addProperty("num",1)
+                var enemy_3_json = JsonObject()
+                enemy_3_json.addProperty("num",2)
+                var latRandom = Random.nextDouble(-2.0, 2.0)/1000
+                var lonRandom = Random.nextDouble(-2.0, 2.0)/1000
                 symbol1 = symbolManager.create(
                     SymbolOptions()
-                        .withLatLng(LatLng(camera.latitude+0.001, camera.longitude+0.001))
+                        .withData(enemy_1_json)
+                        .withLatLng(LatLng(camera.latitude+ latRandom, camera.longitude+lonRandom))
                         .withIconImage("zoo-15")
                         .withIconSize(2.5f))
 
-                symbol2 = symbolManager.create(SymbolOptions()
-                    .withLatLng(LatLng(camera.latitude+0.0010, camera.longitude))
-                    .withIconImage("fire-station-15")
-                    .withIconSize(2.5f))
 
-                symbol3 = symbolManager.create(SymbolOptions()
-                    .withLatLng(LatLng(camera.latitude, camera.longitude+0.001))
-                    .withIconImage("rocket-15")
-                    .withIconSize(2.5f))
+                symbol2 = symbolManager.create(
+                    SymbolOptions()
+                        .withData(enemy_2_json)
+                        .withLatLng(LatLng(camera.latitude+latRandom, camera.longitude))
+                        .withIconImage("fire-station-15")
+                        .withIconSize(2.5f))
+
+                symbol3 = symbolManager.create(
+                    SymbolOptions()
+                        .withData(enemy_3_json)
+                        .withLatLng(LatLng(camera.latitude, camera.longitude+lonRandom))
+                        .withIconImage("rocket-15")
+                        .withIconSize(2.5f))
                 Log.d("mapchange:", camera.toString())
 
 
@@ -205,18 +185,23 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                 enemies[0].name.observe(this, Observer {
                     Log.d("enmy:", it.toString())
                 })
-
-
             }
 
 
-
-
             symbolManager?.addClickListener { symbol ->
-                //for each battle icon on screen
-                //if symbol.LatLng == Battles[i].LatLng
-                //display dialogue box with battle details and prompt the user to start battle
-                var curen = enemies[Random.nextInt(0,2)]
+                var enemy_num = symbol.data!!.asJsonObject.get("num").asInt
+                var curen = enemies[enemy_num]
+                join_button.setOnClickListener {
+
+                    // decreasing energy on battle join
+                    Player.joinedBattle()
+                    val intent = Intent(activity, OfflineBattle::class.java)
+                    val bundle = Bundle()
+                    bundle.putString("enemyId", curen.id.value)
+                    intent.putExtras(bundle)
+                    startActivity(intent)
+                    activity?.finish()
+                }
                 curen.name.observe(this, Observer {
                     bottom_sheet_text.setText(it.toString())
                 })
@@ -227,9 +212,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                     bottom_sheet_health.setText("HP: "+it.toString())
                 })
 
-                //TODO: img here
-                /*var image = ContextCompat.getDrawable(activity!!.applicationContext, R.drawable.zen)
-                bottom_sheet_imageView.setImageDrawable(image)*/
+                curen.image.observe(this, Observer{
+                    Glide.with(this)
+                        .load(it)
+                        .into(bossgif)
+                })
 
                 BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_COLLAPSED
                 //Get the battle name from Battles[i] and set this variable to it

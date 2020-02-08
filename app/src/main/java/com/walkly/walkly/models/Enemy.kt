@@ -5,9 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 
+private val settings = FirebaseFirestoreSettings.Builder()
+    .setPersistenceEnabled(true)
+    .build()
+private val firestore = FirebaseFirestore.getInstance().also {
+    it.firestoreSettings = settings
+}
 
 class Enemy(id: String) {
-
     val id = MutableLiveData<String>()
     val name = MutableLiveData<String>()
     val image = MutableLiveData<String>()
@@ -15,14 +20,6 @@ class Enemy(id: String) {
     val damage = MutableLiveData<Long>()
     val level = MutableLiveData<Long>()
 
-    private lateinit var location: Location
-
-    private val settings = FirebaseFirestoreSettings.Builder()
-        .setPersistenceEnabled(true)
-        .build()
-    private val firestore = FirebaseFirestore.getInstance().also {
-        it.firestoreSettings = settings
-    }
 
     init{
         val enemyRef = firestore.collection("enemies").document(id)
