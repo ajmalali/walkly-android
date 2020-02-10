@@ -3,6 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="#ddd">
 
     <!--  header  -->
@@ -31,6 +32,7 @@
         />
 
     <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/et_search"
         android:layout_width="match_parent"
         android:layout_height="40dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -42,5 +44,18 @@
         />
 
     <!--  list  -->
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/list_friends"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_search"
+        app:layout_constraintBottom_toBottomOf="parent"
+
+        tools:listitem="@layout/list_friend"
+        />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
