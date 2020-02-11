@@ -23,8 +23,7 @@
         <pl.droidsonroids.gif.GifImageView
             android:id="@+id/bossgif"
             android:layout_width="150dp"
-            android:layout_height="115dp"
-            android:src="@drawable/boss1" />
+            android:layout_height="115dp" />
 
     </LinearLayout>
     <LinearLayout

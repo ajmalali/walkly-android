@@ -121,16 +121,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         mapView?.getMapAsync(this)
     }
     override fun onMapReady(mapboxMap: MapboxMap) {
-        enemies = generateRandomEnemies()
+        enemies = generateRandomEnemies(Player.level.value!!)
         this.mapboxMap = mapboxMap
         mapboxMap.uiSettings.isLogoEnabled = false
         mapboxMap.uiSettings.isZoomGesturesEnabled = false
         mapboxMap.uiSettings.isQuickZoomGesturesEnabled = false
         mapboxMap.uiSettings.isScrollGesturesEnabled = false
-        //mapboxMap.uiSettings.is
         mapboxMap.setStyle(Style.Builder().fromUri("mapbox://styles/mapbox/cjerxnqt3cgvp2rmyuxbeqme7"))
         {
-            // Map is set up and the style has loaded. Now you can add data or make other map adjustments
             enableLocationComponent(it)
             val symbolManager = SymbolManager(mapView, mapboxMap, it)
             camera = mapboxMap.cameraPosition.target
@@ -147,8 +145,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                 enemy_2_json.addProperty("num",1)
                 var enemy_3_json = JsonObject()
                 enemy_3_json.addProperty("num",2)
-                var latRandom = Random.nextDouble(-2.0, 2.0)/1000
-                var lonRandom = Random.nextDouble(-2.0, 2.0)/1000
+                var latRandom = Random.nextDouble(-1.0, 1.0)/1000
+                var lonRandom = Random.nextDouble(-1.0, 1.0)/1000
                 symbol1 = symbolManager.create(
                     SymbolOptions()
                         .withData(enemy_1_json)
@@ -180,14 +178,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
 
             }
 
-            mapboxMap.addOnCameraIdleListener {
-                Log.d("idle:", "idle")
-                enemies[0].name.observe(this, Observer {
-                    Log.d("enmy:", it.toString())
-                })
-            }
-
-
             symbolManager?.addClickListener { symbol ->
                 var enemy_num = symbol.data!!.asJsonObject.get("num").asInt
                 var curen = enemies[enemy_num]
@@ -198,6 +188,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                     val intent = Intent(activity, OfflineBattle::class.java)
                     val bundle = Bundle()
                     bundle.putString("enemyId", curen.id.value)
+                    bundle.putLong("enemyHP", curen.HP.value!!)
+                    bundle.putLong("enemyDmg", curen.damage.value!!)
+                    bundle.putString("enemyLvl", curen.level.value.toString())
                     intent.putExtras(bundle)
                     startActivity(intent)
                     activity?.finish()
@@ -212,10 +205,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                     bottom_sheet_health.setText("HP: "+it.toString())
                 })
 
+                curen.id.observe(this, Observer {
+                    val imagename = "boss" + it
+                    bossgif.setImageResource(resources.getIdentifier(imagename,"drawable",  activity?.packageName))
+                })
+
                 curen.image.observe(this, Observer{
-                    Glide.with(this)
-                        .load(it)
-                        .into(bossgif)
+//                  TODO: there's a weird bug, simply passing the image name from the databse doesn't work, current fix is concatinating the enemy's id with its ID as seen in the preceding code block
+//                  bossgif.setImageResource(resources.getIdentifier(it.toString(),"drawable",  activity?.packageName))
+
                 })
 
                 BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_COLLAPSED
