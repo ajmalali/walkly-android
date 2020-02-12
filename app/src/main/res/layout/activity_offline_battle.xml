@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <!--  header  -->
+
+    <View
+        android:id="@+id/rect_player"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/gradient_left_to_right"
+        app:layout_constraintHeight_percent="0.25"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <ImageView
+        android:id="@+id/img_player_avatar"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/rect_player"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="16dp"
+        tools:srcCompat="@tools:sample/avatars"
+        />
+
+    <ImageView
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/rect_player"
+        tools:srcCompat="@tools:sample/avatars"
+        />
+
+    <View
+        android:id="@+id/rect_enemy"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:background="@drawable/gradient_purlpe_left_to_right"
+        app:layout_constraintHeight_percent="0.25"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rect_player"
+        />
+
+    <ImageView
+        android:id="@+id/img_enemy_avatar"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/rect_enemy"
+        android:layout_marginTop="16dp"
+        android:layout_marginRight="16dp"
+        tools:srcCompat="@tools:sample/avatars"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rect_player"
+        app:layout_constraintBottom_toTopOf="@id/rect_enemy"
+        android:textSize="70sp"
+        android:textColor="#fff"
+        android:text="VS"
+        />
+
+    <!--  battle info  -->
+
+    <TextView
+        android:id="@+id/tv_enemy_hp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/bar_enemy_hp"
+        app:layout_constraintTop_toBottomOf="@id/rect_enemy"
+        android:layout_marginTop="60dp"
+        android:textColor="@color/buttonPrimary"
+        android:textStyle="bold"
+        android:text="Enemy HP"
+        />
+
+    <ProgressBar
+        android:id="@+id/bar_enemy_hp"
+        android:layout_width="272dp"
+        android:layout_height="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_enemy_hp"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:progressDrawable="@drawable/progress_bar_gradient_purple"
+        tools:progress="75"
+        android:max="100"
+        />
+
+    <TextView
+        android:id="@+id/tv_player_hp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/bar_enemy_hp"
+        app:layout_constraintTop_toBottomOf="@id/bar_enemy_hp"
+        android:layout_marginTop="12dp"
+        android:textColor="@color/buttonPrimary"
+        android:textStyle="bold"
+        android:text="Player HP"
+        />
+
+    <ProgressBar
+        android:id="@+id/bar_player_hp"
+        android:layout_width="272dp"
+        android:layout_height="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_player_hp"
+        style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        android:progressDrawable="@drawable/progress_bar_gradient_orange"
+        tools:progress="50"
+        android:max="100"
+        />
+
+    <TextView
+        android:id="@+id/tv_steps_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bar_player_hp"
+        android:layout_marginTop="32dp"
+        android:textStyle="bold"
+        android:textColor="#FF6577"
+        android:text="Number of Steps"
+        />
+
+    <TextView
+        android:id="@+id/tv_no_of_steps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_steps_label"
+        android:layout_marginTop="8dp"
+        android:textStyle="bold"
+        android:textColor="#FF9067"
+        android:text="500 / 1000"
+        />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:paddingHorizontal="32dp"
+        android:paddingVertical="8dp"
+        android:layout_marginBottom="64dp"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        android:text="Use Item"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
