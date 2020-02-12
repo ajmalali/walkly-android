@@ -1,86 +1,148 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:background="#ddd">
 
-    <LinearLayout
-        android:layout_width="match_parent"
+    <!--  top section  -->
+
+    <TextView
+        android:id="@+id/tv_account_settings"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginRight="12dp"
+        android:layout_marginTop="32dp"
+        android:textColor="@color/list_details"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Account Settings"
+        />
+
+    <TextView
+        android:id="@+id/tv_signout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/tv_account_settings"
+        app:layout_constraintTop_toBottomOf="@id/tv_account_settings"
+        android:layout_marginRight="12dp"
+        android:textColor="@color/list_details"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Sign Out"
+        />
+
+    <ImageView
+        android:id="@+id/img_avatar"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/img_equipment"
+        app:layout_constraintTop_toBottomOf="@id/tv_username"
+        android:layout_marginTop="20dp"
+        android:layout_marginRight="36dp"
+        tools:srcCompat="@tools:sample/avatars"
+        />
+
+    <ImageView
+        android:id="@+id/img_equipment"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        app:layout_constraintStart_toEndOf="@id/img_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_username"
+        android:layout_marginTop="48dp"
+        tools:srcCompat="@tools:sample/avatars"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/img_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_equipment"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="16dp"
+        android:textColor="@color/list_details"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Change\nEquipment"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_avatar"
+        android:layout_marginTop="32dp"
+        android:textColor="@color/list_details"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Leve: 12"
+        />
+
+    <!--  middle section  -->
+
+    <TextView
+        android:id="@+id/tv_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_signout"
+        android:layout_marginTop="32dp"
+        android:textColor="@color/list_details"
+        android:textSize="28sp"
+        android:textStyle="bold"
+        android:text="Hi User!"
+        />
 
 
-        <TextView
-            android:id="@+id/welcomeString"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Hello Abdullah"
-            android:textColor="@color/common_google_signin_btn_text_dark_focused"
-            android:textSize="24sp"
-            android:textAlignment="center"
-            android:paddingTop="20dp"
-            android:paddingBottom="20dp"/>
 
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="match_parent"
-            android:layout_height="400dp"
-            app:srcCompat="@drawable/bitmoji1"
-            />
+    <!--  bottom section  -->
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
+    <TextView
+        android:id="@+id/tv_view_achievements"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_view_friends"
+        android:layout_marginLeft="36dp"
+        android:textColor="@color/list_details"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="View Achievements"
+        />
 
+    <TextView
+        android:id="@+id/tv_view_friends"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_view_leaderboard"
+        android:layout_marginLeft="36dp"
+        android:textColor="@color/list_details"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="View Friends"
+        />
 
-            <Button
-                android:id="@+id/viewLeaderboard"
-                android:layout_width="150dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:text="@string/view_leaderboard" />
+    <TextView
+        android:id="@+id/tv_view_leaderboard"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="56dp"
+        android:layout_marginLeft="36dp"
+        android:textColor="@color/list_details"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="View Leaderboard"
+        />
 
-            <Button
-                android:id="@+id/viewFriends"
-                android:layout_width="150dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:text="view friends" />
-
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal">
-
-
-            <Button
-                android:id="@+id/achievements"
-                android:layout_width="150dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:text="achievements" />
-
-            <Button
-                android:id="@+id/signOutButton"
-                android:layout_width="150dp"
-                android:layout_height="50dp"
-                android:layout_weight="1"
-                android:layout_margin="10dp"
-                android:text="@string/sign_out"
-                />
-
-
-        </LinearLayout>
-
-
-    </LinearLayout>
-
-</LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

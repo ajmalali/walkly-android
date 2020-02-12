@@ -37,22 +37,23 @@ class ProfileFragment : Fragment(), View.OnClickListener {
         val userName = auth.currentUser?.displayName
 
         if (userName != null) {
-            welcomeString.text = "Hello $userName"
+            tv_username.text = "Hello $userName"
         } else {
-            welcomeString.text = "error: could not retrieve user name"
-            welcomeString.setTextColor(Color.RED)
+            tv_username.text = "error: could not retrieve user name"
+            tv_username.setTextColor(Color.RED)
         }
 
-        signOutButton.setOnClickListener(this)
-        viewLeaderboard.setOnClickListener {
+        tv_signout.setOnClickListener(this)
+        tv_view_leaderboard.setOnClickListener {
             view.findNavController().navigate(R.id.action_navigation_home_to_leaderboardFragment)
+
         }
     }
 
     override fun onClick(v: View) {
         val i = v.id
         when (i) {
-            R.id.signOutButton -> signOut()
+            R.id.tv_signout -> signOut()
         }
     }
 
