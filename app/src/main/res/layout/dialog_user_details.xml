@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@drawable/gradient">
+
+    <!--  user details  -->
+
+    <TextView
+        android:id="@+id/tv_username"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="52dp"
+        android:textColor="#fff"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:text="User Name"
+        />
+
+    <ImageView
+        android:id="@+id/img_avatar"
+        android:layout_width="150dp"
+        android:layout_height="150dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_username"
+        android:layout_marginTop="20dp"
+        android:layout_marginLeft="56dp"
+        tools:srcCompat="@tools:sample/avatars"
+        />
+
+    <ImageView
+        android:id="@+id/img_equipment"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        app:layout_constraintStart_toEndOf="@id/img_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_username"
+        android:layout_marginTop="48dp"
+        tools:srcCompat="@tools:sample/avatars"
+        />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/img_avatar"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_equipment"
+        android:layout_marginLeft="20dp"
+        android:layout_marginTop="16dp"
+        android:textColor="#fff"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Equipment"
+        />
+
+    <TextView
+        android:id="@+id/tv_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_avatar"
+        app:layout_constraintBottom_toTopOf="@id/tv_add_friend"
+        android:layout_marginTop="32dp"
+        android:textColor="#fff"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:text="Leve: 12"
+        />
+
+    <!--  actions  -->
+
+    <TextView
+        android:id="@+id/tv_add_friend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/tv_view_achievements"
+        app:layout_constraintBottom_toTopOf="@id/tv_block"
+        android:layout_marginTop="52dp"
+        android:textColor="#fff"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:text="Add Friend"
+        />
+
+    <TextView
+        android:id="@+id/tv_block"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="@id/tv_view_achievements"
+        app:layout_constraintBottom_toTopOf="@id/tv_view_achievements"
+        android:layout_marginTop="52dp"
+        android:textColor="#fff"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:text="Block"
+        />
+
+    <TextView
+        android:id="@+id/tv_view_achievements"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="52dp"
+        android:layout_marginLeft="16dp"
+        android:textColor="#fff"
+        android:textStyle="bold"
+        android:textSize="20sp"
+        android:text="View Achievements"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
