@@ -12,6 +12,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.storage.FirebaseStorage
 import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import kotlinx.android.synthetic.main.activity_signup.*
@@ -55,18 +56,24 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener  {
                     // Sign in success, update UI with the signed-in user's information
                     Log.d(DEBUG_TAG, "createUserWithEmail:success")
 
-                    // set profile name
-                    val update = UserProfileChangeRequest.Builder()
-                        .setDisplayName(fieldName.text.toString())
-                        .setPhotoUri(null)
-                        .build()
-
                     val user = auth.currentUser
 
-                    user?.updateProfile(update)
-                        ?.addOnSuccessListener {
-                            Log.i(DEBUG_TAG, "user name was updated")
-                        }
+                    val ref = FirebaseStorage.getInstance()
+                        .getReference("avatars/avatar_default.png")
+                    ref.downloadUrl.addOnSuccessListener {
+                        Log.d(DEBUG_TAG, "uri is $it")
+                        val update = UserProfileChangeRequest.Builder()
+                            .setDisplayName(fieldName.text.toString())
+                            .setPhotoUri(null)
+                            .setPhotoUri(it)
+                            .build()
+
+                        user?.updateProfile(update)
+                            ?.addOnSuccessListener {
+                                Log.i(DEBUG_TAG, "user name was updated")
+                            }
+                    }
+
 
                     initializePlayer(user?.uid)
 
