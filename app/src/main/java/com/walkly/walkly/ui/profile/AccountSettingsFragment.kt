@@ -52,6 +52,13 @@ class AccountSettingsFragment : Fragment() {
             }
         })
 
+        viewModel.reAuthSuccess.observe(this, Observer {
+            when(it) {
+                "failure" -> Toast.makeText(this.context, "You have to enter the old password correctly", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        })
+
         return binding.root
     }
 
