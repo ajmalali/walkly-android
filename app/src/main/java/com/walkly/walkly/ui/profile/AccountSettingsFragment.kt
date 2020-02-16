@@ -25,6 +25,40 @@ class AccountSettingsFragment : Fragment() {
         viewModel = ViewModelProviders.of(this).get(AccountSettingsViewModel::class.java)
         binding.viewModel = viewModel
 
+        viewModel.userNameUpdateSuccess.observe(this, Observer {
+            when(it) {
+                "success" -> Toast.makeText(this.context, "User name has been updated", Toast.LENGTH_SHORT)
+                    .show()
+                "failure" -> Toast.makeText(this.context, "Failed to update user name", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        })
+
+        viewModel.userEmailUpdateSuccess.observe(this, Observer {
+            when(it) {
+                "success" -> Toast.makeText(this.context, "Email  has been updated", Toast.LENGTH_SHORT)
+                    .show()
+                "failure" -> Toast.makeText(this.context, "Failed to update email", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        })
+
+        viewModel.userPasswordUpdateSuccess.observe(this, Observer {
+            when(it) {
+                "success" -> Toast.makeText(this.context, "Password has been updated", Toast.LENGTH_SHORT)
+                    .show()
+                "failure" -> Toast.makeText(this.context, "Failed to update password", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        })
+
+        viewModel.reAuthSuccess.observe(this, Observer {
+            when(it) {
+                "failure" -> Toast.makeText(this.context, "You have to enter the old password correctly", Toast.LENGTH_SHORT)
+                    .show()
+            }
+        })
+
         return binding.root
     }
 
