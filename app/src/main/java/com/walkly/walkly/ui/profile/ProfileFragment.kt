@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.fragment_profile.*
 
 
 @SuppressLint("Registered")
-class ProfileFragment : Fragment(), View.OnClickListener {
+class ProfileFragment : Fragment() {
     lateinit var v: View
     private lateinit var auth: FirebaseAuth
     override fun onCreateView(
@@ -43,19 +43,27 @@ class ProfileFragment : Fragment(), View.OnClickListener {
             tv_username.setTextColor(Color.RED)
         }
 
-        tv_signout.setOnClickListener(this)
+        // click listeners
+
+        tv_signout.setOnClickListener {
+            signOut()
+        }
+
         tv_view_leaderboard.setOnClickListener {
             view.findNavController().navigate(R.id.action_navigation_home_to_leaderboardFragment)
 
         }
-    }
 
-    override fun onClick(v: View) {
-        val i = v.id
-        when (i) {
-            R.id.tv_signout -> signOut()
+        tv_view_friends.setOnClickListener {
+            view.findNavController().navigate(R.id.action_navigation_profile_to_friendsFragment)
+        }
+
+        tv_account_settings.setOnClickListener {
+            view.findNavController().navigate(R.id.action_navigation_profile_to_accountSettingsFragment)
         }
     }
+
+
 
     private fun signOut() {
         FirebaseAuth.getInstance().signOut()
