@@ -2,14 +2,19 @@ package com.walkly.walkly.ui.profile
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
+import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.storage.FirebaseStorage
 import com.walkly.walkly.auth.LoginActivity
 import com.walkly.walkly.R
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -61,6 +66,33 @@ class ProfileFragment : Fragment() {
         tv_account_settings.setOnClickListener {
             view.findNavController().navigate(R.id.action_navigation_profile_to_accountSettingsFragment)
         }
+
+        // TODO make it faster
+        // TODO refactor
+
+        Glide.with(this)
+            .load(
+                auth.currentUser?.photoUrl
+            )
+            .into(img_avatar)
+
+        var equipmentUri: Uri
+        FirebaseFirestore.getInstance()
+            .collection("users")
+            .document(auth.uid!!)
+            .get()
+            .addOnSuccessListener {
+                val equipmentId = it.data?.get("equipped_weapon") as String
+                 FirebaseStorage.getInstance()
+                    .getReference("equipments/${equipmentId}.png")
+                    .downloadUrl
+                     .addOnSuccessListener {
+                         equipmentUri = it
+                         Glide.with(this)
+                             .load(equipmentUri)
+                             .into(img_equipment)
+                     }
+            }
     }
 
 
@@ -72,9 +104,11 @@ class ProfileFragment : Fragment() {
 
     private fun updateUI() {
 
-        var intent = Intent(activity, LoginActivity::class.java)
+        val intent = Intent(activity, LoginActivity::class.java)
         startActivity(intent)
         activity?.finish()
     }
+
+
 
 }

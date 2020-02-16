@@ -13,6 +13,12 @@
         <action
             android:id="@+id/action_navigation_home_to_leaderboardFragment"
             app:destination="@id/leaderboardFragment" />
+        <action
+            android:id="@+id/action_navigation_profile_to_accountSettingsFragment"
+            app:destination="@id/accountSettingsFragment" />
+        <action
+            android:id="@+id/action_navigation_profile_to_friendsFragment"
+            app:destination="@id/friendsFragment" />
     </fragment>
 
     <fragment
@@ -53,4 +59,12 @@
             app:exitAnim="@anim/fui_slide_out_left"
             app:popUpTo="@+id/navigation_home" />
     </fragment>
+    <fragment
+        android:id="@+id/accountSettingsFragment"
+        android:name="com.walkly.walkly.ui.profile.AccountSettingsFragment"
+        android:label="AccountSettingsFragment" />
+    <fragment
+        android:id="@+id/friendsFragment"
+        android:name="com.walkly.walkly.ui.friends.FriendsFragment"
+        android:label="FriendsFragment" />
 </navigation>
