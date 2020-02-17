@@ -46,7 +46,7 @@
     <!--  list  -->
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/list_friends"
+        android:id="@+id/friends_recycler_view"
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"

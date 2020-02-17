@@ -109,7 +109,7 @@ object Player  {
 
     // TODO: implement the reward interface
 
-    fun getReward(enemyLevel: Int) : Reward? {
+    fun getReward(enemyLevel: Int) {
 
 
         // increment players points
@@ -135,26 +135,26 @@ object Player  {
 
         // val reward = calculateReward(enemyLevel + r.toInt())
 
-        var type = arrayOf("equipments", "consumables").random()
+        val type = arrayOf("equipments", "consumables").random()
         val reward = calculateReward(enemyLevel + r.toInt(), type)
 
 
         // save reward to user rewards in the database
-
-        return null
+        firestore.collection("users").document()
     }
 
     // gets Reward from the database, takes level as int, type is either consumables or equipments
-    fun calculateReward(level: Int, type: String) : Rewardd{
+    fun calculateReward(level: Int, type: String) : Rewardd {
         // initialize reference
         val itemsRef = firestore.collection(type)
         // create query to get the list of items that satisfies the condition
-        val query = itemsRef.whereEqualTo("level", level).get()
+        val query = itemsRef.whereEqualTo("level", level)
+
         // gets a random item from the list
         val list = arrayOf(query)
-        val item = list.random() as Rewardd
+        val item = list.random()
         // returns the item
-        return item
+        return item as Rewardd
     }
 
 
