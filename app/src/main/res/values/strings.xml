@@ -59,6 +59,8 @@
     <string name="leave_battle">Leave Battle</string>
     <string name="use_items">Use Items</string>
     <string name="no_items_error_message">You don\'t have any items</string>
+    <string name="no_user_found">Sorry, no user with that user name exists</string>
+    <string name="no_friends">You don\'t have any friends</string>
 
 
 </resources>

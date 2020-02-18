@@ -9,10 +9,8 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.walkly.walkly.models.Friend
-import com.walkly.walkly.ui.leaderboard.LeaderboardItem
 
 private const val TAG = "FriendsViewModel"
 
@@ -21,6 +19,10 @@ class FriendsViewModel : ViewModel() {
     private val _friendsList = MutableLiveData<List<Friend>>()
     val friendsList: LiveData<List<Friend>>
         get() = _friendsList
+
+    private val _searchList = MutableLiveData<List<Friend>>()
+    val searchList: LiveData<List<Friend>>
+        get() = _searchList
 
     private var tempFriendList = mutableListOf<Friend>()
 
@@ -35,7 +37,7 @@ class FriendsViewModel : ViewModel() {
         getFriends()
     }
 
-    private fun getFriends() {
+    fun getFriends() {
         db.collection("users")
             .document(userID!!)
             .collection("friends").orderBy("status", Query.Direction.DESCENDING)
@@ -54,9 +56,9 @@ class FriendsViewModel : ViewModel() {
             }
     }
 
-    // Creates the complete friends leaderboard and sets the value of friendsLeaderboard
+    // Creates the complete friend list and sets the value of friends
     private fun createFriendList(friendIds: List<String>) {
-        // Pass friend ids in chunks of 10 to getLeaderboardFromIds
+        // Pass friend ids in chunks of 10 to getFriendsFromIds
         val taskList = mutableListOf<Task<QuerySnapshot>>()
         for (idList in friendIds.chunked(10)) {
             taskList.add(getFriendsFromIds(idList))
@@ -70,7 +72,7 @@ class FriendsViewModel : ViewModel() {
             }
     }
 
-    // Create a leaderboard from a given list of ids
+    // Create a friend list from a given list of ids
     private fun getFriendsFromIds(idList: List<String>): Task<QuerySnapshot> {
         var statusCounter = 0;
         return db.collection("users")
@@ -85,7 +87,26 @@ class FriendsViewModel : ViewModel() {
                 }
             }
             .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting global leaderboard documents.", exception)
+                Log.w(TAG, "Error getting friend documents.", exception)
+            }
+    }
+
+    fun searchUser(userName: String) {
+        db.collection("users")
+            .whereGreaterThanOrEqualTo("name", userName)
+            .whereLessThanOrEqualTo("name", "$userName\uF7FF")
+            .get()
+            .addOnSuccessListener { documents ->
+                tempFriendList.clear()
+                for (document in documents) {
+                    val item: Friend = document.toObject(Friend::class.java).addId(document.id)
+                    tempFriendList.add(item)
+                }
+
+                _searchList.value = tempFriendList
+            }
+            .addOnFailureListener { exception ->
+                Log.w(TAG, "Error getting documents: ", exception)
             }
     }
 }
