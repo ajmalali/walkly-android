@@ -31,18 +31,18 @@
         android:text="Friends"
         />
 
-    <androidx.appcompat.widget.AppCompatEditText
+    <EditText
         android:id="@+id/et_search"
         android:layout_width="match_parent"
         android:layout_height="40dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/gradient_rect"
-        android:paddingLeft="8dp"
-        android:textColorHint="@color/buttonPrimary"
         android:background="@drawable/style_search_bar"
         android:hint="Search"
-        />
-
+        android:inputType="textShortMessage"
+        android:paddingLeft="8dp"
+        android:textColorHint="@color/buttonPrimary"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gradient_rect"
+        android:imeOptions="actionSearch"/>
     <!--  list  -->
 
     <androidx.recyclerview.widget.RecyclerView

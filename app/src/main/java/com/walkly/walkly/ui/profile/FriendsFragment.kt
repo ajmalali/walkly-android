@@ -7,6 +7,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.Observer
@@ -20,6 +22,8 @@ private const val TAG = "FriendsFragment"
 class FriendsFragment : Fragment() {
 
     private lateinit var friendsRecyclerView: RecyclerView
+    private lateinit var searchField: EditText
+
     private var adapter: FriendsAdapter? = null
 
     private val friendsViewModel: FriendsViewModel by lazy {
@@ -32,6 +36,7 @@ class FriendsFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_friends, container, false)
         friendsRecyclerView = view.findViewById(R.id.friends_recycler_view)
+        searchField = view.findViewById(R.id.et_search)
 
         friendsViewModel.friendsList.observe(this, Observer { list ->
             list?.let {
@@ -39,6 +44,28 @@ class FriendsFragment : Fragment() {
                 friendsRecyclerView.adapter = adapter
             }
         })
+
+        friendsViewModel.searchList.observe(this, Observer {list ->
+            list?.let {
+                adapter = FriendsAdapter(list)
+                friendsRecyclerView.adapter = adapter
+            }
+        })
+
+        searchField.setOnEditorActionListener { v, actionId, event ->
+            when (actionId) {
+                EditorInfo.IME_ACTION_SEARCH -> {
+                    val userName = v.text.toString()
+                    if (userName.isNotBlank()) {
+                        friendsViewModel.searchUser(userName)
+                    }  else {
+                        friendsViewModel.getFriends()
+                    }
+
+                    true
+                } else -> false
+            }
+        }
 
         return view
     }
@@ -72,6 +99,4 @@ class FriendsFragment : Fragment() {
         }
 
     }
-
-
 }
