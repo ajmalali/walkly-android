@@ -9,6 +9,7 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
 import com.walkly.walkly.models.Friend
 
@@ -99,7 +100,8 @@ class FriendsViewModel : ViewModel() {
             .addOnSuccessListener { documents ->
                 tempFriendList.clear()
                 for (document in documents) {
-                    val item: Friend = document.toObject(Friend::class.java).addId(document.id)
+                    val item: Friend =
+                        document.toObject(Friend::class.java).addIdAndStatus(document.id, "")
                     tempFriendList.add(item)
                 }
 

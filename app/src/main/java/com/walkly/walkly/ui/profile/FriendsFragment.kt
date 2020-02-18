@@ -104,6 +104,8 @@ class FriendsFragment : Fragment() {
         val friendImage: ImageView = itemView.findViewById(R.id.img_avatar)
         val btnAccept: Button = itemView.findViewById(R.id.btn_accept)
         val btnReject: Button = itemView.findViewById(R.id.btn_reject)
+        val btnAdd: Button = itemView.findViewById(R.id.btn_add)
+
 
     }
 
@@ -124,7 +126,6 @@ class FriendsFragment : Fragment() {
                 friendImage.setImageResource(R.drawable.fui_ic_check_circle_black_128dp)
                 friendName.text = friend.name
                 friendLevel.text = "Level: " + friend.level.toString()
-                friendPoints.text = friend.points.toString()
 
                 // refactor later, add listners to buttons and display buttons for pending requests
                 if(friend.status == "pending"){
@@ -132,11 +133,23 @@ class FriendsFragment : Fragment() {
                     btnAccept.setOnClickListener{
                         db.collection("users")
                             .document(userID!!).collection("friends").document(friend.id).update("status", "friend")
+                        db.collection("users")
+                            .document(friend.id).collection("friends").document(userID!!).set(
+                                hashMapOf("status" to "friend")
+                            )
                     }
                     btnReject.visibility = View.VISIBLE
                     btnReject.setOnClickListener { db.collection("users")
                         .document(userID!!).collection("friends").document(friend.id).delete() }
 
+                } else if(friend.status ==""){
+                    btnAdd.visibility = View.VISIBLE
+                    btnAdd.setOnClickListener {
+                        db.collection("users")
+                            .document(friend.id).collection("friends").document(userID!!).set(
+                                hashMapOf("status" to "pending")
+                            )
+                    }
                 }
             }
         }
