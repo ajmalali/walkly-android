@@ -28,6 +28,8 @@ class FriendsViewModel : ViewModel() {
     private val userID = FirebaseAuth.getInstance().currentUser?.uid
 
     private val friendIds = mutableListOf<String>()
+    private val friendStatus = mutableListOf<String>()
+
 
     init {
         getFriends()
@@ -36,11 +38,13 @@ class FriendsViewModel : ViewModel() {
     private fun getFriends() {
         db.collection("users")
             .document(userID!!)
-            .collection("friends")
+            .collection("friends").orderBy("status", Query.Direction.DESCENDING)
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
                     friendIds.add(document.id)
+                    friendStatus.add((document.get("status") as String).replace("\"","") )
+                    Log.d(TAG, friendStatus.toString())
                 }
                 // create the list
                 createFriendList(friendIds)
@@ -68,14 +72,16 @@ class FriendsViewModel : ViewModel() {
 
     // Create a leaderboard from a given list of ids
     private fun getFriendsFromIds(idList: List<String>): Task<QuerySnapshot> {
+        var statusCounter = 0;
         return db.collection("users")
             .whereIn(FieldPath.documentId(), idList)
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
                     val item: Friend =
-                        document.toObject(Friend::class.java).addId(document.id)
+                        document.toObject(Friend::class.java).addIdAndStatus(document.id, friendStatus[statusCounter])
                     tempFriendList.add(item)
+                    statusCounter++
                 }
             }
             .addOnFailureListener { exception ->
