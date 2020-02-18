@@ -58,4 +58,19 @@
         tools:listitem="@layout/list_friend"
         />
 
+    <TextView
+        android:id="@+id/error_no_user_found"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_user_found"
+        android:textColor="@color/buttonPrimary"
+        android:textSize="18sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@+id/friends_recycler_view"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/et_search"
+        app:layout_constraintVertical_bias="0.189"
+        tools:visibility="invisible" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
