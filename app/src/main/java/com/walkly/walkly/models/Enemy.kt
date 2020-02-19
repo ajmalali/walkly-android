@@ -1,13 +1,19 @@
 package com.walkly.walkly.models
 
-import android.location.Location
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 
+private val settings = FirebaseFirestoreSettings.Builder()
+    .setPersistenceEnabled(true)
+    .build()
+private val firestore = FirebaseFirestore.getInstance().also {
+    it.firestoreSettings = settings
+}
 
-class Enemy(id: String) {
+private var enemyCollection = firestore.collection("enemies")
 
+class Enemy(Level: Long, id: String, HP_: Long, DMG_: Long)  {
     val id = MutableLiveData<String>()
     val name = MutableLiveData<String>()
     val image = MutableLiveData<String>()
@@ -15,36 +21,27 @@ class Enemy(id: String) {
     val damage = MutableLiveData<Long>()
     val level = MutableLiveData<Long>()
 
-    private lateinit var location: Location
-
-    private val settings = FirebaseFirestoreSettings.Builder()
-        .setPersistenceEnabled(true)
-        .build()
-    private val firestore = FirebaseFirestore.getInstance().also {
-        it.firestoreSettings = settings
-    }
 
     init{
-        val enemyRef = firestore.collection("enemies").document(id)
+        val enemyRef = enemyCollection.document(id)
         enemyRef.get()
             .addOnSuccessListener {
                 this.id.value = id
                 name.value = it.data?.get("name") as String
                 image.value = it.data?.get("image") as String
-                HP.value = it.data?.get("health") as Long
-                damage.value = it.data?.get("damage") as Long
-                level.value = it.data?.get("level") as Long
+                HP.value = HP_
+                damage.value = DMG_
+                level.value = Level
             }
-
     }
 
-    companion object {
-        fun generateRandomEnemies(): Array<Enemy>{
 
-            // NOT RANDOM
-            var enemy1 = Enemy("5xweqqy2u76aYHhVBiSQ")
-            var enemy2 = Enemy("eMrAhRisPQ30qgovteS2")
-            var enemy3 = Enemy("pxkYf10BTVnLDc7QWmhQ")
+    companion object {
+        fun generateRandomEnemies(playerLevel: Long): Array<Enemy>{
+
+            var enemy1 = Enemy(playerLevel + (1..3).random(), (1..3).random().toString(),playerLevel * 100 * (1..3).random(), playerLevel * (1..3).random())
+            var enemy2 = Enemy(playerLevel + (1..3).random(), (1..3).random().toString(),playerLevel * 100 * (1..3).random(), playerLevel * (1..3).random())
+            var enemy3 = Enemy(playerLevel + (1..3).random(), (1..3).random().toString(),playerLevel * 100 * (1..3).random(), playerLevel * (1..3).random())
 
             return arrayOf(enemy1, enemy2, enemy3)
         }
