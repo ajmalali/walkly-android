@@ -6,6 +6,7 @@ import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
@@ -29,7 +30,7 @@ class MainActivity : AppCompatActivity(){
     val SOLID_WHITE = Color.parseColor("#FFFFFF")
     val WHITE = Color.parseColor("#8AFFFFFF")
 
-    private lateinit var locationUtil: LocationUtil
+//    private lateinit var locationUtil: LocationUtil
     private lateinit var distanceUtil: DistanceUtil
 
     private val cal = Calendar.getInstance()
@@ -98,8 +99,8 @@ class MainActivity : AppCompatActivity(){
         btn_map.compoundDrawableTintList = ColorStateList.valueOf(SOLID_WHITE)
 
 
-        locationUtil = LocationUtil(this, 100L, 50L)
-        locationUtil.readLocation(currentLocation)
+//        locationUtil = LocationUtil(this, 100L, 50L)
+//        locationUtil.readLocation(currentLocation)
 
         currentLocation.observe(this, Observer {
             Log.d("Location_latitude", it?.latitude.toString() )
@@ -107,7 +108,8 @@ class MainActivity : AppCompatActivity(){
         })
 
         walkedDistance.observe(this, Observer {
-            Log.d("Distance_walked", it.toString())
+            Log.d("Distance_walked steps", it.toString())
+            Toast.makeText(this, "steps are $it", Toast.LENGTH_LONG).show()
         })
 
         cal.add(Calendar.MINUTE, -1000)
@@ -142,15 +144,17 @@ class MainActivity : AppCompatActivity(){
 
     override fun onPause() {
         super.onPause()
-        locationUtil.stopLocationUpdates()
-        distanceUtil.stopUpdates()
+//        locationUtil.stopLocationUpdates()
 
-        if (auth.currentUser != null)
-            Player.stopStaminaUpdates()
     }
 
     override fun onStop() {
         super.onStop()
+
+        distanceUtil.stopUpdates()
+
+        if (auth.currentUser != null)
+            Player.stopStaminaUpdates()
 
         if (auth.currentUser != null)
             Player.syncModel()
@@ -158,7 +162,13 @@ class MainActivity : AppCompatActivity(){
 
     override fun onResume() {
         super.onResume()
-        locationUtil.startLocationUpdates()
+//        locationUtil.startLocationUpdates()
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+
         distanceUtil.startUpdates()
 
         if (auth.currentUser != null)

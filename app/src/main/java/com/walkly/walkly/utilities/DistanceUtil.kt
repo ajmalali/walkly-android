@@ -6,14 +6,16 @@ import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
+import com.google.android.gms.fitness.data.DataSource
 import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.data.Field
 import com.google.android.gms.fitness.request.DataReadRequest
+import com.google.android.gms.fitness.request.OnDataPointListener
+import com.google.android.gms.fitness.request.SensorRequest
 import com.google.android.gms.fitness.result.DataReadResponse
 import kotlinx.coroutines.*
 import java.util.*
 import java.util.concurrent.TimeUnit
-import kotlin.coroutines.CoroutineContext
 
 class DistanceUtil (activity: Activity, startTime: Long, interval: Long, data: MutableLiveData<Float>) {
     private val activity = activity
@@ -23,6 +25,13 @@ class DistanceUtil (activity: Activity, startTime: Long, interval: Long, data: M
         .addDataType(DataType.TYPE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
         .addDataType(DataType.AGGREGATE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
         .build()
+
+    private val stepsFitnessOptions = FitnessOptions.builder()
+        .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+        .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA)
+        .build()
+
+    private val googleSignInAccount = GoogleSignIn.getAccountForExtension(activity, stepsFitnessOptions)
 
     var lastRead = 0L
 
@@ -35,12 +44,12 @@ class DistanceUtil (activity: Activity, startTime: Long, interval: Long, data: M
     private val data = data
 
     init {
-        if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(activity), fitnessOptions)){
+        if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(activity), stepsFitnessOptions)){
             GoogleSignIn.requestPermissions(
                 activity,
                 GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
                 GoogleSignIn.getLastSignedInAccount(activity),
-                fitnessOptions
+                stepsFitnessOptions
             )
         }
     }
@@ -49,11 +58,12 @@ class DistanceUtil (activity: Activity, startTime: Long, interval: Long, data: M
         update = false
     }
     fun startUpdates(){
-        update = true
-        scope.launch {
-            Log.d("Distance", "launching coroutine")
-            getDistanceSince()
-        }
+//        update = true
+//        scope.launch {
+            Log.d("Distance", "starting updates")
+//            getDistanceSince()
+            getStepsSince()
+//        }
     }
 
     private suspend fun getDistanceSince() {
@@ -93,6 +103,40 @@ class DistanceUtil (activity: Activity, startTime: Long, interval: Long, data: M
         }
 
 
+    }
+
+    private fun getStepsSince(){
+
+//        var endTime: Long
+
+//        while (update) {
+//            endTime = Calendar.getInstance().timeInMillis
+
+            val request = SensorRequest.Builder()
+                .setDataType(DataType.TYPE_STEP_COUNT_DELTA)
+                .setSamplingRate(1000, TimeUnit.MILLISECONDS)
+                .build()
+
+            val listener = OnDataPointListener { dataPoint ->
+                Log.d("DistanceUtil", "onDataPoint")
+                val value = dataPoint?.getValue(Field.FIELD_STEPS)?.asInt()
+                data.value = value?.toFloat()
+            }
+
+
+            Fitness.getSensorsClient(activity, googleSignInAccount)
+                .add(request, listener)
+                .addOnSuccessListener {
+                    Log.d("DistanceUtil", "steps listener registered")
+                }
+                .addOnFailureListener {
+                    Log.d("DistanceUtil", "steps listener failed", it)
+                }
+
+
+
+
+//        }
     }
 
     private fun floatDistance(response: DataReadResponse?){
