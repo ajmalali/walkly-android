@@ -56,7 +56,6 @@ class ProfileFragment : Fragment() {
 
         tv_view_leaderboard.setOnClickListener {
             view.findNavController().navigate(R.id.action_navigation_home_to_leaderboardFragment)
-
         }
 
         tv_view_friends.setOnClickListener {

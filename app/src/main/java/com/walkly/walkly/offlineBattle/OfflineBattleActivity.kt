@@ -13,6 +13,7 @@ import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.models.Player
+import com.walkly.walkly.models.Player.getReward
 import kotlinx.android.synthetic.main.fragment_battle_activity.*
 
 class OfflineBattle : AppCompatActivity() {
@@ -59,7 +60,6 @@ class OfflineBattle : AppCompatActivity() {
         })
 
 
-        viewModel.startBattle()
 
         viewModel.playerHP.observe(this, Observer {
             player_health_bar.progress = it.toInt()
@@ -76,6 +76,7 @@ class OfflineBattle : AppCompatActivity() {
             enemy_health_bar.progress = it.toInt()
             if (it <= 0) {
                 enemy.level.value?.toInt()?.let { it1 -> Player.updatePoints(it1) }
+                getReward()
                 winDialog.show()
                 winDialog.findViewById<Button>(R.id.btn_collect)
                     .setOnClickListener {
@@ -121,6 +122,11 @@ class OfflineBattle : AppCompatActivity() {
         winDialog = AlertDialog.Builder(this)
             .setView(R.layout.dialog_battle_won)
             .create()
+
+        viewModel.startBattle()
+    }
+
+    private fun getReward() {
 
     }
 

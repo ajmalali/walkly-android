@@ -65,6 +65,6 @@
         android:label="AccountSettingsFragment" />
     <fragment
         android:id="@+id/friendsFragment"
-        android:name="com.walkly.walkly.ui.friends.FriendsFragment"
+        android:name="com.walkly.walkly.ui.profile.FriendsFragment"
         android:label="FriendsFragment" />
 </navigation>
