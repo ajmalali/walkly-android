@@ -102,7 +102,7 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
 
         // reduce enemy HP by distance walked * equipment value
         walkedDistance.observe(activity, androidx.lifecycle.Observer {
-            currentEnemyHp -= it / playerDamage
+            currentEnemyHp -= it * 10
             enemyHpPercentage = ((currentEnemyHp * 100.0) / baseEnemyHP).toLong()
             enemyHP.value = enemyHpPercentage
             Log.d(D_TAG, "distance = " + it)
