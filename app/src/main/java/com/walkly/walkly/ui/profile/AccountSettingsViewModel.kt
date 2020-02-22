@@ -115,7 +115,7 @@ class AccountSettingsViewModel : ViewModel() {
         if (!TextUtils.isEmpty(oldPassword.value) &&
             oldPassword.value != newPassword.value)
 
-            auth.currentUser?.updatePassword(oldPassword.value!!)
+            auth.currentUser?.updatePassword(newPassword.value!!)
                 ?.addOnSuccessListener {
                     _userPasswordUpdateSuccess.value = "success"
                 }
