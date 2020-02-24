@@ -66,6 +66,10 @@ class ProfileFragment : Fragment() {
             view.findNavController().navigate(R.id.action_navigation_profile_to_accountSettingsFragment)
         }
 
+        tv_wear_equipment.setOnClickListener{
+            view.findNavController().navigate(R.id.action_navigation_profile_to_equipmentDialog)
+        }
+
         // TODO make it faster
         // TODO refactor
 

@@ -19,6 +19,10 @@
         <action
             android:id="@+id/action_navigation_profile_to_friendsFragment"
             app:destination="@id/friendsFragment" />
+        <action
+            android:id="@+id/action_navigation_profile_to_equipmentDialog"
+            app:destination="@id/EquipmentDialog"
+            />
     </fragment>
 
     <fragment
@@ -67,4 +71,8 @@
         android:id="@+id/friendsFragment"
         android:name="com.walkly.walkly.ui.profile.FriendsFragment"
         android:label="FriendsFragment" />
+    <fragment
+        android:id="@+id/EquipmentDialog"
+        android:name="com.walkly.walkly.ui.profile.EquipmentDialog"
+        android:label="EquipmentDialog"/>
 </navigation>
