@@ -54,6 +54,7 @@ class BattlesFragment : Fragment() {
         // join button listner
         val joinBtn: RadioButton = view.findViewById(R.id.join_button)
        joinBtn.setOnClickListener {
+           hideHeader()
            battlesViewModel.battleList.observe(this, Observer { list ->
                list?.let {
                    if(list.isEmpty()) {
@@ -91,6 +92,9 @@ class BattlesFragment : Fragment() {
         val battleHost: TextView = itemView.findViewById(R.id.tv_battle_host)
         val playerCount: TextView = itemView.findViewById(R.id.tv_players)
         var background: androidx.constraintlayout.widget.ConstraintLayout = itemView.findViewById(R.id.join_bg)
+        var battleID = ""
+
+
 
         init {
             itemView.setOnClickListener(this)
@@ -99,6 +103,9 @@ class BattlesFragment : Fragment() {
         override fun onClick(p0: View?) {
            // Add your on click logic here
             this.background.setBackgroundColor(Color.parseColor("#340055"))
+            battlesViewModel.JoinListner(this.battleID)
+
+
         }
     }
 
@@ -119,6 +126,7 @@ class BattlesFragment : Fragment() {
                 battleName.text = battle.battleName
                 battleHost.text = battle.host
                 playerCount.text = "${battle.playerCount}/4 Players"
+                battleID = battle.id
 
             }
         }
@@ -126,6 +134,11 @@ class BattlesFragment : Fragment() {
 
     private inner class EnemyHolder(view: View): RecyclerView.ViewHolder(view), View.OnClickListener {
         val battleName: TextView = itemView.findViewById(R.id.tv_battle_name_host)
+        var enemyName =""
+        var background: androidx.constraintlayout.widget.ConstraintLayout = itemView.findViewById(R.id.host_bg)
+        var enemyLevel = 0
+        var enemyHP = 0
+
 
         init {
             itemView.setOnClickListener(this)
@@ -133,6 +146,18 @@ class BattlesFragment : Fragment() {
 
         override fun onClick(p0: View?) {
             // Add your on click logic here
+            this.background.setBackgroundColor(Color.parseColor("#340055"))
+
+
+            enemy_image.visibility = View.VISIBLE
+            create_button.visibility = View.VISIBLE
+            tv_enemy_health.visibility = View.VISIBLE
+            tv_enemy_level.visibility = View.VISIBLE
+            tv_enemy_name.visibility = View.VISIBLE
+
+            tv_enemy_health.text = this.enemyHP.toString()
+            tv_enemy_name.text = this.enemyName
+            tv_enemy_level.text = this.enemyLevel.toString()
         }
     }
 
@@ -151,9 +176,18 @@ class BattlesFragment : Fragment() {
             val enemy = enemies[position]
             holder.apply {
                 battleName.text = enemy.name.value.toString()
+                enemyName = enemy.name.value.toString()
+                enemyHP = enemy.HP.value!!.toInt()
+                enemyLevel = enemy.level.value!!.toInt()
             }
         }
     }
 
-
+    private fun hideHeader(){
+        enemy_image.visibility = View.INVISIBLE
+        create_button.visibility = View.INVISIBLE
+        tv_enemy_health.visibility = View.INVISIBLE
+        tv_enemy_level.visibility = View.INVISIBLE
+        tv_enemy_name.visibility = View.INVISIBLE
+    }
 }

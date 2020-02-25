@@ -7,6 +7,8 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.FieldPath
 import com.google.android.gms.tasks.Task
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.QuerySnapshot
 import com.walkly.walkly.models.Battle
@@ -31,6 +33,8 @@ class BattlesViewModel : ViewModel() {
     private val enemyIDs = mutableListOf<String>()
 
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    private val userID = FirebaseAuth.getInstance().currentUser?.uid
+
 
     init {
         getBattles()
@@ -102,5 +106,7 @@ class BattlesViewModel : ViewModel() {
             }
     }
 
-
+    fun JoinListner(battleID: String){
+        db.collection("online_battles").document(battleID).update("players", FieldValue.arrayUnion(userID))
+    }
 }
