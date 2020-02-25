@@ -17,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.walkly.walkly.R
+import com.walkly.walkly.databinding.DialogWearEquipmentBindingImpl
 import com.walkly.walkly.databinding.EquipmentBinding
 import com.walkly.walkly.models.Equipment
 import com.walkly.walkly.offlineBattle.OfflineBattle
@@ -26,7 +27,7 @@ import kotlinx.android.synthetic.main.dialog_wear_equipment.view.*
 class EquipmentDialog: DialogFragment(), OnEquipmentUseListener{
 
     val TAG = "EDialog"
-    private lateinit var binding: EquipmentBinding
+    private lateinit var binding: DialogWearEquipmentBindingImpl
     private lateinit var adapter: EquipmentAdapter
     private var equipmentList = mutableListOf<Equipment>()
     private lateinit var profileViewModel: ProfileViewModel
@@ -43,8 +44,7 @@ class EquipmentDialog: DialogFragment(), OnEquipmentUseListener{
             null,
             false
         )
-        binding.root.equipment_recycler_view.layoutManager = GridLayoutManager(context, 2)
-        binding.root.equipment_recycler_view
+        binding.root.equipment_recycler_view.layoutManager = GridLayoutManager(context,2)
 
 
         adapter = EquipmentAdapter(
@@ -53,10 +53,8 @@ class EquipmentDialog: DialogFragment(), OnEquipmentUseListener{
         )
         binding.root.equipment_recycler_view.adapter = adapter
 
-        profileViewModel = activity?.run {
-            ViewModelProviders.of(this)[profileViewModel::class.java]
-        } ?: throw Exception("Invalid Activity")
-
+        profileViewModel = ViewModelProviders.of(this)
+        .get(ProfileViewModel::class.java)
 
         profileViewModel.equipments.observe(this, Observer { list ->
             if (list.isEmpty()) {

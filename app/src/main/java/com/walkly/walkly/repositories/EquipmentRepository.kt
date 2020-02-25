@@ -14,6 +14,7 @@ object EquipmentRepository {
     private val userID: String = FirebaseAuth.getInstance().currentUser?.uid.toString()
     private val userDocument = db.collection("users").document(userID)
     val equipmentList = mutableListOf<Equipment>()
+    val eqIdList = mutableListOf<String>()
 
     // Get Equipments of the current user
     fun getEquipment(callback: (List<Equipment>) -> Unit) {
@@ -30,10 +31,11 @@ object EquipmentRepository {
                     .get()
                     .addOnSuccessListener { result ->
                         for (document in result) {
-                            for (eq in equipmentList) {
+                            val it: MutableIterator<Equipment> = equipmentList.iterator()
+                            while (it.hasNext()) {
+                                val eq: Equipment = it.next()
                                 if (eq.id != document.id) {
-                                    equipmentList.remove(eq)
-                                    Log.d("removing", eq.id)
+                                    it.remove()
                                 }
                             }
                         }
