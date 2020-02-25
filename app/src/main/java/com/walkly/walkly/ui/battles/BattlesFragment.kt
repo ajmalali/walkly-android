@@ -5,14 +5,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.RecyclerView
 import com.walkly.walkly.R
+import com.walkly.walkly.models.Battle
 import kotlinx.android.synthetic.main.fragment_battles.*
 
 class BattlesFragment : Fragment() {
 
     private lateinit var battlesViewModel: BattlesViewModel
+    private lateinit var battlesRecyclerView: RecyclerView
+    val battleList: List<Battle> = listOf(Battle("x", 2, "y"), Battle("x", 2, "y"), Battle("x", 2, "y"))
+
+    private var adapter: BattleAdapter? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -21,50 +31,42 @@ class BattlesFragment : Fragment() {
     ): View? {
         battlesViewModel =
             ViewModelProviders.of(this).get(BattlesViewModel::class.java)
-        val root = inflater.inflate(R.layout.fragment_battles, container, false)
-        /*val textView: TextView = root.findViewById(R.id.text_notifications)
-        battlesViewModel.text.observe(this, Observer {
-            textView.text = it
-        })*/
-        return root
+        val view = inflater.inflate(R.layout.fragment_host_join_battle, container, false)
+        battlesRecyclerView = view.findViewById(R.id.battles_recycler_view)
+//        errorMessage = view.findViewById(R.id.error_no_user_found)
+//        errorMessage.visibility = View.GONE
+        adapter = BattleAdapter(battleList)
+        battlesRecyclerView.adapter = adapter
+
+
+        return view
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    private inner class BattleHolder(view: View): RecyclerView.ViewHolder(view) {
+        val battleName: TextView = itemView.findViewById(R.id.tv_battle_name)
+        val battleHost: TextView = itemView.findViewById(R.id.tv_battle_host)
+        val playerCount: TextView = itemView.findViewById(R.id.tv_players)
+    }
 
-        var battlesList = arrayOf(
-            "Battle 1                    Abduallah                3/4 Players",
-            "Battle 2                    Ahmad                    1/4 Players",
-            "Battle 3                    Omar                     2/4 Players",
-            "Battle 4                    Abduallah                1/4 Players",
-            "Battle 5                    Mohammed                 4/4 Players"
-        )
-        var questsList = arrayOf(
-            "Walk 200 Steps                           138/200Steps",
-            "Win 10 Battles                           4/10 Battles"
-        )
-
-        var battleAdapter = ArrayAdapter (activity, R.layout.battleboard_item, R.id.label, battlesList)
-        var questsAdapter = ArrayAdapter (activity, R.layout.battleboard_item, R.id.label, questsList)
-        list_view.adapter = battleAdapter
-
-        battlesQuestsRadioButtons.setOnCheckedChangeListener { group, checkedId ->
-            if (battlesButton.isChecked) {
-                textView1.text = "Battles"
-                list_view.adapter = battleAdapter
-            } else if (questsButton.isChecked) {
-                textView1.text = "Quests"
-                list_view.adapter = questsAdapter
-            }
+    private inner class BattleAdapter(var battles: List<Battle>): RecyclerView.Adapter<BattleHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BattleHolder {
+            val view = layoutInflater.inflate(R.layout.list_join_battles, parent, false)
+            return BattleHolder(view)
         }
 
-        /*list_view.setOnItemClickListener { parent, view, position, id ->
-            var c = view as TextView
-            c.isSelected = true
-            var c = view as TextView
-            c.setTextColor(Color.parseColor("#340055"))
-            val color = Color.parseColor("#FF3B62")
-            c.setTextColor(Color.parseColor("#340055"))
-        }*/
+        override fun getItemCount(): Int {
+            return battles.size
+        }
+
+        override fun onBindViewHolder(holder: BattleHolder, position: Int) {
+            val battle = battles[position]
+            holder.apply {
+                // Default image
+                battleName.text = battle.battleName
+                battleHost.text = battle.host
+                playerCount.text = "${battle.playerCount}/4 Players"
+
+            }
+         }
     }
 }
