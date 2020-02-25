@@ -17,15 +17,70 @@
 
         <!-- Join/Host switch buttons bar container -->
 
+        <TextView
+            android:id="@+id/tv_enemy_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:textColor="@color/buttonPrimary"
+            android:textSize="16sp"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.68"
+            app:layout_constraintStart_toEndOf="@+id/enemy_image"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="The Big Demon" />
+
+        <ImageView
+            android:id="@+id/enemy_image"
+            android:layout_width="200dp"
+            android:layout_height="159dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/battle_options_bar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/boss1" />
+
+        <TextView
+            android:id="@+id/tv_enemy_health"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="@color/buttonPrimary"
+            android:textSize="16sp"
+            android:visibility="invisible"
+            app:layout_constraintStart_toEndOf="@+id/enemy_image"
+            app:layout_constraintStart_toStartOf="@+id/tv_enemy_level"
+            app:layout_constraintTop_toBottomOf="@+id/tv_enemy_level"
+            tools:text="5000 HP" />
+
+        <TextView
+            android:id="@+id/tv_enemy_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="@color/buttonPrimary"
+            android:textSize="16sp"
+            android:visibility="invisible"
+
+            app:layout_constraintStart_toEndOf="@+id/enemy_image"
+            app:layout_constraintStart_toStartOf="@+id/tv_enemy_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_enemy_name"
+            tools:text="Level 11" />
+
         <View
             android:id="@+id/header"
             android:layout_width="match_parent"
             android:layout_height="200dp"
             android:background="#FFF"
+            android:visibility="invisible"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
 
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <androidx.appcompat.widget.AppCompatButton
@@ -119,60 +174,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/battle_options_bar"
             app:layout_constraintVertical_bias="0.0" />
-
-        <ImageView
-            android:id="@+id/enemy_image"
-            android:layout_width="200dp"
-            android:layout_height="159dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            android:visibility="invisible"
-            android:layout_marginBottom="16dp"
-            app:layout_constraintBottom_toTopOf="@+id/battle_options_bar"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/boss1" />
-
-        <TextView
-            android:id="@+id/tv_enemy_name"
-            android:layout_width="wrap_content"
-            android:visibility="invisible"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:textColor="@color/buttonPrimary"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.68"
-            app:layout_constraintStart_toEndOf="@+id/enemy_image"
-            app:layout_constraintTop_toTopOf="parent"
-            tools:text="The Big Demon" />
-
-        <TextView
-            android:id="@+id/tv_enemy_level"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            android:textColor="@color/buttonPrimary"
-            android:textSize="16sp"
-            android:visibility="invisible"
-
-            app:layout_constraintStart_toEndOf="@+id/enemy_image"
-            app:layout_constraintStart_toStartOf="@+id/tv_enemy_name"
-            app:layout_constraintTop_toBottomOf="@+id/tv_enemy_name"
-            tools:text="Level 11" />
-
-        <TextView
-            android:id="@+id/tv_enemy_health"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:visibility="invisible"
-            android:layout_marginTop="12dp"
-            android:textColor="@color/buttonPrimary"
-            android:textSize="16sp"
-            app:layout_constraintStart_toEndOf="@+id/enemy_image"
-            app:layout_constraintStart_toStartOf="@+id/tv_enemy_level"
-            app:layout_constraintTop_toBottomOf="@+id/tv_enemy_level"
-            tools:text="5000 HP" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

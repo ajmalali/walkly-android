@@ -1,5 +1,6 @@
 package com.walkly.walkly.ui.battles
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,10 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Battle
+import com.walkly.walkly.models.OnlineBattle
+import com.walkly.walkly.models.Player
+import com.walkly.walkly.offlineBattle.OfflineBattle
+import com.walkly.walkly.onlineBattle.OnlineBattleActivity
 import kotlinx.android.synthetic.main.fragment_battles.*
 import kotlinx.android.synthetic.main.fragment_host_join_battle.*
 
@@ -58,13 +63,20 @@ class BattlesFragment : Fragment() {
         val battleName: TextView = itemView.findViewById(R.id.tv_battle_name)
         val battleHost: TextView = itemView.findViewById(R.id.tv_battle_host)
         val playerCount: TextView = itemView.findViewById(R.id.tv_players)
+        var battleID: String = ""
 
         init {
             itemView.setOnClickListener(this)
         }
 
         override fun onClick(p0: View?) {
-           // Add your on click logic here
+            Player.joinedBattle()
+            val intent = Intent(activity, OnlineBattleActivity::class.java)
+            val bundle = Bundle()
+            bundle.putString("battleId", battleID)
+            intent.putExtras(bundle)
+            startActivity(intent)
+            activity?.finish()
         }
     }
 
@@ -85,7 +97,7 @@ class BattlesFragment : Fragment() {
                 battleName.text = battle.battleName
                 battleHost.text = battle.host
                 playerCount.text = "${battle.playerCount}/4 Players"
-
+                battleID = battle.id
             }
          }
     }
