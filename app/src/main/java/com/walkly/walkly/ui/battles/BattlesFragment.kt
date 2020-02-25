@@ -9,7 +9,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
@@ -93,7 +92,7 @@ class BattlesFragment : Fragment() {
 
     private inner class BattleHolder(view: View): RecyclerView.ViewHolder(view), View.OnClickListener {
         val battleName: TextView = itemView.findViewById(R.id.tv_battle_name)
-        val battleHost: TextView = itemView.findViewById(R.id.tv_battle_host)
+        val battleHost: TextView = itemView.findViewById(R.id.tv_battle_name_host)
         val playerCount: TextView = itemView.findViewById(R.id.tv_players)
         var background: androidx.constraintlayout.widget.ConstraintLayout = itemView.findViewById(R.id.join_bg)
         var battleID: String = ""

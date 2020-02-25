@@ -92,7 +92,8 @@ class BattlesViewModel : ViewModel() {
                 for (document in result) {
                     val item = Battle( document.data?.get("battle_name") as String,
                         (document.data?.get("players") as ArrayList<String>).size,
-                        document.data?.get("host") as String ).addId(document.id)
+                        document.data?.get("host") as String )
+                    item.addID(document.id)
                     tempBattleList.add(item)
                 }
             }
