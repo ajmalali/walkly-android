@@ -1,6 +1,7 @@
 package com.walkly.walkly.ui.battles
 
 import android.graphics.Color
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,12 +9,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Battle
+import com.walkly.walkly.models.OnlineBattle
+import com.walkly.walkly.models.Player
+import com.walkly.walkly.offlineBattle.OfflineBattle
+import com.walkly.walkly.onlineBattle.OnlineBattleActivity
 import com.walkly.walkly.models.Enemy
 import kotlinx.android.synthetic.main.fragment_battles.*
 import kotlinx.android.synthetic.main.fragment_host_join_battle.*
@@ -89,12 +93,10 @@ class BattlesFragment : Fragment() {
 
     private inner class BattleHolder(view: View): RecyclerView.ViewHolder(view), View.OnClickListener {
         val battleName: TextView = itemView.findViewById(R.id.tv_battle_name)
-        val battleHost: TextView = itemView.findViewById(R.id.tv_battle_host)
+        val battleHost: TextView = itemView.findViewById(R.id.tv_battle_name_host)
         val playerCount: TextView = itemView.findViewById(R.id.tv_players)
         var background: androidx.constraintlayout.widget.ConstraintLayout = itemView.findViewById(R.id.join_bg)
-        var battleID = ""
-
-
+        var battleID: String = ""
 
         init {
             itemView.setOnClickListener(this)
@@ -106,6 +108,13 @@ class BattlesFragment : Fragment() {
             battlesViewModel.JoinListner(this.battleID)
 
 
+            Player.joinedBattle()
+            val intent = Intent(activity, OnlineBattleActivity::class.java)
+            val bundle = Bundle()
+            bundle.putString("battleId", battleID)
+            intent.putExtras(bundle)
+            startActivity(intent)
+            activity?.finish()
         }
     }
 
@@ -127,7 +136,6 @@ class BattlesFragment : Fragment() {
                 battleHost.text = battle.host
                 playerCount.text = "${battle.playerCount}/4 Players"
                 battleID = battle.id
-
             }
         }
     }
@@ -147,13 +155,7 @@ class BattlesFragment : Fragment() {
         override fun onClick(p0: View?) {
             // Add your on click logic here
             this.background.setBackgroundColor(Color.parseColor("#340055"))
-
-
-            enemy_image.visibility = View.VISIBLE
-            create_button.visibility = View.VISIBLE
-            tv_enemy_health.visibility = View.VISIBLE
-            tv_enemy_level.visibility = View.VISIBLE
-            tv_enemy_name.visibility = View.VISIBLE
+            showHeader()
 
             tv_enemy_health.text = this.enemyHP.toString()
             tv_enemy_name.text = this.enemyName
@@ -189,5 +191,13 @@ class BattlesFragment : Fragment() {
         tv_enemy_health.visibility = View.INVISIBLE
         tv_enemy_level.visibility = View.INVISIBLE
         tv_enemy_name.visibility = View.INVISIBLE
+    }
+
+    private fun showHeader(){
+        enemy_image.visibility = View.VISIBLE
+        create_button.visibility = View.VISIBLE
+        tv_enemy_health.visibility = View.VISIBLE
+        tv_enemy_level.visibility = View.VISIBLE
+        tv_enemy_name.visibility = View.VISIBLE
     }
 }

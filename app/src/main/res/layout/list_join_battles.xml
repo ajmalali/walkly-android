@@ -25,7 +25,7 @@
         tools:text="Battle name" />
 
     <TextView
-        android:id="@+id/tv_battle_host"
+        android:id="@+id/tv_battle_name_host"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"

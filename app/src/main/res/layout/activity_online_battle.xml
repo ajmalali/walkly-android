@@ -23,13 +23,13 @@
         android:id="@+id/img_player1_avatar"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/img_player2_avatar"
-        app:layout_constraintTop_toTopOf="@id/rect_player"
-        android:layout_marginTop="28dp"
         android:layout_marginLeft="16dp"
-        tools:srcCompat="@tools:sample/avatars"
-        />
+        android:layout_marginTop="28dp"
+        app:layout_constraintEnd_toStartOf="@id/img_player2_avatar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/rect_player"
+        app:srcCompat="@drawable/bitmoji1"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
         android:id="@+id/img_player1_equipment"
@@ -44,23 +44,23 @@
         android:id="@+id/tv_player1_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Player 1"
+        android:textColor="#fff"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@id/img_player1_avatar"
         app:layout_constraintTop_toBottomOf="@id/img_player1_avatar"
-        android:textStyle="bold"
-        android:textColor="#fff"
-        android:text="player name"
-        />
+        tools:text="player_name" />
 
     <ImageView
         android:id="@+id/img_player2_avatar"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        app:layout_constraintStart_toEndOf="@id/img_player1_avatar"
-        app:layout_constraintEnd_toStartOf="@id/img_player3_avatar"
-        app:layout_constraintTop_toTopOf="@id/rect_player"
         android:layout_marginTop="28dp"
-        tools:srcCompat="@tools:sample/avatars"
-        />
+        app:layout_constraintEnd_toStartOf="@id/img_player3_avatar"
+        app:layout_constraintStart_toEndOf="@id/img_player1_avatar"
+        app:layout_constraintTop_toTopOf="@id/rect_player"
+        app:srcCompat="@drawable/bitmoji1"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
         android:id="@+id/img_player2_equipment"
@@ -75,12 +75,12 @@
         android:id="@+id/tv_player2_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:text="Player 2"
+        android:textColor="#fff"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@id/img_player2_avatar"
         app:layout_constraintTop_toBottomOf="@id/img_player2_avatar"
-        android:textStyle="bold"
-        android:textColor="#fff"
-        android:text="player name"
-        />
+        tools:text="player_name" />
 
     <ImageView
         android:id="@+id/img_player3_avatar"
@@ -106,12 +106,11 @@
         android:id="@+id/tv_player3_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#fff"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@id/img_player3_avatar"
         app:layout_constraintTop_toBottomOf="@id/img_player3_avatar"
-        android:textStyle="bold"
-        android:textColor="#fff"
-        android:text="player name"
-        />
+        tools:text="player name" />
 
     <ImageView
         android:id="@+id/img_player4_avatar"
@@ -138,12 +137,11 @@
         android:id="@+id/tv_player4_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textColor="#fff"
+        android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@id/img_player4_avatar"
         app:layout_constraintTop_toBottomOf="@id/img_player4_avatar"
-        android:textStyle="bold"
-        android:textColor="#fff"
-        android:text="player name"
-        />
+        tools:text="player name" />
 
     <!--  enemy  -->
 
@@ -161,12 +159,12 @@
         android:id="@+id/img_enemy_avatar"
         android:layout_width="150dp"
         android:layout_height="150dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/rect_enemy"
         android:layout_marginTop="16dp"
         android:layout_marginRight="16dp"
-        tools:srcCompat="@tools:sample/avatars"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="@id/rect_enemy"
+        app:srcCompat="@drawable/boss2"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -259,17 +257,17 @@
         />
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/use_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:layout_marginBottom="64dp"
         android:paddingHorizontal="32dp"
         android:paddingVertical="8dp"
-        android:layout_marginBottom="64dp"
+        android:text="Use Item"
         android:textSize="14sp"
         android:textStyle="bold"
-        android:text="Use Item"
-        />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
