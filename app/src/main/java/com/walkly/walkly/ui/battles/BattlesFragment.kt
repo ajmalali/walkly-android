@@ -21,7 +21,6 @@ import kotlinx.android.synthetic.main.fragment_host_join_battle.*
 class BattlesFragment : Fragment() {
 
     private lateinit var battlesRecyclerView: RecyclerView
-    val battleList: List<Battle> = listOf(Battle("x", 2, "y"), Battle("x", 2, "y"), Battle("x", 2, "y"))
 
     private var adapter: BattleAdapter? = null
 
@@ -37,18 +36,20 @@ class BattlesFragment : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_host_join_battle, container, false)
         battlesRecyclerView = view.findViewById(R.id.battles_recycler_view)
-//        errorMessage = view.findViewById(R.id.error_no_user_found)
-//        errorMessage.visibility = View.GONE
+
 
         battlesViewModel.battleList.observe(this, Observer { list ->
             list?.let {
-                adapter = BattleAdapter(list)
-                battlesRecyclerView.adapter = adapter
-                progressBar.visibility = View.GONE
+                if(list.isEmpty()) {
+                    progressBar.visibility = View.GONE
+                } else {
+                    adapter = BattleAdapter(list)
+                    battlesRecyclerView.adapter = adapter
+                    progressBar.visibility = View.GONE
+                }
             }
         })
-//        adapter = BattleAdapter(battleList)
-//        battlesRecyclerView.adapter = adapter
+
 
 
         return view
