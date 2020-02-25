@@ -55,10 +55,18 @@ class BattlesFragment : Fragment() {
         return view
     }
 
-    private inner class BattleHolder(view: View): RecyclerView.ViewHolder(view) {
+    private inner class BattleHolder(view: View): RecyclerView.ViewHolder(view), View.OnClickListener {
         val battleName: TextView = itemView.findViewById(R.id.tv_battle_name)
         val battleHost: TextView = itemView.findViewById(R.id.tv_battle_host)
         val playerCount: TextView = itemView.findViewById(R.id.tv_players)
+
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(p0: View?) {
+           // Add your on click logic here
+        }
     }
 
     private inner class BattleAdapter(var battles: List<Battle>): RecyclerView.Adapter<BattleHolder>() {
