@@ -17,14 +17,27 @@ object EquipmentRepository {
 
     // Get Equipments of the current user
     fun getEquipment(callback: (List<Equipment>) -> Unit) {
-        userDocument.collection("equipments")
+        db.collection("equipments")
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
-                    val Equipment = document.toObject(Equipment::class.java).addId(document.id)
-                    equipmentList.add(Equipment)
+                    val equipment = document.toObject(Equipment::class.java).addId(document.id)
+                    equipmentList.add(equipment)
                     Log.d(TAG, "Added $document")
                 }
+
+                userDocument.collection("equipments")
+                    .get()
+                    .addOnSuccessListener { result ->
+                        for (document in result) {
+                            for (eq in equipmentList) {
+                                if (eq.id != document.id) {
+                                    equipmentList.remove(eq)
+                                    Log.d("removing", eq.id)
+                                }
+                            }
+                        }
+                    }
 
                 callback(equipmentList)
             }
@@ -47,10 +60,10 @@ object EquipmentRepository {
             }
     }
 
-    fun wearEquipment(Equipment: Equipment, callback: (Equipment) -> Unit){
-        userDocument.update("equipment",Equipment.id)
+    fun wearEquipment(Equipment: Equipment, callback: (Equipment) -> Unit) {
+        userDocument.update("equipment", Equipment.id)
             .addOnSuccessListener {
-            Log.d(TAG,"Success updating Equipment")
+                Log.d(TAG, "Success updating Equipment")
             }
             .addOnFailureListener { exception ->
                 Log.d(TAG, "Error updating equipment: ", exception)

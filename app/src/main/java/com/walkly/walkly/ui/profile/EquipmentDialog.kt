@@ -23,7 +23,7 @@ import com.walkly.walkly.offlineBattle.OfflineBattle
 import com.walkly.walkly.ui.profile.EquipmentAdapter.*
 import kotlinx.android.synthetic.main.dialog_wear_equipment.view.*
 
-class EquipmentDialog: DialogFragment(), EquipmentAdapter.OnEquipmentUseListener{
+class EquipmentDialog: DialogFragment(), OnEquipmentUseListener{
 
     val TAG = "EDialog"
     private lateinit var binding: EquipmentBinding
