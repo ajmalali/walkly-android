@@ -59,7 +59,11 @@
         />
 
     <TextView
+<<<<<<< Updated upstream
         android:id="@+id/tv_wear_equipment"
+=======
+        android:id="@+id/tv_change_equipment"
+>>>>>>> Stashed changes
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/img_avatar"

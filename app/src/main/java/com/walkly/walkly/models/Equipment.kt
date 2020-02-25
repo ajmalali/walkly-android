@@ -1,43 +1,54 @@
 package com.walkly.walkly.models
 
-import android.util.Log
-import androidx.lifecycle.MutableLiveData
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.*
+class Equipment(
+    val name: String = "",
+    val level: Int = 0,
+    val image: String = "",
+    val type: String = "",
+    val value: Long = 0
+    ) {
+        lateinit var id: String
 
-class Equipment(id: String) {
-    val name = MutableLiveData<String>()
-    val type = MutableLiveData<String>()
-    val image = MutableLiveData<String>()
-    val level = MutableLiveData<Long>()
-    val value = MutableLiveData<Long>()
-
+        // Used to add ID of a user and using document.toObject method
+        fun addId(value: String): Equipment {
+            this.id = value
+            return this
+        }
+    }
 //    private val userEquipments = mutableListOf<Equipment>()
 //    private val listOfEquipments = mutableListOf<Equipment>()
 //    private var userEquipment = this
 //    private var userRef: DocumentReference
 //    private var equipmentRef: CollectionReference
 
-    private val settings = FirebaseFirestoreSettings.Builder()
-        .setPersistenceEnabled(true)
-        .build()
-    private val firestore = FirebaseFirestore.getInstance().also {
-        // caches the data locally to work offline
-        it.firestoreSettings = settings
-    }
-
-    init {
-        val equipmentRef = firestore.collection("equipments").document(id)
-        equipmentRef.get()
-            .addOnSuccessListener {
-                name.value = it.data?.get("name") as String
-                type.value = it.data?.get("type") as String
-                image.value = it.data?.get("image") as String
-                level.value = it.data?.get("level") as Long
-                value.value = it.data?.get("value") as Long
-            }
-    }
-
+//    private val settings = FirebaseFirestoreSettings.Builder()
+//        .setPersistenceEnabled(true)
+//        .build()
+//    private val firestore = FirebaseFirestore.getInstance().also {
+//        // caches the data locally to work offline
+//        it.firestoreSettings = settings
+//    }
+//
+//    init {
+//        val equipmentRef = firestore.collection("equipments").document(id)
+//        equipmentRef.get()
+//            .addOnSuccessListener {
+//                name.value = it.data?.get("name") as String
+//                type.value = it.data?.get("type") as String
+//                image.value = it.data?.get("image") as String
+//                level.value = it.data?.get("level") as Long
+//                value.value = it.data?.get("value") as Long
+//            }
+//    }
+//
+//    lateinit var id: String
+//
+//    // Used to add ID of a user and using document.toObject method
+//    fun addId(value: String): Equipment {
+//        this.id = value
+//        return this
+//    }
+//
 
 //    fun getUsedEquipment(): Equipment {
 //        userRef.get()
@@ -164,5 +175,5 @@ class Equipment(id: String) {
 //        return getAllEquipments().contains(equip)
 //    }
 //
-}
+//}
 

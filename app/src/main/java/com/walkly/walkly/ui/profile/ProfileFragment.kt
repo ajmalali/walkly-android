@@ -66,7 +66,11 @@ class ProfileFragment : Fragment() {
             view.findNavController().navigate(R.id.action_navigation_profile_to_accountSettingsFragment)
         }
 
+<<<<<<< Updated upstream
         tv_wear_equipment.setOnClickListener{
+=======
+        tv_change_equipment.setOnClickListener{
+>>>>>>> Stashed changes
             view.findNavController().navigate(R.id.action_navigation_profile_to_equipmentDialog)
         }
 
