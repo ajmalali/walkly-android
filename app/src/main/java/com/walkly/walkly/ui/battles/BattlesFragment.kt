@@ -10,33 +10,45 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Battle
 import kotlinx.android.synthetic.main.fragment_battles.*
+import kotlinx.android.synthetic.main.fragment_host_join_battle.*
 
 class BattlesFragment : Fragment() {
 
-    private lateinit var battlesViewModel: BattlesViewModel
     private lateinit var battlesRecyclerView: RecyclerView
     val battleList: List<Battle> = listOf(Battle("x", 2, "y"), Battle("x", 2, "y"), Battle("x", 2, "y"))
 
     private var adapter: BattleAdapter? = null
 
+    private val battlesViewModel: BattlesViewModel by lazy {
+        ViewModelProviders.of(this).get(BattlesViewModel::class.java)
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        battlesViewModel =
-            ViewModelProviders.of(this).get(BattlesViewModel::class.java)
+
+
         val view = inflater.inflate(R.layout.fragment_host_join_battle, container, false)
         battlesRecyclerView = view.findViewById(R.id.battles_recycler_view)
 //        errorMessage = view.findViewById(R.id.error_no_user_found)
 //        errorMessage.visibility = View.GONE
-        adapter = BattleAdapter(battleList)
-        battlesRecyclerView.adapter = adapter
+
+        battlesViewModel.battleList.observe(this, Observer { list ->
+            list?.let {
+                adapter = BattleAdapter(list)
+                battlesRecyclerView.adapter = adapter
+                progressBar.visibility = View.GONE
+            }
+        })
+//        adapter = BattleAdapter(battleList)
+//        battlesRecyclerView.adapter = adapter
 
 
         return view
