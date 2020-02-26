@@ -107,7 +107,6 @@ class BattlesFragment : Fragment() {
             this.background.setBackgroundColor(Color.parseColor("#340055"))
             battlesViewModel.joinListner(this.battleID)
 
-
             Player.joinedBattle()
             val intent = Intent(activity, OnlineBattleActivity::class.java)
             val bundle = Bundle()

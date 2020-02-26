@@ -96,11 +96,16 @@ class OnlineBattleActivity : AppCompatActivity() {
             }
         })
 
-//        viewModel.walkedDistance.observe(this, androidx.lifecycle.Observer {
-//            viewModel.currentEnemyHp -= it * 10
-//            viewModel.enemyHpPercentage = ((currentEnemyHp * 100.0) / baseEnemyHP).toLong()
-//            enemyHP.value = enemyHpPercentage
-//        })
+        viewModel.walkedDistance.observe(this, Observer {
+            it?.let {
+                CoroutineScope(IO).launch {
+//                    viewModel.currentEnemyHp -= it * 10
+                    viewModel.damageEnemy(it)
+//                    viewModel.enemyHpPercentage = ((viewModel.currentEnemyHp * 100.0) / viewModel.baseEnemyHP).toLong()
+//                    viewModel.enemyHP.value = viewModel.enemyHpPercentage
+                }
+            }
+        })
 
         startBattle()
     }

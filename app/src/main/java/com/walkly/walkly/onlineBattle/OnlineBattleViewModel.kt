@@ -29,7 +29,7 @@ class OnlineBattleViewModel() : ViewModel() {
 
     var battleID: String = ""
     var baseEnemyHP = 0.0
-    var enemyDamage = 5L // TODO: HARDCODED!
+    var enemyDamage = 3L // TODO: HARDCODED!
     var currentEnemyHp = 0.0
     var enemyHpPercentage = 100L
     var basePlayerHP = 1L
@@ -87,6 +87,19 @@ class OnlineBattleViewModel() : ViewModel() {
         }
     }
 
+    fun damageEnemy(distance: Float) {
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(docRef)
+            val newHealthValue = snapshot.getLong("enemy_health")!! - distance*10
+            transaction.update(docRef, "enemy_health", newHealthValue)
+            // Success
+            null
+        }.addOnSuccessListener { Log.d(TAG, "Enemy Damaged") }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Transaction failure. (Enemy)", e)
+            }
+    }
+
     // WARNING: won't work while screen is off
     suspend fun damagePlayer() {
         var playerHppercentage = 100L
@@ -101,7 +114,7 @@ class OnlineBattleViewModel() : ViewModel() {
                 transaction.update(docRef, "combined_player_health", newHealthValue)
                 // Success
                 null
-            }.addOnSuccessListener { Log.d(TAG, "Transaction success!") }
+            }.addOnSuccessListener { Log.d(TAG, "Player damaged") }
                 .addOnFailureListener { e ->
                     Log.w(TAG, "Transaction failure.", e)
                 }
