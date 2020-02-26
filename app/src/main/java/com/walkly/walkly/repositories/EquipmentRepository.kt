@@ -14,34 +14,36 @@ object EquipmentRepository {
     private val userID: String = FirebaseAuth.getInstance().currentUser?.uid.toString()
     private val userDocument = db.collection("users").document(userID)
     val equipmentList = mutableListOf<Equipment>()
-    val eqIdList = mutableListOf<String>()
+    val eqIdList = mutableListOf<Equipment>()
 
     // Get Equipments of the current user
     fun getEquipment(callback: (List<Equipment>) -> Unit) {
+        eqIdList.clear()
+        equipmentList.clear()
         db.collection("equipments")
             .get()
             .addOnSuccessListener { result ->
                 for (document in result) {
                     val equipment = document.toObject(Equipment::class.java).addId(document.id)
-                    equipmentList.add(equipment)
-                    Log.d(TAG, "Added $document")
+                    eqIdList.add(equipment)
                 }
-
                 userDocument.collection("equipments")
                     .get()
                     .addOnSuccessListener { result ->
                         for (document in result) {
-                            val it: MutableIterator<Equipment> = equipmentList.iterator()
+                            val it: MutableIterator<Equipment> = eqIdList.iterator()
                             while (it.hasNext()) {
                                 val eq: Equipment = it.next()
-                                if (eq.id != document.id) {
-                                    it.remove()
+                                if (eq.id == document.id) {
+                                    equipmentList.add(eq)
+                                    Log.d(TAG, "added ${eq.id}")
                                 }
                             }
+                            Log.d(TAG, "List After: $equipmentList")
+                            callback(equipmentList)
                         }
                     }
 
-                callback(equipmentList)
             }
             .addOnFailureListener { exception ->
                 Log.d(TAG, "Error getting documents: ", exception)

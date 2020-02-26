@@ -2,27 +2,18 @@ package com.walkly.walkly.ui.profile
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import android.widget.GridLayout
+import android.view.*
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.DialogFragment
-import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.walkly.walkly.R
 import com.walkly.walkly.databinding.DialogWearEquipmentBindingImpl
-import com.walkly.walkly.databinding.EquipmentBinding
 import com.walkly.walkly.models.Equipment
-import com.walkly.walkly.offlineBattle.OfflineBattle
-import com.walkly.walkly.ui.profile.EquipmentAdapter.*
+import com.walkly.walkly.ui.profile.EquipmentAdapter.OnEquipmentUseListener
 import kotlinx.android.synthetic.main.dialog_wear_equipment.view.*
+
 
 class EquipmentDialog: DialogFragment(), OnEquipmentUseListener{
 
@@ -57,16 +48,19 @@ class EquipmentDialog: DialogFragment(), OnEquipmentUseListener{
         .get(ProfileViewModel::class.java)
 
         profileViewModel.equipments.observe(this, Observer { list ->
+            binding.root.progressBar.visibility = View.GONE
             if (list.isEmpty()) {
                 Log.e(TAG,"EMPTYYY")
             } else {
+                Log.d(TAG,list.toString())
                 adapter.equipmentList = list
                 adapter.notifyDataSetChanged()
             }
         })
 
-        return binding.root
+        return binding.root.rootView
     }
+
 
     override fun onEquipmentClick(position: Int) {
         val equipment = adapter.equipmentList[position]

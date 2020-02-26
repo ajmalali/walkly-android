@@ -71,7 +71,7 @@
         android:id="@+id/friendsFragment"
         android:name="com.walkly.walkly.ui.profile.FriendsFragment"
         android:label="FriendsFragment" />
-    <fragment
+    <dialog
         android:id="@+id/EquipmentDialog"
         android:name="com.walkly.walkly.ui.profile.EquipmentDialog"
         android:label="EquipmentDialog"/>
