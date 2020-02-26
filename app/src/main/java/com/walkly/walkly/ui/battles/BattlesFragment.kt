@@ -105,7 +105,7 @@ class BattlesFragment : Fragment() {
         override fun onClick(p0: View?) {
            // Add your on click logic here
             this.background.setBackgroundColor(Color.parseColor("#340055"))
-            battlesViewModel.JoinListner(this.battleID)
+            battlesViewModel.joinListner(this.battleID)
 
 
             Player.joinedBattle()
@@ -154,12 +154,22 @@ class BattlesFragment : Fragment() {
 
         override fun onClick(p0: View?) {
             // Add your on click logic here
-            this.background.setBackgroundColor(Color.parseColor("#340055"))
+            // this.background.setBackgroundColor(Color.parseColor("#340055"))
             showHeader()
-
             tv_enemy_health.text = this.enemyHP.toString()
             tv_enemy_name.text = this.enemyName
             tv_enemy_level.text = this.enemyLevel.toString()
+            create_button.setOnClickListener {
+                val battle_ID = battlesViewModel.hostListner(this.enemyName, this.enemyHP)
+                // TODO: wait for battle_ID to return before launching acitivty, currently the app crash of we use the intent
+//                Player.joinedBattle()
+//                val intent = Intent(activity, OnlineBattleActivity::class.java)
+//                val bundle = Bundle()
+//                bundle.putString("battleId", battle_ID)
+//                intent.putExtras(bundle)
+//                startActivity(intent)
+//                activity?.finish()
+            }
         }
     }
 

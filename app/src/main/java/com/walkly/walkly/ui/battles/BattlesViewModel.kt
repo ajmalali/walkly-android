@@ -105,7 +105,22 @@ class BattlesViewModel : ViewModel() {
             }
     }
 
-    fun JoinListner(battleID: String){
+    fun joinListner(battleID: String){
         db.collection("online_battles").document(battleID).update("players", FieldValue.arrayUnion(userID))
     }
+    fun hostListner(enemy_name: String, enemyHP: Int): String{
+        var battle_id = ""
+        db.collection("online_battles").add(
+            hashMapOf("battle_state" to "on-going",
+                "battle_name" to enemy_name,
+                "host" to "rand_id",
+                "players" to arrayListOf(userID),
+                "combined_player_health" to 200,
+                "enemy_health" to enemyHP
+            )
+        ).addOnSuccessListener { doc -> battle_id = doc.id
+            }
+       return battle_id
+    }
+
 }
