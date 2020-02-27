@@ -54,8 +54,8 @@
     </string-array>
 
     <string name="versus">VS</string>
-    <string name="enemy_health">Enemy Health</string>
-    <string name="player_health">Your Health</string>
+    <string name="enemy_health">Enemy HP</string>
+    <string name="player_health">Your HP</string>
     <string name="leave_battle">Leave Battle</string>
     <string name="use_items">Use Items</string>
     <string name="no_items_error_message">You don\'t have any items</string>

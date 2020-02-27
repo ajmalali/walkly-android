@@ -93,7 +93,7 @@ class OfflineBattle : AppCompatActivity() {
         // NOTE TESTED
         // Since starting time is now where the walked distance = 0
         viewModel.walkedDistance.observe(this, Observer {
-            player_step_bar.progress += it.toInt()
+            tv_no_of_steps.text = it.toInt().toString()
             Log.d("steps = ", it.toString())
         })
 

@@ -31,10 +31,10 @@
 
     <ImageView
         android:id="@+id/img_host_equipment_lobby"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="50dp"
+        android:layout_height="53dp"
         android:layout_marginStart="28dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toBottomOf="@id/img_host_avatar_lobby"
         app:layout_constraintStart_toEndOf="@id/img_host_avatar_lobby"
         tools:srcCompat="@tools:sample/avatars" />
@@ -174,7 +174,7 @@
 
     <View
         android:id="@+id/rect_enemy"
-        android:layout_width="parent"
+        android:layout_width="match_parent"
         android:layout_height="192dp"
         android:background="@drawable/gradient_purple"
         app:layout_constraintHeight_percent="0.25"
