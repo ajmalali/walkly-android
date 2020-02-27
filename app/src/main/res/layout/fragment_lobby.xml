@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <View
+        android:id="@+id/rect_player_lobby"
+        android:layout_width="437dp"
+        android:layout_height="390dp"
+        android:layout_marginTop="180dp"
+        android:background="@drawable/gradient"
+        app:layout_constraintHeight_percent="0.25"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+
+    <ImageView
+        android:id="@+id/img_host_avatar_lobby"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginBottom="88dp"
+        app:layout_constraintBottom_toBottomOf="@+id/rect_player_lobby"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.41"
+        app:layout_constraintStart_toStartOf="parent"
+        app:srcCompat="@drawable/bitmoji1"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/img_host_equipment_lobby"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginBottom="24dp"
+        app:layout_constraintBottom_toBottomOf="@id/img_host_avatar_lobby"
+        app:layout_constraintStart_toEndOf="@id/img_host_avatar_lobby"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <TextView
+        android:id="@+id/tv_host_name_lobby"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player 2"
+        android:textColor="#fff"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/img_host_avatar_lobby"
+        app:layout_constraintTop_toBottomOf="@id/img_host_avatar_lobby"
+        tools:text="player_name" />
+
+    <ImageView
+        android:id="@+id/img_player1_avatar_lobby"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="56dp"
+        android:layout_marginTop="72dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/rect_player_lobby"
+        app:srcCompat="@drawable/bitmoji1"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/img_player1_equipment_lobby"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        app:layout_constraintStart_toStartOf="@id/img_player1_avatar_lobby"
+        app:layout_constraintBottom_toBottomOf="@id/img_player1_avatar_lobby"
+        tools:srcCompat="@tools:sample/avatars"
+        />
+
+    <TextView
+        android:id="@+id/tv_player1_name_lobby"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player 2"
+        android:textColor="#fff"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/img_player1_avatar_lobby"
+        app:layout_constraintTop_toBottomOf="@id/img_player1_avatar_lobby"
+        tools:text="player_name" />
+
+    <ImageView
+        android:id="@+id/img_player2_avatar_lobby"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="28dp"
+        android:layout_marginTop="72dp"
+        app:layout_constraintStart_toEndOf="@+id/img_player1_avatar_lobby"
+        app:layout_constraintTop_toTopOf="@id/rect_player_lobby"
+        app:srcCompat="@drawable/bitmoji1"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/img_player2_equipment_lobby"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        app:layout_constraintStart_toStartOf="@id/img_player2_avatar_lobby"
+        app:layout_constraintBottom_toBottomOf="@id/img_player2_avatar_lobby"
+        tools:srcCompat="@tools:sample/avatars"
+        />
+
+    <TextView
+        android:id="@+id/tv_player2_name_lobby"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player 2"
+        android:textColor="#fff"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/img_player2_avatar_lobby"
+        app:layout_constraintTop_toBottomOf="@id/img_player2_avatar_lobby"
+        tools:text="player_name" />
+
+    <ImageView
+        android:id="@+id/img_player3_avatar_lobby"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="76dp"
+        app:layout_constraintStart_toEndOf="@+id/img_player2_avatar_lobby"
+        app:layout_constraintTop_toTopOf="@id/rect_player_lobby"
+        app:srcCompat="@drawable/bitmoji1"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/img_player3_equipment_lobby"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
+        app:layout_constraintStart_toStartOf="@id/img_player3_avatar_lobby"
+        app:layout_constraintBottom_toBottomOf="@id/img_player3_avatar_lobby"
+        tools:srcCompat="@tools:sample/avatars"
+        />
+
+    <TextView
+        android:id="@+id/tv_player3_name_lobby"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Player 2"
+        android:textColor="#fff"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="@id/img_player3_avatar_lobby"
+        app:layout_constraintTop_toBottomOf="@id/img_player3_avatar_lobby"
+        tools:text="player_name" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/publicize_button"
+        android:layout_width="144dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="60dp"
+        android:paddingHorizontal="6dp"
+        android:paddingVertical="4dp"
+        android:text="Change to public"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rect_player_lobby"
+        app:layout_constraintVertical_bias="0.333" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/start_button"
+        android:layout_width="144dp"
+        android:layout_height="32dp"
+        android:layout_marginStart="8dp"
+        android:paddingHorizontal="6dp"
+        android:paddingVertical="4dp"
+        android:text="Start"
+        android:textAlignment="center"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/publicize_button"
+        app:layout_constraintTop_toBottomOf="@+id/rect_player_lobby"
+        app:layout_constraintVertical_bias="0.333" />
+
+    <View
+        android:id="@+id/rect_enemy"
+        android:layout_width="parent"
+        android:layout_height="192dp"
+        android:background="@drawable/gradient_purple"
+        app:layout_constraintHeight_percent="0.25"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <ImageView
+        android:id="@+id/enemy_image"
+        android:layout_width="173dp"
+        android:layout_height="157dp"
+        android:layout_marginStart="44dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        app:layout_constraintBottom_toTopOf="@+id/battle_options_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/boss1" />
+
+    <TextView
+        android:id="@+id/tv_enemy_health"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@+id/enemy_image"
+        app:layout_constraintStart_toStartOf="@+id/tv_enemy_level"
+        app:layout_constraintTop_toBottomOf="@+id/tv_enemy_level"
+        tools:text="5000 HP" />
+
+    <TextView
+        android:id="@+id/tv_enemy_level"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@+id/enemy_image"
+        app:layout_constraintStart_toStartOf="@+id/tv_enemy_name"
+        app:layout_constraintTop_toBottomOf="@+id/tv_enemy_name"
+        tools:text="Level 11" />
+
+    <TextView
+        android:id="@+id/tv_enemy_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="40dp"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.235"
+        app:layout_constraintStart_toEndOf="@+id/enemy_image"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="The Big Demon" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
