@@ -68,6 +68,7 @@ object EquipmentRepository {
         userDocument.update("equipment", Equipment.id)
             .addOnSuccessListener {
                 Log.d(TAG, "Success updating Equipment")
+
             }
             .addOnFailureListener { exception ->
                 Log.d(TAG, "Error updating equipment: ", exception)
