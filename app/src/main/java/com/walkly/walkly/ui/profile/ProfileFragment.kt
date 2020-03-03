@@ -68,6 +68,7 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
         val dialogView = inflater.inflate(R.layout.dialog_wear_equipment, null) as View
         wearEquipmentBuilder = AlertDialog.Builder(this.context)
             .setView(dialogView)
+
         profileViewModel = ViewModelProviders.of(this)
             .get(ProfileViewModel::class.java)
 

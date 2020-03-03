@@ -35,9 +35,9 @@ class ProfileViewModel : ViewModel() {
         }
     }
 
-    fun selectEquipment(e:Equipment){
-        EquipmentRepository.wearEquipment(e){equip ->
-        _selectedEquipment.value = equip
+    fun selectEquipment(e: Equipment) {
+        EquipmentRepository.wearEquipment(e) { equip ->
+            _selectedEquipment.value = equip
         }
     }
 }
