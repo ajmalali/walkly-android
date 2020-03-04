@@ -102,7 +102,7 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
 
         // reduce enemy HP by distance walked * equipment value
         walkedDistance.observe(activity, androidx.lifecycle.Observer {
-            currentEnemyHp -= it * 10
+            currentEnemyHp -= it
             enemyHpPercentage = ((currentEnemyHp * 100.0) / baseEnemyHP).toLong()
             enemyHP.value = enemyHpPercentage
             Log.d(D_TAG, "distance = " + it)
@@ -115,8 +115,7 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
     }
 
     fun startBattle(){
-        distanceUtil = DistanceUtil(activity, Calendar.getInstance().timeInMillis, 500, walkedDistance)
-        distanceUtil.startUpdates()
+        distanceUtil = DistanceUtil(activity, walkedDistance)
 
         scope.launch {
             damagePlayer()

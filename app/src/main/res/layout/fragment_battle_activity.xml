@@ -83,9 +83,10 @@
             android:layout_marginTop="8dp"
             android:indeterminate="false"
             android:minHeight="15dp"
-            android:progress="40"
+            android:progress="100"
             app:layout_constraintStart_toStartOf="@+id/textView3"
-            app:layout_constraintTop_toBottomOf="@+id/enemy_health_text" />
+            app:layout_constraintTop_toBottomOf="@+id/enemy_health_text"
+            tools:progress="70"/>
 
 
         <ProgressBar
@@ -96,24 +97,25 @@
             android:layout_marginTop="8dp"
             android:indeterminate="false"
             android:minHeight="15dp"
-            android:progress="50"
+            android:progress="100"
             android:progressDrawable="@drawable/progress_bar_gradient_orange"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView3" />
+            app:layout_constraintTop_toBottomOf="@+id/textView3"
+            tools:progress="50"/>
 
         <TextView
             android:id="@+id/tv_no_of_steps"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="500 / 1000"
             android:textColor="#FF9067"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textView4" />
+            app:layout_constraintTop_toBottomOf="@id/textView4"
+            tools:text="500 / 1000"/>
 
         <TextView
             android:id="@+id/textView3"

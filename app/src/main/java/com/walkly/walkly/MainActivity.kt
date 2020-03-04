@@ -30,12 +30,8 @@ class MainActivity : AppCompatActivity(){
     val SOLID_WHITE = Color.parseColor("#FFFFFF")
     val WHITE = Color.parseColor("#8AFFFFFF")
 
-//    private lateinit var locationUtil: LocationUtil
-    private lateinit var distanceUtil: DistanceUtil
-
     private val cal = Calendar.getInstance()
 
-    private val currentLocation = MutableLiveData<Location>()
     private val walkedDistance = MutableLiveData<Float>()
     val stamina = Player.stamina
 
@@ -99,21 +95,12 @@ class MainActivity : AppCompatActivity(){
         btn_map.compoundDrawableTintList = ColorStateList.valueOf(SOLID_WHITE)
 
 
-//        locationUtil = LocationUtil(this, 100L, 50L)
-//        locationUtil.readLocation(currentLocation)
-
-        currentLocation.observe(this, Observer {
-            Log.d("Location_latitude", it?.latitude.toString() )
-            Log.d("Location_longitude", it?.longitude.toString())
-        })
-
         walkedDistance.observe(this, Observer {
             Log.d("Distance_walked steps", it.toString())
             Toast.makeText(this, "steps are $it", Toast.LENGTH_LONG).show()
         })
 
         cal.add(Calendar.MINUTE, -1000)
-        distanceUtil = DistanceUtil(this, cal.timeInMillis, 500, walkedDistance)
 
         // the player model should not be initialized before valid sign in
         // the authentication activity shall not has this code to avoid auth checking in if statements
@@ -142,16 +129,8 @@ class MainActivity : AppCompatActivity(){
     }
 
 
-    override fun onPause() {
-        super.onPause()
-//        locationUtil.stopLocationUpdates()
-
-    }
-
     override fun onStop() {
         super.onStop()
-
-        distanceUtil.stopUpdates()
 
         if (auth.currentUser != null)
             Player.stopStaminaUpdates()
@@ -160,16 +139,9 @@ class MainActivity : AppCompatActivity(){
             Player.syncModel()
     }
 
-    override fun onResume() {
-        super.onResume()
-//        locationUtil.startLocationUpdates()
-
-    }
 
     override fun onStart() {
         super.onStart()
-
-        distanceUtil.startUpdates()
 
         if (auth.currentUser != null)
             Player.startStaminaUpdates()

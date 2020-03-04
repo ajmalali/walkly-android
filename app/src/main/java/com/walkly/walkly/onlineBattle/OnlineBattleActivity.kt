@@ -112,8 +112,7 @@ class OnlineBattleActivity : AppCompatActivity() {
 
     private fun startBattle() {
         val util =
-            DistanceUtil(this, Calendar.getInstance().timeInMillis, 500, viewModel.walkedDistance)
-        util.startUpdates()
+            DistanceUtil(this, viewModel.walkedDistance)
         scope.launch {
             viewModel.damagePlayer()
         }
