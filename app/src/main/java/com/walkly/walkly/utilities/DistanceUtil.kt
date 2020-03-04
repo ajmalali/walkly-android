@@ -17,34 +17,26 @@ import kotlinx.coroutines.*
 import java.util.*
 import java.util.concurrent.TimeUnit
 
-class DistanceUtil (activity: Activity, startTime: Long, interval: Long, data: MutableLiveData<Float>) {
-    private val activity = activity
+class DistanceUtil(
+    private val activity: Activity,
+    private val data: MutableLiveData<Float>
+) {
     private val GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = System.identityHashCode(activity).and(0xFFF)
-    private val REQUEST_TAG = "Request status"
-    private val fitnessOptions = FitnessOptions.builder()
-        .addDataType(DataType.TYPE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
-        .addDataType(DataType.AGGREGATE_DISTANCE_DELTA, FitnessOptions.ACCESS_READ)
-        .build()
 
     private val stepsFitnessOptions = FitnessOptions.builder()
         .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
         .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA)
         .build()
 
-    private val googleSignInAccount = GoogleSignIn.getAccountForExtension(activity, stepsFitnessOptions)
-
-    var lastRead = 0L
-
-    private var update = false
-    private val job = Job()
-    private val scope = CoroutineScope(Dispatchers.Main + job)
-
-    private val startTime = startTime
-    private val interval = interval
-    private val data = data
+    private val googleSignInAccount =
+        GoogleSignIn.getAccountForExtension(activity, stepsFitnessOptions)
 
     init {
-        if (!GoogleSignIn.hasPermissions(GoogleSignIn.getLastSignedInAccount(activity), stepsFitnessOptions)){
+        if (!GoogleSignIn.hasPermissions(
+                GoogleSignIn.getLastSignedInAccount(activity),
+                stepsFitnessOptions
+            )
+        ) {
             GoogleSignIn.requestPermissions(
                 activity,
                 GOOGLE_FIT_PERMISSIONS_REQUEST_CODE,
@@ -52,110 +44,31 @@ class DistanceUtil (activity: Activity, startTime: Long, interval: Long, data: M
                 stepsFitnessOptions
             )
         }
+        getStepsSince()
     }
 
-    fun stopUpdates(){
-        update = false
-    }
-    fun startUpdates(){
-//        update = true
-//        scope.launch {
-            Log.d("Distance", "starting updates")
-//            getDistanceSince()
-            getStepsSince()
-//        }
-    }
+    private fun getStepsSince() {
+        Log.d("Distance", "starting updates")
+        val request = SensorRequest.Builder()
+            .setDataType(DataType.TYPE_STEP_COUNT_DELTA)
+            .setSamplingRate(1000, TimeUnit.MILLISECONDS)
+            .build()
 
-    private suspend fun getDistanceSince() {
-        var endTime: Long
-
-        while (update){
-            endTime = Calendar.getInstance().timeInMillis
-//            Log.d("start time: ", startTime.toString())
-//            Log.d("end time: ", endTime.toString())
-
-            val readRequest = DataReadRequest.Builder()
-                .aggregate(DataType.TYPE_DISTANCE_DELTA, DataType.AGGREGATE_DISTANCE_DELTA)
-                .setTimeRange(startTime, endTime, TimeUnit.MILLISECONDS)
-                .bucketByTime(1, TimeUnit.DAYS)
-                .build()
-
-            GoogleSignIn.getLastSignedInAccount(activity)?.let {
-                Fitness.getHistoryClient(activity, it)
-                    .readData(readRequest)
-                    .addOnSuccessListener {
-//                        Log.d(REQUEST_TAG, "SUCCESS")
-//                        Log.d("Distance API", "success")
-                        floatDistance(it)
-
-                    }
-                    .addOnFailureListener {
-                        Log.e(REQUEST_TAG, "FAILURE")
-                    }
-                    .addOnCompleteListener {
-//                        Log.d(REQUEST_TAG, "COMPLETE")
-//                        Log.d(REQUEST_TAG, endTime.toString())
-                        lastRead = endTime
-//                        Log.d(REQUEST_TAG, lastRead.toString())
-                    }
-            }
-            delay(interval)
+        val listener = OnDataPointListener { dataPoint ->
+            Log.d("DistanceUtil", "onDataPoint")
+            val value = dataPoint?.getValue(Field.FIELD_STEPS)?.asInt()
+            data.value = value?.toFloat()
         }
 
-
-    }
-
-    private fun getStepsSince(){
-
-//        var endTime: Long
-
-//        while (update) {
-//            endTime = Calendar.getInstance().timeInMillis
-
-            val request = SensorRequest.Builder()
-                .setDataType(DataType.TYPE_STEP_COUNT_DELTA)
-                .setSamplingRate(1000, TimeUnit.MILLISECONDS)
-                .build()
-
-            val listener = OnDataPointListener { dataPoint ->
-                Log.d("DistanceUtil", "onDataPoint")
-                val value = dataPoint?.getValue(Field.FIELD_STEPS)?.asInt()
-                data.value = value?.toFloat()
+        Fitness.getSensorsClient(activity, googleSignInAccount)
+            .add(request, listener)
+            .addOnSuccessListener {
+                Log.d("DistanceUtil", "steps listener registered")
+            }
+            .addOnFailureListener {
+                Log.d("DistanceUtil", "steps listener failed", it)
             }
 
-
-            Fitness.getSensorsClient(activity, googleSignInAccount)
-                .add(request, listener)
-                .addOnSuccessListener {
-                    Log.d("DistanceUtil", "steps listener registered")
-                }
-                .addOnFailureListener {
-                    Log.d("DistanceUtil", "steps listener failed", it)
-                }
-
-
-
-
-//        }
-    }
-
-    private fun floatDistance(response: DataReadResponse?){
-//        Log.d("distance", "in floatDistance")
-        response?.buckets.let { buckets ->
-//            Log.d("distance", "in let block")
-            for (bucket in buckets!!){
-//                Log.d("distance", "first loop")
-                for (dataSet in bucket.dataSets){
-//                    Log.d("distance", "second loop")
-                    for (dp in dataSet.dataPoints){
-//                        Log.d("distance", "third loop")
-                        val value = dp.getValue(Field.FIELD_DISTANCE).asFloat()
-                        Log.d("value", value.toString())
-                        data.value = value
-                    }
-                }
-            }
-        }
     }
 
 }
