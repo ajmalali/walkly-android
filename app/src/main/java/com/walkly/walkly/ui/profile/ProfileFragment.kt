@@ -118,6 +118,9 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
             wearEquipmentDialog.show()
             //To make the background for the dialog Transparent
             wearEquipmentDialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        tv_view_achievements.setOnClickListener {
+            view.findNavController().navigate(R.id.action_navigation_profile_to_achievementFragment)
         }
 
         // TODO make it faster

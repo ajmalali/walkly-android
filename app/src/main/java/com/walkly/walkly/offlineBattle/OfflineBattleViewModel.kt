@@ -114,8 +114,7 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
     }
 
     fun startBattle(){
-        distanceUtil = DistanceUtil(activity, Calendar.getInstance().timeInMillis, 500, walkedDistance)
-        distanceUtil.startUpdates()
+        distanceUtil = DistanceUtil(activity, walkedDistance)
 
         scope.launch {
             damagePlayer()
