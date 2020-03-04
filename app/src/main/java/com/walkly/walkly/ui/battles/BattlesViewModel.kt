@@ -17,6 +17,10 @@ import com.walkly.walkly.models.Enemy
 private const val TAG = "BattlesViewModel"
 class BattlesViewModel : ViewModel() {
 
+    private var _hostedBattleID = MutableLiveData<String>()
+    val hostedBattleID: LiveData<String>
+        get() = _hostedBattleID
+
     private val _battleList = MutableLiveData<List<Battle>>()
     val battleList: LiveData<List<Battle>>
         get() = _battleList
@@ -109,9 +113,9 @@ class BattlesViewModel : ViewModel() {
     fun joinListner(battleID: String){
         db.collection("online_battles").document(battleID).update("players", FieldValue.arrayUnion(userID))
     }
-    fun hostListner(enemy_name: String, enemyHP: Int): String{
-        var battle_id = ""
-        db.collection("online_battles").add(
+    fun hostListner(enemy_name: String, enemyHP: Int) {
+        val dbRerf = db.collection("online_battles")
+        dbRerf.add(
             hashMapOf("battle_state" to "on-going",
                 "battle_name" to enemy_name,
                 "host" to "rand_id",
@@ -119,9 +123,13 @@ class BattlesViewModel : ViewModel() {
                 "combined_player_health" to 200,
                 "enemy_health" to enemyHP
             )
-        ).addOnSuccessListener { doc -> battle_id = doc.id
+        ).addOnSuccessListener { documentReference ->
+            Log.d(TAG, "DocumentSnapshot written with ID: ${documentReference.id}")
+            _hostedBattleID.value = documentReference.id
+        }
+            .addOnFailureListener { e ->
+                Log.w(TAG, "Error adding document", e)
             }
-       return battle_id
     }
 
 }

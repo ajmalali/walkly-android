@@ -159,15 +159,16 @@ class BattlesFragment : Fragment() {
             tv_enemy_name.text = this.enemyName
             tv_enemy_level.text = this.enemyLevel.toString()
             create_button.setOnClickListener {
-                val battle_ID = battlesViewModel.hostListner(this.enemyName, this.enemyHP)
-                // TODO: wait for battle_ID to return before launching acitivty, currently the app crash of we use the intent
-//                Player.joinedBattle()
-//                val intent = Intent(activity, OnlineBattleActivity::class.java)
-//                val bundle = Bundle()
-//                bundle.putString("battleId", battle_ID)
-//                intent.putExtras(bundle)
-//                startActivity(intent)
-//                activity?.finish()
+                battlesViewModel.hostListner(this.enemyName, this.enemyHP)
+                battlesViewModel.hostedBattleID.observe(activity!!, Observer {battle_ID->
+                    Player.joinedBattle()
+                    val intent = Intent(activity, OnlineBattleActivity::class.java)
+                    val bundle = Bundle()
+                    bundle.putString("battleId", battle_ID)
+                    intent.putExtras(bundle)
+                    startActivity(intent)
+                    activity?.finish()
+                })
             }
         }
     }
