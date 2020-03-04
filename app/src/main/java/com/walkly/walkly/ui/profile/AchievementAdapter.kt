@@ -30,7 +30,7 @@ class AchievementAdapter(var achievementList: List<Achievement>, private val lis
     override fun onBindViewHolder(holder: AchievementViewHolder, position: Int) {
         val item = achievementList[position]
         holder.achievementImage.setImageResource(R.drawable.achievement_placeholder)
-        holder.achievementName.text = "${item.name} Achievement"
+        holder.achievementName.text = "${item.name.capitalizeWords()} Achievement"
         holder.achievementEarned = item.earned
         val matrix = ColorMatrix()
         when (item.earned) {
@@ -71,5 +71,7 @@ class AchievementAdapter(var achievementList: List<Achievement>, private val lis
     interface OnAchievementUseListener {
         fun onAchievementClick(position: Int)
     }
+    fun String.capitalizeWords(): String = split(" ").joinToString(" ") { it.capitalize() }
+
 }
 
