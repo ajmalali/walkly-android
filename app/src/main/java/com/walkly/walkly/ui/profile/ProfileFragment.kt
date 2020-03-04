@@ -116,12 +116,12 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
 
         tv_level.setOnClickListener {
             view.findNavController().navigate(R.id.action_navigation_profile_to_statistics)
-
-        tv_wear_equipment.setOnClickListener{
+        }
+        tv_wear_equipment.setOnClickListener {
             wearEquipmentDialog.show()
             //To make the background for the dialog Transparent
             wearEquipmentDialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
-
+        }
         tv_view_achievements.setOnClickListener {
             view.findNavController().navigate(R.id.action_navigation_profile_to_achievementFragment)
 
@@ -174,7 +174,4 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
         profileViewModel.selectEquipment(equipment)
         wearEquipmentDialog.dismiss()
         }
-
-
-
 }
