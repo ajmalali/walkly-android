@@ -4,6 +4,8 @@
     <color name="colorPrimaryDark">#BB5B3D</color>
     <color name="colorAccent">#FFA000</color>
 
+    <color name="statBar">#FDA280</color>
+
     <color name="buttonPrimary">#2E002D</color>
 
     <color name="red_text">#F75064</color>

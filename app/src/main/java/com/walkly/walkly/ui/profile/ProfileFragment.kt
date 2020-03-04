@@ -114,6 +114,9 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
             view.findNavController().navigate(R.id.action_navigation_profile_to_accountSettingsFragment)
         }
 
+        tv_level.setOnClickListener {
+            view.findNavController().navigate(R.id.action_navigation_profile_to_statistics)
+
         tv_wear_equipment.setOnClickListener{
             wearEquipmentDialog.show()
             //To make the background for the dialog Transparent
@@ -121,6 +124,7 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
 
         tv_view_achievements.setOnClickListener {
             view.findNavController().navigate(R.id.action_navigation_profile_to_achievementFragment)
+
         }
 
         // TODO make it faster
