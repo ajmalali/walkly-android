@@ -27,10 +27,9 @@ object AchievementsRepository {
                     Log.d(TAG, "Added $document")
                 }
                 userDocument.collection("achievements")
-                    .get()
-                    .addOnSuccessListener { result ->
+                    .addSnapshotListener { result, e ->
                         Log.d(TAG, "List before: $achievementList")
-                        for (document in result) {
+                        for (document in result!!) {
                             val it: MutableIterator<Achievement> = achievementList.iterator()
                             while (it.hasNext()) {
                                 val ach: Achievement = it.next()
@@ -44,10 +43,10 @@ object AchievementsRepository {
                         Log.d(TAG, "List After: $achievementList")
                         callback(achievementList)
                     }
-                    .addOnFailureListener { exception ->
-                        Log.d(TAG, "Error getting documents: ", exception)
-                    }
             }
-
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "Error getting documents: ", exception)
+            }
     }
+
 }

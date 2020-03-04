@@ -34,12 +34,17 @@ class AchievementAdapter(var achievementList: List<Achievement>, private val lis
         holder.achievementEarned = item.earned
         val matrix = ColorMatrix()
         when (item.earned) {
-            true -> matrix.setSaturation(1f)
+            true -> {
+                matrix.setSaturation(1f)
+                holder.achievementName.isActivated = true
+                holder.achievementLevel.isActivated = true
+                holder.achievementPoints.isActivated = true
+            }
             false -> {
                 matrix.setSaturation(0f)
-                holder.achievementName.setTextColor(Color.GRAY)
-                holder.achievementLevel.setTextColor(Color.GRAY)
-                holder.achievementPoints.setTextColor(Color.GRAY)
+                holder.achievementName.isActivated = false
+                holder.achievementLevel.isActivated = false
+                holder.achievementPoints.isActivated = false
             }
         }
         val filter = ColorMatrixColorFilter(matrix)

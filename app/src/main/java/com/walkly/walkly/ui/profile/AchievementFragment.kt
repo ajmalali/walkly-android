@@ -2,6 +2,7 @@ package com.walkly.walkly.ui.profile
 
 import androidx.lifecycle.ViewModelProviders
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -57,8 +58,8 @@ class AchievementFragment : Fragment(), AchievementAdapter.OnAchievementUseListe
                 } else {
                     errorMessage.visibility = View.GONE
                     adapter.achievementList = list
+                    Log.d("ach Frag", "list is: $list")
                     adapter.notifyDataSetChanged()
-
                 }
             }
         })
