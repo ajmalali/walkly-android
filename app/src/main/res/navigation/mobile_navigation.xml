@@ -22,6 +22,10 @@
         <action
             android:id="@+id/action_navigation_profile_to_statistics"
             app:destination="@id/statisticsFragment"/>
+         <action
+            android:id="@+id/action_navigation_profile_to_achievementFragment"
+            app:destination="@id/achievementFragment"/>
+
     </fragment>
 
     <fragment
@@ -74,4 +78,8 @@
         android:id="@+id/statisticsFragment"
         android:name="com.walkly.walkly.ui.profile.StatisticsFragment"
         android:label="StatisticsFragment"/>
+  <fragment
+        android:id="@+id/achievementFragment"
+        android:name="com.walkly.walkly.ui.profile.AchievementFragment"
+        android:label="AchievmeentFragment"/>
 </navigation>

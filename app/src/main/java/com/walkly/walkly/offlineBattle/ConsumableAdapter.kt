@@ -10,7 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Consumable
 
-class ConsumableAdapter(var consumableList: List<Consumable>, private val listener: OnConsumableUseListener) : RecyclerView.Adapter<ConsumableAdapter.ConsumableViewHolder>() {
+class ConsumableAdapter(
+    var consumableList: List<Consumable>,
+    private val listener: OnConsumableUseListener
+) : RecyclerView.Adapter<ConsumableAdapter.ConsumableViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ConsumableViewHolder {
 
@@ -28,7 +31,7 @@ class ConsumableAdapter(var consumableList: List<Consumable>, private val listen
         holder.consumableImage.setImageResource(R.drawable.consumable1)
         holder.consumableName.text = item.name
         holder.consumableType.text = item.type
-        val color =  when (item.type) {
+        val color = when (item.type) {
             "attack" -> Color.parseColor("#cc0000")
             "health" -> Color.parseColor("#00cc00")
             else -> Color.BLACK
@@ -38,7 +41,8 @@ class ConsumableAdapter(var consumableList: List<Consumable>, private val listen
         holder.consumableValue.text = item.value.toString()
     }
 
-    class ConsumableViewHolder(itemView: View, private val listener: OnConsumableUseListener): RecyclerView.ViewHolder(itemView), View.OnClickListener {
+    class ConsumableViewHolder(itemView: View, private val listener: OnConsumableUseListener) :
+        RecyclerView.ViewHolder(itemView), View.OnClickListener {
         val consumableName: TextView = itemView.findViewById(R.id.consumable_name)
         val consumableType: TextView = itemView.findViewById(R.id.consumable_type)
         val consumableValue: TextView = itemView.findViewById(R.id.consumable_value)
@@ -55,7 +59,7 @@ class ConsumableAdapter(var consumableList: List<Consumable>, private val listen
     }
 
     override fun getItemCount(): Int {
-       return consumableList.size
+        return consumableList.size
     }
 
     interface OnConsumableUseListener {
