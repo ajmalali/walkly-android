@@ -4,7 +4,8 @@ data class Achievement(
     val name: String = "",
     val level: Int = 0,
     val image: String = "",
-    val points: Int = 0
+    val points: Int = 0,
+    var earned: Boolean = false
 ) {
     lateinit var id: String
 

@@ -13,31 +13,49 @@
         android:layout_width="match_parent"
         android:layout_height="150dp"
         android:background="@drawable/gradient"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
+        android:id="@+id/textView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:gravity="center"
         android:layout_marginTop="50dp"
+        android:background="@color/buttonPrimary"
+        android:gravity="center"
         android:padding="4dp"
+        android:text="Achievements"
+        android:textColor="#fff"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="#fff"
-        android:background="@color/buttonPrimary"
-        android:text="Achievements"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/error_achievement"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/no_user_found"
+        android:textColor="@color/buttonPrimary"
+        android:textSize="18sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="@id/achievement_recyclerView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView"
+        tools:visibility="invisible" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:layout_width="409dp"
-        android:layout_height="579dp"
-        android:layout_marginTop="1dp"
+        android:id="@+id/achievement_recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/gradient_rect" />
+        app:layout_constraintTop_toBottomOf="@id/gradient_rect" />
 
 
     <!--  list  -->
