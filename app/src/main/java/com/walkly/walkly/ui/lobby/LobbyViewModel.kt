@@ -23,15 +23,17 @@ class LobbyViewModel() : ViewModel() {
             "players" to arrayListOf("h")
         )
         val invRef = db.collection("invites")
-
-        if(invRef.document(battleID) == null){
-            invRef.document(battleID).update("players", FieldValue.arrayUnion("xx")).addOnSuccessListener { Log.d(TAG, "document successfully updated!") }
-                .addOnFailureListener { e -> Log.w(TAG, "trying to update but failed", e) }
-        } else {
-            invRef.document(battleID).set(players).addOnSuccessListener { Log.d(TAG, "made a documebnt!") }
-                .addOnFailureListener { e -> Log.w(TAG, "trying to create a document", e) }
+        val task = invRef.document(battleID).get().addOnCompleteListener {
+            if(it.isSuccessful){
+                val result = it.result
+                if(result != null && result.exists()){
+                    invRef.document(battleID).update("players", FieldValue.arrayUnion("xx")).addOnSuccessListener { Log.d(TAG, "document successfully updated!") }
+                        .addOnFailureListener { e -> Log.w(TAG, "trying to update but failed", e) }
+            } else {
+                    invRef.document(battleID).set(players).addOnSuccessListener { Log.d(TAG, "made a documebnt!") }
+                        .addOnFailureListener { e -> Log.w(TAG, "trying to create a document", e) }
+                }
+            }
         }
-
-
     }
 }
