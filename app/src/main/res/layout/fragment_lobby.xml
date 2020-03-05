@@ -10,10 +10,11 @@
 
     <View
         android:id="@+id/rect_player_lobby"
-        android:layout_width="437dp"
+        android:layout_width="match_parent"
         android:layout_height="390dp"
         android:layout_marginTop="180dp"
         android:background="@drawable/gradient"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.25"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
