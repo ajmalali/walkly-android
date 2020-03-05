@@ -5,13 +5,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.walkly.walkly.models.Consumable
-import com.walkly.walkly.models.Player
 import com.walkly.walkly.repositories.ConsumablesRepository
 import kotlinx.coroutines.*
-import java.util.*
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.tasks.await
 
 private const val TAG = "OnlineBattleViewModel"
 
@@ -21,20 +22,20 @@ class OnlineBattleViewModel() : ViewModel() {
     // used to convert player level to HP
     private val HP_MULTIPLAYER = 100
 
-    val walkedDistance = MutableLiveData<Float>()
 
     // BAD DESIGN: should get refactored
 
     private val db = FirebaseFirestore.getInstance()
 
     var battleID: String = ""
-    var baseEnemyHP = 0.0
+    var baseEnemyHP = 0L
     var enemyDamage = 3L // TODO: HARDCODED!
-    var currentEnemyHp = 0.0
-    var enemyHpPercentage = 100L
-    var basePlayerHP = 1L
+    var currentEnemyHp = 0L
+    var basePlayerHP = 0L
     var currentPlayerHP = 0L
-    var playerDamage = 0L
+    var enemyHpPercentage = 100L
+//    var playerDamage = 0L
+
     lateinit var docRef: DocumentReference
     lateinit var registration: ListenerRegistration
 
@@ -53,20 +54,39 @@ class OnlineBattleViewModel() : ViewModel() {
 
     init {
         getConsumables()
-
+        combinedHP.value = 100L
+        enemyHP.value = 100L
         // TODO: HARDCODED VALUES! MUST BE REFACTORED
-        basePlayerHP = 10L * HP_MULTIPLAYER
-        currentPlayerHP = basePlayerHP
-        combinedHP.value = (currentPlayerHP / basePlayerHP) * 100
-
-        baseEnemyHP = 5000L.toDouble()
-        currentEnemyHp = baseEnemyHP
-        enemyHP.value = baseEnemyHP.toLong()
-
+//        basePlayerHP = 10.0 * HP_MULTIPLAYER
+//        currentPlayerHP = basePlayerHP
+//        combinedHP.value = floor((currentPlayerHP / basePlayerHP) * 100).toLong()
+//
+//        baseEnemyHP = 5000L.toDouble()
+//        currentEnemyHp = baseEnemyHP
+//        enemyHP.value = baseEnemyHP.toLong()
     }
 
-    fun setUpListeners() {
+    suspend fun setUpListeners() {
         docRef = db.collection("online_battles").document(battleID)
+        val result = docRef.get().await()
+        baseEnemyHP = result.getLong("enemy_health")!!
+        basePlayerHP = result.getLong("combined_player_health")!!
+
+        if (baseEnemyHP < 100) {
+            docRef.update("enemy_health", 200).await()
+            baseEnemyHP = 200
+        }
+
+        if (basePlayerHP < 100) {
+            docRef.update("combined_player_health", 200).await()
+            basePlayerHP = 200
+        }
+
+        withContext(Main) {
+            currentEnemyHp = baseEnemyHP
+            currentPlayerHP = basePlayerHP
+        }
+
         registration = docRef.addSnapshotListener { snapshot, e ->
             if (e != null) {
                 Log.w(TAG, "Listen failed.", e)
@@ -74,12 +94,11 @@ class OnlineBattleViewModel() : ViewModel() {
             }
 
             if (snapshot != null && snapshot.exists()) {
-//                combinedHP -= enemyDamage
-//                playerHppercentage = (combinedHP * 100) / basePlayerHP
-//                playerHP.value = playerHppercentage
-//
-                enemyHP.value = snapshot.data?.get("enemy_health") as Long
-                combinedHP.value = snapshot.data?.get("combined_player_health") as Long
+                currentEnemyHp = snapshot.getLong("enemy_health")!!
+                enemyHP.value = ((currentEnemyHp * 100.0) / baseEnemyHP).toLong()
+
+                currentPlayerHP = snapshot.getLong("combined_player_health")!!
+                combinedHP.value = ((currentPlayerHP * 100.0) / basePlayerHP).toLong()
                 Log.d(TAG, "Current data: ${snapshot.data}")
             } else {
                 Log.d(TAG, "Current data: null")
@@ -87,10 +106,10 @@ class OnlineBattleViewModel() : ViewModel() {
         }
     }
 
-    fun damageEnemy(distance: Float) {
+    fun damageEnemy(steps: Float) {
         db.runTransaction { transaction ->
             val snapshot = transaction.get(docRef)
-            val newHealthValue = snapshot.getLong("enemy_health")!! - distance*10
+            val newHealthValue = snapshot.getLong("enemy_health")!! - steps
             transaction.update(docRef, "enemy_health", newHealthValue)
             // Success
             null
@@ -102,23 +121,23 @@ class OnlineBattleViewModel() : ViewModel() {
 
     // WARNING: won't work while screen is off
     suspend fun damagePlayer() {
-        var playerHppercentage = 100L
-
-        while (combinedHP.value?.compareTo(0)!! >= 1) {
+        while (currentPlayerHP >= 0) {
             delay(FREQUENCY)
             Log.d(TAG, "current player hp = $currentPlayerHP")
 
-            db.runTransaction { transaction ->
-                val snapshot = transaction.get(docRef)
-                val newHealthValue = snapshot.getLong("combined_player_health")!! - enemyDamage
-                transaction.update(docRef, "combined_player_health", newHealthValue)
-                // Success
-                null
-            }.addOnSuccessListener { Log.d(TAG, "Player damaged") }
-                .addOnFailureListener { e ->
-                    Log.w(TAG, "Transaction failure.", e)
-                }
+            docRef.update("combined_player_health", FieldValue.increment(-enemyDamage))
+//            db.runTransaction { transaction ->
+//                val snapshot = transaction.get(docRef)
+//                val newHealthValue = snapshot.getLong("combined_player_health")!! - enemyDamage
+//                transaction.update(docRef, "combined_player_health", newHealthValue)
+//                // Success
+//                null
+//            }.addOnSuccessListener { Log.d(TAG, "Player damaged") }
+//                .addOnFailureListener { e ->
+//                    Log.w(TAG, "Transaction failure.", e)
+//                }
         }
+
     }
 
     private fun getConsumables() {
@@ -143,6 +162,8 @@ class OnlineBattleViewModel() : ViewModel() {
 
     fun stopGame() {
         registration.remove()
+        currentPlayerHP = -1
+        currentEnemyHp = -1
     }
 
 }

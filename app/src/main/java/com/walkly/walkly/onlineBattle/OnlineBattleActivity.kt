@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Button
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.walkly.walkly.MainActivity
@@ -28,12 +29,15 @@ class OnlineBattleActivity : AppCompatActivity() {
         ViewModelProviders.of(this).get(OnlineBattleViewModel::class.java)
     }
 
+    private val walkedDistance = MutableLiveData<Float>()
+
     private lateinit var loseDialog: AlertDialog
     private lateinit var leaveDialog: AlertDialog
     private lateinit var winDialog: AlertDialog
 
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
+    private lateinit var distanceUtil: DistanceUtil
 
     private lateinit var consumablesBottomSheetDialog: ConsumablesBottomSheetDialog
 
@@ -44,7 +48,12 @@ class OnlineBattleActivity : AppCompatActivity() {
         supportActionBar?.hide()
         val id = intent.getStringExtra("battleId")
         viewModel.battleID = id!!
-        viewModel.setUpListeners()
+
+        CoroutineScope(IO).launch {
+            viewModel.setUpListeners()
+        }
+
+        distanceUtil = DistanceUtil(this, walkedDistance)
 
         loseDialog = AlertDialog.Builder(this)
             .setView(R.layout.dialog_battle_lost)
@@ -72,7 +81,9 @@ class OnlineBattleActivity : AppCompatActivity() {
 //            viewModel.removeSelectedConsumable()
 //        })
 
+
         viewModel.combinedHP.observe(this, Observer {
+            Log.d("HERE", "$it")
             bar_player_hp.progress = it.toInt()
             if (it <= 0) {
                 loseDialog.show()
@@ -96,13 +107,10 @@ class OnlineBattleActivity : AppCompatActivity() {
             }
         })
 
-        viewModel.walkedDistance.observe(this, Observer {
+        walkedDistance.observe(this, Observer {
             it?.let {
-                CoroutineScope(IO).launch {
-//                    viewModel.currentEnemyHp -= it * 10
+                scope.launch {
                     viewModel.damageEnemy(it)
-//                    viewModel.enemyHpPercentage = ((viewModel.currentEnemyHp * 100.0) / viewModel.baseEnemyHP).toLong()
-//                    viewModel.enemyHP.value = viewModel.enemyHpPercentage
                 }
             }
         })
@@ -111,9 +119,7 @@ class OnlineBattleActivity : AppCompatActivity() {
     }
 
     private fun startBattle() {
-        val util =
-            DistanceUtil(this, viewModel.walkedDistance)
-        scope.launch {
+        CoroutineScope(IO).launch {
             viewModel.damagePlayer()
         }
     }
