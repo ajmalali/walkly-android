@@ -156,9 +156,9 @@ class BattlesFragment : Fragment() {
             // Add your on click logic here
             // this.background.setBackgroundColor(Color.parseColor("#340055"))
             showHeader()
-            tv_enemy_health.text = this.enemyHP.toString()
-            tv_enemy_name.text = "HP: ${this.enemyName}"
-            tv_enemy_level.text = "HP: ${this.enemyLevel.toString()}"
+            tv_enemy_health.text = "HP: ${this.enemyHP.toString()}"
+            tv_enemy_name.text = "${this.enemyName}"
+            tv_enemy_level.text = "Level: ${this.enemyLevel.toString()}"
 
             create_button.setOnClickListener {
                 battlesViewModel.hostListner(this.enemyName, this.enemyHP)
