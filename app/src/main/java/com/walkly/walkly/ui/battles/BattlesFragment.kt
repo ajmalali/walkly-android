@@ -157,8 +157,9 @@ class BattlesFragment : Fragment() {
             // this.background.setBackgroundColor(Color.parseColor("#340055"))
             showHeader()
             tv_enemy_health.text = this.enemyHP.toString()
-            tv_enemy_name.text = this.enemyName
-            tv_enemy_level.text = this.enemyLevel.toString()
+            tv_enemy_name.text = "HP: ${this.enemyName}"
+            tv_enemy_level.text = "HP: ${this.enemyLevel.toString()}"
+
             create_button.setOnClickListener {
                 battlesViewModel.hostListner(this.enemyName, this.enemyHP)
                 battlesViewModel.hostedBattleID.observe(activity!!, Observer {battle_ID->

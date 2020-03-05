@@ -39,7 +39,6 @@ class LobbyActivity : AppCompatActivity() {
         supportActionBar!!.hide()
         tv_enemy_name.text =  intent.getStringExtra("enemyName")
         tv_enemy_health.text =  "HP: ${intent.getStringExtra("enemyHP")}"
-
-
+        tv_enemy_level.text =  "HP: ${intent.getStringExtra("enemyLvl")}"
     }
 }
