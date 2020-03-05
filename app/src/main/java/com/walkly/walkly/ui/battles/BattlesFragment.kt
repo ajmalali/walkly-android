@@ -104,8 +104,8 @@ class BattlesFragment : Fragment() {
         }
 
         override fun onClick(p0: View?) {
-           // Add your on click logic here
-            this.background.setBackgroundColor(Color.parseColor("#340055"))
+            // Add your on click logic here
+            //this.background.setBackgroundColor(Color.parseColor("#340055"))
             battlesViewModel.joinListner(this.battleID)
 
             Player.joinedBattle()

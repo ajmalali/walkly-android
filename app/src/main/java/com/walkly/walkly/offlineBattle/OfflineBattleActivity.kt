@@ -46,6 +46,7 @@ class OfflineBattle : AppCompatActivity() {
 
 //        viewModel = OfflineBattleViewModel(this, enemy)
         viewModel = ViewModelProviders.of(this, viewModelFactory)
+
             .get(OfflineBattleViewModel::class.java)
 
         use_items.setOnClickListener {
