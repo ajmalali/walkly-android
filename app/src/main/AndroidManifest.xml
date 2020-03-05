@@ -13,8 +13,9 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".onlineBattle.OnlineBattleActivity"></activity>
-        <activity android:name=".MainActivity"></activity>
+        <activity android:name=".ui.lobby.LobbyActivity"></activity>
+        <activity android:name=".onlineBattle.OnlineBattleActivity" />
+        <activity android:name=".MainActivity" />
         <activity
             android:name=".auth.SignUpActivity"
             android:parentActivityName=".auth.LoginActivity" />
@@ -27,7 +28,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".offlineBattle.OfflineBattle"></activity>
+        <activity android:name=".offlineBattle.OfflineBattle" />
     </application>
 
 </manifest>

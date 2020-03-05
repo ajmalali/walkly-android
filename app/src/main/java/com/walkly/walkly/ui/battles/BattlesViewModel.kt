@@ -121,7 +121,7 @@ class BattlesViewModel : ViewModel() {
                 "host" to "rand_id",
                 "players" to arrayListOf(userID),
                 "combined_player_health" to 200,
-                "enemy_health" to enemyHP
+                "enemy_health" to 300 //TODO this is hardcoded
             )
         ).addOnSuccessListener { documentReference ->
             Log.d(TAG, "DocumentSnapshot written with ID: ${documentReference.id}")

@@ -19,6 +19,7 @@ import com.walkly.walkly.models.Player
 import com.walkly.walkly.offlineBattle.OfflineBattle
 import com.walkly.walkly.onlineBattle.OnlineBattleActivity
 import com.walkly.walkly.models.Enemy
+import com.walkly.walkly.ui.lobby.LobbyActivity
 import kotlinx.android.synthetic.main.fragment_battles.*
 import kotlinx.android.synthetic.main.fragment_host_join_battle.*
 
@@ -162,9 +163,13 @@ class BattlesFragment : Fragment() {
                 battlesViewModel.hostListner(this.enemyName, this.enemyHP)
                 battlesViewModel.hostedBattleID.observe(activity!!, Observer {battle_ID->
                     Player.joinedBattle()
-                    val intent = Intent(activity, OnlineBattleActivity::class.java)
+                    val intent = Intent(activity, LobbyActivity::class.java)
                     val bundle = Bundle()
                     bundle.putString("battleId", battle_ID)
+                    bundle.putString("enemyName", this.enemyName)
+                    bundle.putString("enemyHP", this.enemyHP.toString())
+                    bundle.putString("enemyLvl", this.enemyLevel.toString())
+
                     intent.putExtras(bundle)
                     startActivity(intent)
                     activity?.finish()
