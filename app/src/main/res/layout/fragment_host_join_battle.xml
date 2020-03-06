@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/grey_300">
+
+        <!-- Header -->
+
+
+        <!-- Join/Host switch buttons bar container -->
+
+        <TextView
+            android:id="@+id/tv_enemy_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:textColor="@color/buttonPrimary"
+            android:textSize="16sp"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.68"
+            app:layout_constraintStart_toEndOf="@+id/enemy_image"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="The Big Demon" />
+
+        <ImageView
+            android:id="@+id/enemy_image"
+            android:layout_width="200dp"
+            android:layout_height="159dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
+            android:visibility="invisible"
+            app:layout_constraintBottom_toTopOf="@+id/battle_options_bar"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/boss1" />
+
+        <TextView
+            android:id="@+id/tv_enemy_health"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="@color/buttonPrimary"
+            android:textSize="16sp"
+            android:visibility="invisible"
+            app:layout_constraintStart_toEndOf="@+id/enemy_image"
+            app:layout_constraintStart_toStartOf="@+id/tv_enemy_level"
+            app:layout_constraintTop_toBottomOf="@+id/tv_enemy_level"
+            tools:text="5000 HP" />
+
+        <TextView
+            android:id="@+id/tv_enemy_level"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="@color/buttonPrimary"
+            android:textSize="16sp"
+            android:visibility="invisible"
+
+            app:layout_constraintStart_toEndOf="@+id/enemy_image"
+            app:layout_constraintStart_toStartOf="@+id/tv_enemy_name"
+            app:layout_constraintTop_toBottomOf="@+id/tv_enemy_name"
+            tools:text="Level 11" />
+
+        <View
+            android:id="@+id/header"
+            android:layout_width="match_parent"
+            android:layout_height="200dp"
+            android:background="#FFF"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/create_button"
+            android:layout_width="144dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:paddingHorizontal="6dp"
+            android:paddingVertical="4dp"
+            android:text="Create"
+            android:visibility="invisible"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.228"
+            app:layout_constraintStart_toEndOf="@+id/enemy_image"
+            app:layout_constraintTop_toBottomOf="@+id/tv_enemy_health" />
+
+        <LinearLayout
+            android:id="@+id/battle_options_bar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@drawable/rounded_layout"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/header"
+            app:layout_constraintVertical_bias="0.0">
+            <!-- global/friends switch buttons group -->
+            <RadioGroup
+                android:id="@+id/battle_radio_buttons"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:checkedButton="@id/join_button"
+                android:orientation="horizontal">
+                <!-- global switch button  -->
+                <RadioButton
+                    android:id="@+id/join_button"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/radio_selector"
+                    android:button="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="@string/join_battle"
+                    android:textColor="@drawable/radio_text_selector"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+                <!-- friends switch button -->
+                <RadioButton
+                    android:id="@+id/host_button"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:background="@drawable/radio_selector"
+                    android:button="@android:color/transparent"
+                    android:gravity="center"
+                    android:text="@string/host_battle"
+                    android:textColor="@drawable/radio_text_selector"
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
+            </RadioGroup>
+        </LinearLayout>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/battles_recycler_view"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/battle_options_bar"
+            app:layout_constraintVertical_bias="0.0"
+            tools:listitem="@layout/list_join_battles" />
+
+<!--        <TextView-->
+<!--            android:id="@+id/error_no_online_battle_found"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="@string/no_online_battle_found"-->
+<!--            android:textAlignment="center"-->
+<!--            android:textColor="@color/buttonPrimary"-->
+<!--            android:textSize="18sp"-->
+<!--            app:layout_constraintBottom_toBottomOf="@+id/battles_recycler_view"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintHorizontal_bias="0.494"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/battles_recycler_view"-->
+<!--            app:layout_constraintVertical_bias="0.224" />-->
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:indeterminateTint="#FF3B62"
+            app:layout_constraintBottom_toBottomOf="@+id/battles_recycler_view"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/battle_options_bar"
+            app:layout_constraintVertical_bias="0.0" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

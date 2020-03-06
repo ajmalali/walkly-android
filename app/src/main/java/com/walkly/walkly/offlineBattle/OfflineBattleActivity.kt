@@ -46,6 +46,7 @@ class OfflineBattle : AppCompatActivity() {
 
 //        viewModel = OfflineBattleViewModel(this, enemy)
         viewModel = ViewModelProviders.of(this, viewModelFactory)
+
             .get(OfflineBattleViewModel::class.java)
 
         use_items.setOnClickListener {
@@ -92,8 +93,11 @@ class OfflineBattle : AppCompatActivity() {
 
         // NOTE TESTED
         // Since starting time is now where the walked distance = 0
+        var steps = 0
+        tv_no_of_steps.text = "$steps / 1000"
         viewModel.walkedDistance.observe(this, Observer {
-            player_step_bar.progress += it.toInt()
+            steps += it.toInt()
+            tv_no_of_steps.text = "$steps / 1000"   // HARD CODED
             Log.d("steps = ", it.toString())
         })
 

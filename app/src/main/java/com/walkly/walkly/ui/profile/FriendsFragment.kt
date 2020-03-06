@@ -45,11 +45,8 @@ class FriendsFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_friends, container, false)
-
         friendsRecyclerView = view.findViewById(R.id.friends_recycler_view)
-
         searchField = view.findViewById(R.id.et_search)
-
         errorMessage = view.findViewById(R.id.error_no_user_found)
         errorMessage.visibility = View.GONE
 
