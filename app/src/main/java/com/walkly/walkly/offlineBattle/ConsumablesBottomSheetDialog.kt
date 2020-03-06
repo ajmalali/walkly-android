@@ -31,7 +31,7 @@ class ConsumablesBottomSheetDialog(val activity: AppCompatActivity) : BottomShee
 
         binding = DataBindingUtil.inflate(
             LayoutInflater.from(context),
-            R.layout.consumables_bottom_sheet,
+            R.layout.dialog_wear_equipment,
             null,
             false
         )

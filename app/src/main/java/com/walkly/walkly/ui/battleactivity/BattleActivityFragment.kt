@@ -35,7 +35,7 @@ class BattleActivityFragment : Fragment() {
         battleActivityViewModel = ViewModelProviders.of(this).get(BattleActivityViewModel::class.java)
 
         binding.useItems.setOnClickListener {
-            consumablesBottomSheet.show(fragmentManager, consumablesBottomSheet.tag)
+            consumablesBottomSheet.show(fragmentManager!!, consumablesBottomSheet.tag)
         }
 
         battleActivityViewModel.selectedConsumable.observe(this, Observer {

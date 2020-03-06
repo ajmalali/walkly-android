@@ -59,6 +59,7 @@
         />
 
     <TextView
+        android:id="@+id/tv_wear_equipment"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toEndOf="@id/img_avatar"
@@ -73,6 +74,7 @@
         />
 
     <TextView
+        android:id="@+id/tv_level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"

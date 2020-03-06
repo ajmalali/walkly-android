@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.walkly.walkly.models.Consumable
@@ -68,14 +69,12 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
         if (auth.currentUser != null) {
 
             // get damage player can do based on equipment
-            Player.equipment.observe(activity, androidx.lifecycle.Observer {
-                it.value.observe(activity, androidx.lifecycle.Observer {value ->
-                    playerDamage = value
-                })
+            Player.equipment.observe(activity, Observer {
+                    playerDamage = it.value
             })
         }
         // get the starting player HP
-        Player.level.observe(activity, androidx.lifecycle.Observer {
+        Player.level.observe(activity, Observer {
             basePlayerHP = it * HP_MULTIPLAYER
             currnetPlayerHP = basePlayerHP
             playerHP.value = (currnetPlayerHP / basePlayerHP) * 100
@@ -84,25 +83,25 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
             Log.d(D_TAG,  "current player hp = " + currnetPlayerHP)
         })
         // get the starting enemy HP
-        enemy.HP.observe(activity, androidx.lifecycle.Observer {
+        enemy.HP.observe(activity, Observer {
             baseEnemyHP = it.toDouble()
             currentEnemyHp = baseEnemyHP
             enemyHP.value = baseEnemyHP.toLong()
         })
         // get enemy image
-        enemy.image.observe(activity, androidx.lifecycle.Observer {
+        enemy.image.observe(activity, Observer {
             enemyImage.value = it
         })
         // get enemy damage
-        enemy.damage.observe(activity, androidx.lifecycle.Observer {
+        enemy.damage.observe(activity, Observer {
             enemyDamage = it
         })
 
 
 
         // reduce enemy HP by distance walked * equipment value
-        walkedDistance.observe(activity, androidx.lifecycle.Observer {
-            currentEnemyHp -= it
+        walkedDistance.observe(activity, Observer {
+            currentEnemyHp -= it * 10
             enemyHpPercentage = ((currentEnemyHp * 100.0) / baseEnemyHP).toLong()
             enemyHP.value = enemyHpPercentage
             Log.d(D_TAG, "distance = " + it)
