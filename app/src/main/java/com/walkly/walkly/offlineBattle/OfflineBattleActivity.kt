@@ -8,12 +8,10 @@ import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
-import com.bumptech.glide.Glide
 import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.models.Player
-import com.walkly.walkly.models.Player.getReward
 import kotlinx.android.synthetic.main.fragment_battle_activity.*
 
 class OfflineBattle : AppCompatActivity() {
@@ -48,6 +46,7 @@ class OfflineBattle : AppCompatActivity() {
         viewModel = ViewModelProviders.of(this, viewModelFactory)
 
             .get(OfflineBattleViewModel::class.java)
+        lifecycle.addObserver(viewModel)
 
         use_items.setOnClickListener {
             //            Toast.makeText(this, "coming in 418", Toast.LENGTH_LONG)

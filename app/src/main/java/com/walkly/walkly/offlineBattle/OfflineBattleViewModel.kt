@@ -1,29 +1,23 @@
 package com.walkly.walkly.offlineBattle
 
-import android.app.Activity
+import android.content.Intent
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
 import com.google.firebase.auth.FirebaseAuth
 import com.walkly.walkly.models.Consumable
 import com.walkly.walkly.models.Enemy
-import com.walkly.walkly.models.Equipment
 import com.walkly.walkly.models.Player
 import com.walkly.walkly.repositories.ConsumablesRepository
 import com.walkly.walkly.utilities.DistanceUtil
 import kotlinx.coroutines.*
-import java.time.temporal.TemporalAmount
-import java.util.*
+import java.io.Serializable
 
-class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewModel(){
+class OfflineBattleViewModel (private val activity: AppCompatActivity,
+                              enemy: Enemy) : ViewModel(),
+    LifecycleObserver {
 
     private val D_TAG = "offline-battle"
-
-    private val activity = activity
 
     // used to specify how fact enemy hits
     private val FREQuNCY = 3000L
@@ -111,6 +105,28 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
 
 
 
+    }
+
+    class OfflineServiceInfo(val enemyHealth: Int, val enemyPower: Int,
+                             val playerHealth: Int, val playerPower: Int) : Serializable
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun startBackgroundService(){
+        val extras = OfflineServiceInfo(
+            currentEnemyHp.toInt(), enemyDamage.toInt(),
+            currnetPlayerHP.toInt(), playerDamage.toInt())
+
+        Intent(activity, BackgroundOfflineBattleService::class.java).also {
+            it.putExtra("info", extras)
+            activity.startService(it)
+        }
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun StopBackgroundService(){
+        Intent(activity, BackgroundOfflineBattleService::class.java).also {
+            activity.stopService(it)
+        }
     }
 
     fun startBattle(){
