@@ -36,7 +36,11 @@ class OfflineBattle : AppCompatActivity() {
         setContentView(R.layout.fragment_battle_activity)
 
         val bundle = intent.extras
-        val enemy = Enemy( bundle.getLong("playerLlevel"), bundle.getString("enemyId"), bundle.getLong("enemyHP") , bundle.getLong("enemyDmg") )
+        lateinit var enemy: Enemy
+        bundle?.let {
+            enemy = Enemy( bundle.getLong("playerLlevel"), bundle.getString("enemyId")!!, bundle.getLong("enemyHP") , bundle.getLong("enemyDmg") )
+        }
+
 
         consumablesBottomSheetDialog =
             ConsumablesBottomSheetDialog(this)
@@ -87,7 +91,7 @@ class OfflineBattle : AppCompatActivity() {
         })
 
         viewModel.enemyImage.observe(this, Observer {
-            val imagename = "boss" + bundle.getString("enemyId")
+            val imagename = "boss" + bundle?.getString("enemyId")
             boss_bitmoji.setImageResource(resources.getIdentifier(imagename,"drawable",  this.packageName))
         })
 
