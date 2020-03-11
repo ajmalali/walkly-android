@@ -76,43 +76,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
 
 
         val btn_bg = join_button.background
-
-        Player.stamina.observe(this, Observer {
-            Log.d("stamina from map2", it.toString())
-
-            join_button.isClickable = true
-            join_button.background.alpha = 255
-
-            if(it >= 300){
-                //3 balls
-                stamina1full.visibility = View.VISIBLE
-                stamina2full.visibility = View.VISIBLE
-                stamina3full.visibility = View.VISIBLE
-
-            }else if(it >= 200 ){
-                //2 balls
-                stamina1full.visibility = View.VISIBLE
-                stamina2full.visibility = View.VISIBLE
-                stamina3full.visibility = View.INVISIBLE
-
-            }else if(it >= 100){
-                //1 ball
-                stamina1full.visibility = View.VISIBLE
-                stamina2full.visibility = View.INVISIBLE
-                stamina3full.visibility = View.INVISIBLE
-
-            }else{
-                //no balls
-                stamina1full.visibility = View.INVISIBLE
-                stamina2full.visibility = View.INVISIBLE
-                stamina3full.visibility = View.INVISIBLE
-
-                // player cannot join a battle
-                join_button.isClickable = false
-                join_button.background.alpha = 100
-            }
-
-        })
+        updateTopBar()
 
         linearLayout = bottom_sheet
         //hide the bottom sheet
@@ -217,9 +181,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                 })
 
                 BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_COLLAPSED
-                //Get the battle name from Battles[i] and set this variable to it
-                //Same for the image
-                //TV.setText(symbol.latLng.toString())
+                updateTopBar()
             }
             // }
 
@@ -270,6 +232,45 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
 
     override fun onExplanationNeeded(permissionsToExplain: List<String>) {
        // Toast.makeText(this, "NOOOOOOOOOOOOOOOO", Toast.LENGTH_LONG).show()
+    }
+
+    fun updateTopBar(){
+        Player.stamina.observe(this, Observer {
+            Log.d("stamina from map2", it.toString())
+
+            join_button.isClickable = true
+            join_button.background.alpha = 255
+
+            if(it >= 300){
+                //3 balls
+                stamina1full.visibility = View.VISIBLE
+                stamina2full.visibility = View.VISIBLE
+                stamina3full.visibility = View.VISIBLE
+
+            }else if(it >= 200 ){
+                //2 balls
+                stamina1full.visibility = View.VISIBLE
+                stamina2full.visibility = View.VISIBLE
+                stamina3full.visibility = View.INVISIBLE
+
+            }else if(it >= 100){
+                //1 ball
+                stamina1full.visibility = View.VISIBLE
+                stamina2full.visibility = View.INVISIBLE
+                stamina3full.visibility = View.INVISIBLE
+
+            }else{
+                //no balls
+                stamina1full.visibility = View.INVISIBLE
+                stamina2full.visibility = View.INVISIBLE
+                stamina3full.visibility = View.INVISIBLE
+
+                // player cannot join a battle
+                join_button.isClickable = false
+                join_button.background.alpha = 100
+            }
+
+        })
     }
 
     override fun onPermissionResult(granted: Boolean) {
