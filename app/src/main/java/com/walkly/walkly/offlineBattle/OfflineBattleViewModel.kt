@@ -70,7 +70,7 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
 
             // get damage player can do based on equipment
             Player.equipment.observe(activity, Observer {
-                    playerDamage = it.value
+                    playerDamage = it.value!!
             })
         }
         // get the starting player HP

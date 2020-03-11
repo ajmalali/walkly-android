@@ -14,7 +14,7 @@ object EquipmentRepository {
     private val userID: String = FirebaseAuth.getInstance().currentUser?.uid.toString()
     private val userDocument = db.collection("users").document(userID)
     val equipmentList = mutableListOf<Equipment>()
-    val eqIdList = mutableListOf<Equipment>()
+    private val eqIdList = mutableListOf<Equipment>()
 
     // Get Equipments of the current user
     fun getEquipment(callback: (List<Equipment>) -> Unit) {
@@ -29,8 +29,8 @@ object EquipmentRepository {
                 }
                 userDocument.collection("equipments")
                     .get()
-                    .addOnSuccessListener { result ->
-                        for (document in result) {
+                    .addOnSuccessListener { res ->
+                        for (document in res) {
                             val it: MutableIterator<Equipment> = eqIdList.iterator()
                             while (it.hasNext()) {
                                 val eq: Equipment = it.next()
@@ -50,54 +50,14 @@ object EquipmentRepository {
             }
     }
 
-    // Remove the given Equipment from the current user
-    fun removeEquipment(Equipment: Equipment, callback: (List<Equipment>) -> Unit) {
-        userDocument.collection("Equipments")
-            .document(Equipment.id)
-            .delete()
-            .addOnSuccessListener {
-                equipmentList.remove(Equipment)
-                callback(equipmentList)
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "Error deleting documents: ", exception)
-            }
-    }
-
     fun wearEquipment(Equipment: Equipment, callback: (Equipment) -> Unit) {
         userDocument.update("equipment", Equipment.id)
             .addOnSuccessListener {
                 Log.d(TAG, "Success updating Equipment")
-
             }
             .addOnFailureListener { exception ->
                 Log.d(TAG, "Error updating equipment: ", exception)
             }
 
     }
-
-
-    // Adds 3 new Equipments to the current user. just for test purposes
-//    fun initEquipment() {
-//        var ref = userDocument.collection("Equipments").document()
-//        var Equipment = Equipment("Equipment 1", 2, "image", "health", 40).addId(ref.id)
-//        ref.set(Equipment)
-//            .addOnSuccessListener {
-//                equipmentList.add(Equipment)
-//            }
-//
-//        ref = userDocument.collection("Equipments").document()
-//        Equipment = Equipment("Equipment 2", 3, "image", "attack", 30).addId(ref.id)
-//        ref.set(Equipment)
-//            .addOnSuccessListener {
-//                equipmentList.add(Equipment)
-//            }
-//
-//        ref = userDocument.collection("Equipments").document()
-//        Equipment = Equipment("Equipment 3", 3, "image", "attack", 40).addId(ref.id)
-//        ref.set(Equipment)
-//            .addOnSuccessListener {
-//                equipmentList.add(Equipment)
-//            }
-//    }
 }
