@@ -15,7 +15,6 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <service
-
             android:name=".offlineBattle.BackgroundOfflineBattleService"
             android:enabled="true"
             android:exported="false" />
@@ -35,7 +34,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".offlineBattle.OfflineBattle" />
+        <activity android:name=".offlineBattle.OfflineBattleActivity" />
     </application>
 
 </manifest>

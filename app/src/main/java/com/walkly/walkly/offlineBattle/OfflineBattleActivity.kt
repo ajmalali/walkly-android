@@ -14,7 +14,7 @@ import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.models.Player
 import kotlinx.android.synthetic.main.fragment_battle_activity.*
 
-class OfflineBattle : AppCompatActivity() {
+class OfflineBattleActivity : AppCompatActivity() {
 
     lateinit var viewModel: OfflineBattleViewModel
     private lateinit var viewModelFactory: OfflineBattleViewModelFactory
