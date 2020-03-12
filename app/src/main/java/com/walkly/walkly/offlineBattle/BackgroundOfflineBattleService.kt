@@ -2,10 +2,12 @@ package com.walkly.walkly.offlineBattle
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.os.Handler
 import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
@@ -18,6 +20,7 @@ import com.google.android.gms.fitness.request.OnDataPointListener
 import com.walkly.walkly.R
 import com.walkly.walkly.utilities.DistanceUtil
 
+
 class BackgroundOfflineBattleService : Service() {
 
     private lateinit var sensorsClient: SensorsClient
@@ -27,26 +30,43 @@ class BackgroundOfflineBattleService : Service() {
         val value = it?.getValue(Field.FIELD_STEPS)?.asInt()
         Log.d(TAG, "data point => $value")
         if (value != null) {
-            steps += value * 5 // multiplying by 5 just for testing
+            steps += value
             // player wins
             if ((steps * info.playerPower) >= info.enemyHealth){
                 Log.d(TAG, "player won")
                 NotificationManagerCompat.from(this)
-                    .notify(1, notifyBuilder.build())
-                // TODO: stop service
+                    .notify(1, winNotifyBuilder.build())
+                stopSelf()
                 // TODO: clicking notification take user to battle activity
                 //      with a suitable end battle dialog
             }
 
         }
     }
-    private val notifyBuilder = NotificationCompat.Builder(this,  CHANNEL_ID)
-        .setSmallIcon(R.drawable.ic_launcher_foreground)
-        .setContentTitle("Battle has ended")
-        .setContentText("Congrats you won! stay healthy everyday")
-        .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+    private lateinit var battleEndIntent: Intent
+    private lateinit var pendingIntent: PendingIntent
+    private lateinit var winNotifyBuilder: NotificationCompat.Builder
+    private lateinit var loseNotifyBuilder: NotificationCompat. Builder
+
 
     override fun onCreate() {
+        battleEndIntent = Intent(this, OfflineBattleActivity::class.java).apply {
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        }
+        pendingIntent = PendingIntent.getActivities(this, 0, arrayOf(battleEndIntent), 0)
+        winNotifyBuilder = NotificationCompat.Builder(this,  CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle("Battle has ended")
+            .setContentText("Congrats you won! stay healthy everyday")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(pendingIntent)
+        loseNotifyBuilder = NotificationCompat.Builder(this,  CHANNEL_ID)
+            .setSmallIcon(R.drawable.ic_launcher_foreground)
+            .setContentTitle("Battle has ended")
+            .setContentText("You lost! Keep walking to stay healthy")
+            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            .setContentIntent(pendingIntent)
+
         createNotificationChannel()
     }
 
@@ -78,14 +98,26 @@ class BackgroundOfflineBattleService : Service() {
                     Log.d(TAG, "steps listener failed", e)
                 }
         }
+        // if player exceeds the battle time he loses
 
-        // TODO damaging player logic
-        // TODO notify player on lose
+        val battleTime = info.playerHealth / info.enemyPower * info.frequency
+
+        Handler().postDelayed({
+                Log.i(TAG, "battle timeout")
+                NotificationManagerCompat.from(this)
+                    .notify(2, loseNotifyBuilder.build())
+                stopSelf()
+
+        }, battleTime)
+
 
         return START_STICKY
     }
 
+
+
     override fun onDestroy() {
+        sensorsClient.remove(listener)
         Log.d(TAG, "background service destroyed")
     }
 
