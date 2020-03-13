@@ -12,6 +12,7 @@ import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.os.postDelayed
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.SensorsClient
@@ -24,6 +25,8 @@ import com.walkly.walkly.utilities.DistanceUtil
 class BackgroundOfflineBattleService : Service() {
 
     private lateinit var sensorsClient: SensorsClient
+    private lateinit var delayedCode: Runnable
+    private val handler = Handler()
     private lateinit var info: OfflineBattleViewModel.OfflineServiceInfo
     private var steps = 0
     private val listener = OnDataPointListener {
@@ -104,13 +107,12 @@ class BackgroundOfflineBattleService : Service() {
 
         val battleTime = info.playerHealth / info.enemyPower * info.frequency
 
-        Handler().postDelayed({
-                Log.i(TAG, "battle timeout")
+        delayedCode = handler.postDelayed(battleTime, null) {
+            Log.i(TAG, "battle timeout")
 
-                createNotification(LOSE_RESULT)
-                stopSelf()
-
-        }, battleTime)
+            createNotification(LOSE_RESULT)
+            stopSelf()
+        }
 
         return START_STICKY
     }
@@ -119,6 +121,7 @@ class BackgroundOfflineBattleService : Service() {
 
     override fun onDestroy() {
         sensorsClient.remove(listener)
+        handler.removeCallbacks(delayedCode)
         Log.d(TAG, "background service destroyed")
     }
 

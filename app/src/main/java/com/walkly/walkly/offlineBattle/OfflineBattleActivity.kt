@@ -25,6 +25,7 @@ class OfflineBattleActivity : AppCompatActivity() {
 
     private lateinit var consumablesBottomSheetDialog: ConsumablesBottomSheetDialog
 
+    var steps = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -89,6 +90,7 @@ class OfflineBattleActivity : AppCompatActivity() {
             viewModel.playerHP.observe(this, Observer {
                 player_health_bar.progress = it.toInt()
                 if (it <= 0) {
+                    viewModel.battleEnded = true
                     loseDialog.show()
                     loseDialog.findViewById<Button>(R.id.button1)
                         .setOnClickListener {
@@ -102,6 +104,7 @@ class OfflineBattleActivity : AppCompatActivity() {
                 if (it <= 0) {
                     enemy.level.value?.toInt()?.let { it1 -> Player.updatePoints(it1) }
                     getReward()
+                    viewModel.battleEnded = true
                     winDialog.show()
                     winDialog.findViewById<Button>(R.id.btn_collect)
                         .setOnClickListener {
@@ -123,15 +126,16 @@ class OfflineBattleActivity : AppCompatActivity() {
 
             // NOTE TESTED
             // Since starting time is now where the walked distance = 0
-            var steps = 0
-            tv_no_of_steps.text = "$steps / 1000"
+
+            tv_no_of_steps.text = "$steps"
             viewModel.walkedDistance.observe(this, Observer {
                 steps += it.toInt()
-                tv_no_of_steps.text = "$steps / 1000"   // HARD CODED
+                tv_no_of_steps.text = "$steps"
                 Log.d("steps = ", it.toString())
             })
 
             leaveBattle.setOnClickListener {
+                viewModel.battleEnded = true
                 leaveDialog.show()
                 leaveDialog.findViewById<Button>(R.id.btn_leave)
                     .setOnClickListener {
