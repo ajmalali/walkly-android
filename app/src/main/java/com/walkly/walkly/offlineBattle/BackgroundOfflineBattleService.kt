@@ -34,40 +34,42 @@ class BackgroundOfflineBattleService : Service() {
             // player wins
             if ((steps * info.playerPower) >= info.enemyHealth){
                 Log.d(TAG, "player won")
-                NotificationManagerCompat.from(this)
-                    .notify(1, winNotifyBuilder.build())
+
+                createNotification(WIN_RESULT)
                 stopSelf()
-                // TODO: clicking notification take user to battle activity
-                //      with a suitable end battle dialog
+
             }
 
         }
     }
     private lateinit var battleEndIntent: Intent
     private lateinit var pendingIntent: PendingIntent
-    private lateinit var winNotifyBuilder: NotificationCompat.Builder
-    private lateinit var loseNotifyBuilder: NotificationCompat. Builder
-
+    private lateinit var notifyBuilder: NotificationCompat.Builder
 
     override fun onCreate() {
+        createNotificationChannel()
+    }
+
+    private fun createNotification(result: String){
         battleEndIntent = Intent(this, OfflineBattleActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            putExtra("result", result)
         }
-        pendingIntent = PendingIntent.getActivities(this, 0, arrayOf(battleEndIntent), 0)
-        winNotifyBuilder = NotificationCompat.Builder(this,  CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("Battle has ended")
-            .setContentText("Congrats you won! stay healthy everyday")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
-        loseNotifyBuilder = NotificationCompat.Builder(this,  CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_launcher_foreground)
-            .setContentTitle("Battle has ended")
-            .setContentText("You lost! Keep walking to stay healthy")
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
+        pendingIntent = PendingIntent.getActivity(this, 0, battleEndIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        notifyBuilder = NotificationCompat.Builder(this,  CHANNEL_ID).apply {
+            setSmallIcon(R.drawable.ic_launcher_foreground)
+            setContentTitle(NOTIFY_TITLE)
+            if (result == WIN_RESULT)
+                setContentText(WIN_NOTIFY_CONTENT)
+            else
+                setContentText(LOSE_NOTIFY_CONTENT)
+            setPriority(NotificationCompat.PRIORITY_DEFAULT)
+            setContentIntent(pendingIntent)
+        }
 
-        createNotificationChannel()
+        NotificationManagerCompat.from(this)
+            .notify(1, notifyBuilder.build())
+
     }
 
     private fun createNotificationChannel() {
@@ -104,12 +106,11 @@ class BackgroundOfflineBattleService : Service() {
 
         Handler().postDelayed({
                 Log.i(TAG, "battle timeout")
-                NotificationManagerCompat.from(this)
-                    .notify(2, loseNotifyBuilder.build())
+
+                createNotification(LOSE_RESULT)
                 stopSelf()
 
         }, battleTime)
-
 
         return START_STICKY
     }
@@ -128,5 +129,10 @@ class BackgroundOfflineBattleService : Service() {
     companion object{
         private const val TAG = "Offline_Battle_Service"
         private const val CHANNEL_ID = "battle status"
+        private const val NOTIFY_TITLE = "Battle has ended"
+        private const val WIN_NOTIFY_CONTENT = "Congrats you won! stay healthy everyday"
+        private const val LOSE_NOTIFY_CONTENT = "You lost! Keep walking to stay healthy"
+        private const val LOSE_RESULT = "lose"
+        private const val WIN_RESULT = "win"
     }
 }

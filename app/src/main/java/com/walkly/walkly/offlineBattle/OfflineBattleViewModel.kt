@@ -20,7 +20,7 @@ class OfflineBattleViewModel (private val activity: AppCompatActivity,
     private val D_TAG = "offline-battle"
 
     // used to specify how fact enemy hits
-    private val FREQuNCY = 3000L
+    private val FREQUENCY = 3000L
     // used to convert player level to HP
     private val HP_MULTIPLAYER = 100
 
@@ -108,13 +108,13 @@ class OfflineBattleViewModel (private val activity: AppCompatActivity,
     }
 
     class OfflineServiceInfo(val enemyHealth: Int, val enemyPower: Int,
-                             val playerHealth: Int, val playerPower: Int) : Serializable
+                             val playerHealth: Int, val playerPower: Int, val frequency: Long) : Serializable
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     fun startBackgroundService(){
         val extras = OfflineServiceInfo(
             currentEnemyHp.toInt(), enemyDamage.toInt(),
-            currnetPlayerHP.toInt(), playerDamage.toInt())
+            currnetPlayerHP.toInt(), 1, FREQUENCY)
 
         Intent(activity, BackgroundOfflineBattleService::class.java).also {
             it.putExtra("info", extras)
@@ -141,7 +141,7 @@ class OfflineBattleViewModel (private val activity: AppCompatActivity,
     suspend fun damagePlayer(){
         var playerHppercentage = 100L
         while (true){
-            delay(FREQuNCY)
+            delay(FREQUENCY)
             Log.d(D_TAG, "current player hp = " + currnetPlayerHP)
             currnetPlayerHP -= enemyDamage
             playerHppercentage = (currnetPlayerHP * 100) / basePlayerHP

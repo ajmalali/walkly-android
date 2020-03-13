@@ -32,104 +32,129 @@ class OfflineBattleActivity : AppCompatActivity() {
         supportActionBar?.hide()
 
         setContentView(R.layout.fragment_battle_activity)
-
-        val bundle = intent.extras
-        val enemy = Enemy( bundle.getLong("playerLlevel"), bundle.getString("enemyId"), bundle.getLong("enemyHP") , bundle.getLong("enemyDmg") )
-
-        consumablesBottomSheetDialog =
-            ConsumablesBottomSheetDialog(this)
-
-
-        viewModelFactory = OfflineBattleViewModelFactory(this, enemy)
-
-//        viewModel = OfflineBattleViewModel(this, enemy)
-        viewModel = ViewModelProviders.of(this, viewModelFactory)
-
-            .get(OfflineBattleViewModel::class.java)
-        lifecycle.addObserver(viewModel)
-
-        use_items.setOnClickListener {
-            //            Toast.makeText(this, "coming in 418", Toast.LENGTH_LONG)
-//                .show()
-            consumablesBottomSheetDialog.show(supportFragmentManager, "consumableSheet")
-        }
-
-        viewModel.selectedConsumable.observe(this, Observer {
-            useConsumable(it.type, it.value)
-            viewModel.removeSelectedConsumable()
-        })
-
-
-
-        viewModel.playerHP.observe(this, Observer {
-            player_health_bar.progress = it.toInt()
-            if (it <= 0) {
-                loseDialog.show()
-                loseDialog.findViewById<Button>(R.id.button1)
-                    .setOnClickListener {
-                        endGame()
-                    }
-            }
-        })
-
-        viewModel.enemyHP.observe(this, Observer {
-            enemy_health_bar.progress = it.toInt()
-            if (it <= 0) {
-                enemy.level.value?.toInt()?.let { it1 -> Player.updatePoints(it1) }
-                getReward()
-                winDialog.show()
-                winDialog.findViewById<Button>(R.id.btn_collect)
-                    .setOnClickListener {
-                        endGame()
-                    }
-            }
-        })
-
-        viewModel.enemyImage.observe(this, Observer {
-            val imagename = "boss" + bundle.getString("enemyId")
-            boss_bitmoji.setImageResource(resources.getIdentifier(imagename,"drawable",  this.packageName))
-        })
-
-        // NOTE TESTED
-        // Since starting time is now where the walked distance = 0
-        var steps = 0
-        tv_no_of_steps.text = "$steps / 1000"
-        viewModel.walkedDistance.observe(this, Observer {
-            steps += it.toInt()
-            tv_no_of_steps.text = "$steps / 1000"   // HARD CODED
-            Log.d("steps = ", it.toString())
-        })
-
-        leaveBattle.setOnClickListener {
-            leaveDialog.show()
-            leaveDialog.findViewById<Button>(R.id.btn_leave)
-                .setOnClickListener {
-                    endGame()
-                }
-            leaveDialog.findViewById<Button>(R.id.btn_stay)
-                .setOnClickListener {
-                    leaveDialog.dismiss()
-                }
-        }
-
+        winDialog = AlertDialog.Builder(this)
+            .setView(R.layout.dialog_battle_won)
+            .create()
         loseDialog = AlertDialog.Builder(this)
             .setView(R.layout.dialog_battle_lost)
             .create()
 
-        leaveDialog = AlertDialog.Builder(this)
-            .setView(R.layout.dialog_battle_leave)
-            .create()
+        val bundle = intent.extras
+        if (bundle["result"] == "lose"){
+            loseDialog.show()
+            loseDialog.findViewById<Button>(R.id.button1)
+                .setOnClickListener {
+                    endGame()
+                }
+        } else if (bundle["result"] == "win") {
+            winDialog.show()
+            winDialog.findViewById<Button>(R.id.btn_collect)
+                .setOnClickListener {
+                    endGame()
+                }
+        } else {
+            val enemy = Enemy(
+                bundle.getLong("playerLlevel"),
+                bundle.getString("enemyId"),
+                bundle.getLong("enemyHP"),
+                bundle.getLong("enemyDmg")
+            )
 
-        // TODO: construct dialog based real reward
+            consumablesBottomSheetDialog =
+                ConsumablesBottomSheetDialog(this)
 
-        winDialog = AlertDialog.Builder(this)
-            .setView(R.layout.dialog_battle_won)
-            .create()
 
-        viewModel.startBattle()
+            viewModelFactory = OfflineBattleViewModelFactory(this, enemy)
+
+//        viewModel = OfflineBattleViewModel(this, enemy)
+            viewModel = ViewModelProviders.of(this, viewModelFactory)
+
+                .get(OfflineBattleViewModel::class.java)
+            lifecycle.addObserver(viewModel)
+
+            use_items.setOnClickListener {
+                //            Toast.makeText(this, "coming in 418", Toast.LENGTH_LONG)
+//                .show()
+                consumablesBottomSheetDialog.show(supportFragmentManager, "consumableSheet")
+            }
+
+            viewModel.selectedConsumable.observe(this, Observer {
+                useConsumable(it.type, it.value)
+                viewModel.removeSelectedConsumable()
+            })
+
+
+
+            viewModel.playerHP.observe(this, Observer {
+                player_health_bar.progress = it.toInt()
+                if (it <= 0) {
+                    loseDialog.show()
+                    loseDialog.findViewById<Button>(R.id.button1)
+                        .setOnClickListener {
+                            endGame()
+                        }
+                }
+            })
+
+            viewModel.enemyHP.observe(this, Observer {
+                enemy_health_bar.progress = it.toInt()
+                if (it <= 0) {
+                    enemy.level.value?.toInt()?.let { it1 -> Player.updatePoints(it1) }
+                    getReward()
+                    winDialog.show()
+                    winDialog.findViewById<Button>(R.id.btn_collect)
+                        .setOnClickListener {
+                            endGame()
+                        }
+                }
+            })
+
+            viewModel.enemyImage.observe(this, Observer {
+                val imagename = "boss" + bundle.getString("enemyId")
+                boss_bitmoji.setImageResource(
+                    resources.getIdentifier(
+                        imagename,
+                        "drawable",
+                        this.packageName
+                    )
+                )
+            })
+
+            // NOTE TESTED
+            // Since starting time is now where the walked distance = 0
+            var steps = 0
+            tv_no_of_steps.text = "$steps / 1000"
+            viewModel.walkedDistance.observe(this, Observer {
+                steps += it.toInt()
+                tv_no_of_steps.text = "$steps / 1000"   // HARD CODED
+                Log.d("steps = ", it.toString())
+            })
+
+            leaveBattle.setOnClickListener {
+                leaveDialog.show()
+                leaveDialog.findViewById<Button>(R.id.btn_leave)
+                    .setOnClickListener {
+                        endGame()
+                    }
+                leaveDialog.findViewById<Button>(R.id.btn_stay)
+                    .setOnClickListener {
+                        leaveDialog.dismiss()
+                    }
+            }
+
+
+            leaveDialog = AlertDialog.Builder(this)
+                .setView(R.layout.dialog_battle_leave)
+                .create()
+
+
+
+            viewModel.startBattle()
+        }
     }
 
     private fun getReward() {
+        // TODO: construct win dialog based real reward
 
     }
 
