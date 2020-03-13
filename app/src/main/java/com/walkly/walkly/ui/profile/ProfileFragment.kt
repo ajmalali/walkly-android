@@ -75,7 +75,7 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
         val rv = dialogView.findViewById(R.id.equipment_recycler_view) as RecyclerView
         rv.layoutManager = GridLayoutManager(context,2,GridLayoutManager.HORIZONTAL,false)
 
-        profileViewModel.equipments.observe(this, Observer { list ->
+        profileViewModel.equipments.observe(viewLifecycleOwner, Observer { list ->
             dialogView.progressBar.visibility = View.GONE
             if (list.isEmpty()) {
                 Log.e("here","EMPTYYY")
@@ -120,7 +120,7 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
         tv_wear_equipment.setOnClickListener {
             wearEquipmentDialog.show()
             //To make the background for the dialog Transparent
-            wearEquipmentDialog.window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+            wearEquipmentDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
         tv_view_achievements.setOnClickListener {
             view.findNavController().navigate(R.id.action_navigation_profile_to_achievementFragment)

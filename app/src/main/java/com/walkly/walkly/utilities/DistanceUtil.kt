@@ -1,7 +1,11 @@
 package com.walkly.walkly.utilities
 
+import android.Manifest
 import android.app.Activity
+import android.os.Build
 import android.util.Log
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
@@ -11,6 +15,7 @@ import com.google.android.gms.fitness.data.Field
 import com.google.android.gms.fitness.request.OnDataPointListener
 import com.google.android.gms.fitness.request.SensorRequest
 import java.util.concurrent.TimeUnit
+
 
 class DistanceUtil(
     private val activity: Activity,
@@ -44,6 +49,9 @@ class DistanceUtil(
                 GoogleSignIn.getLastSignedInAccount(activity),
                 stepsFitnessOptions
             )
+            ActivityCompat.requestPermissions(activity,
+                arrayOf(Manifest.permission.ACTIVITY_RECOGNITION),
+                GOOGLE_FIT_PERMISSIONS_REQUEST_CODE);
         }
         getStepsSince()
     }

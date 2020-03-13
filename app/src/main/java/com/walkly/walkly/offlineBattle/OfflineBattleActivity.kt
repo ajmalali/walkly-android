@@ -40,6 +40,7 @@ class OfflineBattleActivity : AppCompatActivity() {
             .create()
 
         val bundle = intent.extras
+
         if (bundle["result"] == "lose"){
             loseDialog.show()
             loseDialog.findViewById<Button>(R.id.button1)
@@ -53,12 +54,12 @@ class OfflineBattleActivity : AppCompatActivity() {
                     endGame()
                 }
         } else {
-            val enemy = Enemy(
-                bundle.getLong("playerLlevel"),
-                bundle.getString("enemyId"),
-                bundle.getLong("enemyHP"),
-                bundle.getLong("enemyDmg")
-            )
+
+        lateinit var enemy: Enemy
+        bundle?.let {
+            enemy = Enemy( bundle.getLong("playerLlevel"), bundle.getString("enemyId")!!, bundle.getLong("enemyHP") , bundle.getLong("enemyDmg") )
+        }
+
 
             consumablesBottomSheetDialog =
                 ConsumablesBottomSheetDialog(this)
@@ -141,6 +142,7 @@ class OfflineBattleActivity : AppCompatActivity() {
                         leaveDialog.dismiss()
                     }
             }
+
 
 
             leaveDialog = AlertDialog.Builder(this)
