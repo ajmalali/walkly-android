@@ -41,13 +41,13 @@ class OfflineBattleActivity : AppCompatActivity() {
 
         val bundle = intent.extras
 
-        if (bundle["result"] == "lose"){
+        if (bundle?.getString("result") == "lose"){
             loseDialog.show()
             loseDialog.findViewById<Button>(R.id.button1)
                 .setOnClickListener {
                     endGame()
                 }
-        } else if (bundle["result"] == "win") {
+        } else if (bundle?.getString("result") == "win") {
             winDialog.show()
             winDialog.findViewById<Button>(R.id.btn_collect)
                 .setOnClickListener {
@@ -111,7 +111,7 @@ class OfflineBattleActivity : AppCompatActivity() {
             })
 
             viewModel.enemyImage.observe(this, Observer {
-                val imagename = "boss" + bundle.getString("enemyId")
+                val imagename = "boss" + bundle?.getString("enemyId")
                 boss_bitmoji.setImageResource(
                     resources.getIdentifier(
                         imagename,
