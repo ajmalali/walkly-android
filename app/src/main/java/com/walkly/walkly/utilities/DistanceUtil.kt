@@ -10,15 +10,10 @@ import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
 import com.google.android.gms.fitness.FitnessOptions
-import com.google.android.gms.fitness.data.DataSource
 import com.google.android.gms.fitness.data.DataType
 import com.google.android.gms.fitness.data.Field
-import com.google.android.gms.fitness.request.DataReadRequest
 import com.google.android.gms.fitness.request.OnDataPointListener
 import com.google.android.gms.fitness.request.SensorRequest
-import com.google.android.gms.fitness.result.DataReadResponse
-import kotlinx.coroutines.*
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 
@@ -28,13 +23,19 @@ class DistanceUtil(
 ) {
     private val GOOGLE_FIT_PERMISSIONS_REQUEST_CODE = System.identityHashCode(activity).and(0xFFF)
 
-    private val stepsFitnessOptions = FitnessOptions.builder()
-        .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
-        .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA)
-        .build()
-
     private val googleSignInAccount =
         GoogleSignIn.getAccountForExtension(activity, stepsFitnessOptions)
+
+    companion object {
+        val stepsFitnessOptions: FitnessOptions = FitnessOptions.builder()
+            .addDataType(DataType.TYPE_STEP_COUNT_DELTA, FitnessOptions.ACCESS_READ)
+            .addDataType(DataType.AGGREGATE_STEP_COUNT_DELTA)
+            .build()
+        val request: SensorRequest = SensorRequest.Builder()
+            .setDataType(DataType.TYPE_STEP_COUNT_DELTA)
+            .setSamplingRate(1000, TimeUnit.MILLISECONDS)
+            .build()
+    }
 
     init {
         if (!GoogleSignIn.hasPermissions(
@@ -57,10 +58,6 @@ class DistanceUtil(
 
     private fun getStepsSince() {
         Log.d("Distance", "starting updates")
-        val request = SensorRequest.Builder()
-            .setDataType(DataType.TYPE_STEP_COUNT_DELTA)
-            .setSamplingRate(1000, TimeUnit.MILLISECONDS)
-            .build()
 
         val listener = OnDataPointListener { dataPoint ->
             Log.d("DistanceUtil", "onDataPoint")
@@ -78,5 +75,4 @@ class DistanceUtil(
             }
 
     }
-
 }
