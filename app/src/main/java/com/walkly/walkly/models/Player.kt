@@ -9,13 +9,14 @@ data class Player(
     var stamina: Long? = 300,
     var points: Long? = 0,
     var progress: Long? = 0,
-    var lastUpdate: String? = ""
+    var lastUpdate: String? = "",
+    var photoURL: String? = ""
 ) {
+    // Add other collections list
     var id: String = ""
     var friendList: MutableList<Friend>? = null
     var equipmentList: MutableList<Equipment>? = null
-    var phoneNumber: String? = ""
-    var photoURL: String? = ""
+
 
 //    private var update = false
 //    private val job = Job()

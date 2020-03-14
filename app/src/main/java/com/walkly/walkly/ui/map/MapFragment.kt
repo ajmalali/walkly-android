@@ -59,60 +59,60 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Mapbox.getInstance(activity!!.applicationContext, getString(R.string.access_token))
+        Mapbox.getInstance(requireActivity().applicationContext, getString(R.string.access_token))
         v =  inflater.inflate(R.layout.fragment_map, container, false)
         return v
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Player.level.observe(this, Observer {
-            user_level.text = "LEVEL $it"
-        })
-
-        Player.progress.observe(this, Observer {
-            progressBar2.progress = it.toInt()
-        })
+//        Player.level.observe(this, Observer {
+//            user_level.text = "LEVEL $it"
+//        })
+//
+//        Player.progress.observe(this, Observer {
+//            progressBar2.progress = it.toInt()
+//        })
 
 
         val btn_bg = join_button.background
 
-        Player.stamina.observe(this, Observer {
-            Log.d("stamina from map2", it.toString())
-
-            join_button.isClickable = true
-            join_button.background.alpha = 255
-
-            if(it >= 300){
-                //3 balls
-                stamina1full.visibility = View.VISIBLE
-                stamina2full.visibility = View.VISIBLE
-                stamina3full.visibility = View.VISIBLE
-
-            }else if(it >= 200 ){
-                //2 balls
-                stamina1full.visibility = View.VISIBLE
-                stamina2full.visibility = View.VISIBLE
-                stamina3full.visibility = View.INVISIBLE
-
-            }else if(it >= 100){
-                //1 ball
-                stamina1full.visibility = View.VISIBLE
-                stamina2full.visibility = View.INVISIBLE
-                stamina3full.visibility = View.INVISIBLE
-
-            }else{
-                //no balls
-                stamina1full.visibility = View.INVISIBLE
-                stamina2full.visibility = View.INVISIBLE
-                stamina3full.visibility = View.INVISIBLE
-
-                // player cannot join a battle
-                join_button.isClickable = false
-                join_button.background.alpha = 100
-            }
-
-        })
+//        Player.stamina.observe(this, Observer {
+//            Log.d("stamina from map2", it.toString())
+//
+//            join_button.isClickable = true
+//            join_button.background.alpha = 255
+//
+//            if(it >= 300){
+//                //3 balls
+//                stamina1full.visibility = View.VISIBLE
+//                stamina2full.visibility = View.VISIBLE
+//                stamina3full.visibility = View.VISIBLE
+//
+//            }else if(it >= 200 ){
+//                //2 balls
+//                stamina1full.visibility = View.VISIBLE
+//                stamina2full.visibility = View.VISIBLE
+//                stamina3full.visibility = View.INVISIBLE
+//
+//            }else if(it >= 100){
+//                //1 ball
+//                stamina1full.visibility = View.VISIBLE
+//                stamina2full.visibility = View.INVISIBLE
+//                stamina3full.visibility = View.INVISIBLE
+//
+//            }else{
+//                //no balls
+//                stamina1full.visibility = View.INVISIBLE
+//                stamina2full.visibility = View.INVISIBLE
+//                stamina3full.visibility = View.INVISIBLE
+//
+//                // player cannot join a battle
+//                join_button.isClickable = false
+//                join_button.background.alpha = 100
+//            }
+//
+//        })
 
         linearLayout = bottom_sheet
         //hide the bottom sheet
@@ -121,7 +121,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         mapView?.getMapAsync(this)
     }
     override fun onMapReady(mapboxMap: MapboxMap) {
-        enemies = generateRandomEnemies(Player.level.value!!)
+//        enemies = generateRandomEnemies(Player.level.value!!)
         this.mapboxMap = mapboxMap
         mapboxMap.uiSettings.isLogoEnabled = false
         mapboxMap.uiSettings.isZoomGesturesEnabled = false
@@ -184,7 +184,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                 join_button.setOnClickListener {
 
                     // decreasing energy on battle join
-                    Player.joinedBattle()
+//                    Player.joinedBattle()
                     val intent = Intent(activity, OfflineBattle::class.java)
                     val bundle = Bundle()
                     bundle.putString("enemyId", curen.id.value)
@@ -231,15 +231,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
     @SuppressLint("MissingPermission")
     private fun enableLocationComponent(loadedMapStyle: Style) {
         // Check if permissions are enabled and if not request
-        if (PermissionsManager.areLocationPermissionsGranted(activity!!.applicationContext)) {
+        if (PermissionsManager.areLocationPermissionsGranted(requireActivity().applicationContext)) {
 
             // Create and customize the LocationComponent's options
-            val customLocationComponentOptions = LocationComponentOptions.builder(activity!!.applicationContext)
+            val customLocationComponentOptions = LocationComponentOptions.builder(requireActivity().applicationContext)
                 .trackingGesturesManagement(true)
-                .accuracyColor(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
+                .accuracyColor(ContextCompat.getColor(requireActivity().applicationContext, R.color.colorPrimary))
                 .build()
 
-            val locationComponentActivationOptions = LocationComponentActivationOptions.builder(activity!!.applicationContext, loadedMapStyle)
+            val locationComponentActivationOptions = LocationComponentActivationOptions.builder(requireActivity().applicationContext, loadedMapStyle)
                 .locationComponentOptions(customLocationComponentOptions)
                 .build()
 
@@ -260,7 +260,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
             }
         } else {
             permissionsManager = PermissionsManager(this)
-            permissionsManager.requestLocationPermissions(activity!!)
+            permissionsManager.requestLocationPermissions(requireActivity())
         }
     }
 
@@ -276,7 +276,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         if (granted) {
             enableLocationComponent(mapboxMap.style!!)
         } else {
-          Toast.makeText(activity!!.applicationContext, "YESSSSS", Toast.LENGTH_LONG).show()
+          Toast.makeText(requireActivity().applicationContext, "YESSSSS", Toast.LENGTH_LONG).show()
           //finish()
         }
     }

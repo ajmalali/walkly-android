@@ -33,7 +33,7 @@ class MainActivity : AppCompatActivity(){
     private val cal = Calendar.getInstance()
 
     private val walkedDistance = MutableLiveData<Float>()
-    val stamina = Player.stamina
+//    val stamina = Player.stamina
 
     private val auth = FirebaseAuth.getInstance()
 
@@ -107,19 +107,19 @@ class MainActivity : AppCompatActivity(){
 
         if (auth.currentUser != null){
 
-            stamina.observe(this, Observer {stamina ->
-                Log.d("Stamina: ", stamina.toString())
-            })
+//            stamina.observe(this, Observer {stamina ->
+//                Log.d("Stamina: ", stamina.toString())
+//            })
 
 
         } else {
             auth.addAuthStateListener {
                 if (it.currentUser != null){
 
-                    stamina.observe(this, Observer {stamina ->
-                        Log.d("Stamina: ", stamina.toString())
-                    })
-                    Player.startStaminaUpdates()
+//                    stamina.observe(this, Observer {stamina ->
+//                        Log.d("Stamina: ", stamina.toString())
+//                    })
+//                    Player.startStaminaUpdates()
                 }
             }
         }
@@ -132,18 +132,18 @@ class MainActivity : AppCompatActivity(){
     override fun onStop() {
         super.onStop()
 
-        if (auth.currentUser != null)
-            Player.stopStaminaUpdates()
-
-        if (auth.currentUser != null)
-            Player.syncModel()
+//        if (auth.currentUser != null)
+//            Player.stopStaminaUpdates()
+//
+//        if (auth.currentUser != null)
+//            Player.syncModel()
     }
 
 
     override fun onStart() {
         super.onStart()
 
-        if (auth.currentUser != null)
-            Player.startStaminaUpdates()
+//        if (auth.currentUser != null)
+//            Player.startStaminaUpdates()
     }
 }

@@ -69,19 +69,19 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
         if (auth.currentUser != null) {
 
             // get damage player can do based on equipment
-            Player.equipment.observe(activity, Observer {
-                    playerDamage = it.value
-            })
+//            Player.equipment.observe(activity, Observer {
+//                    playerDamage = it.value
+//            })
         }
         // get the starting player HP
-        Player.level.observe(activity, Observer {
-            basePlayerHP = it * HP_MULTIPLAYER
-            currnetPlayerHP = basePlayerHP
-            playerHP.value = (currnetPlayerHP / basePlayerHP) * 100
-            Log.d(D_TAG, "it is = " + it)
-            Log.d(D_TAG, "base player hp = " + baseEnemyHP)
-            Log.d(D_TAG,  "current player hp = " + currnetPlayerHP)
-        })
+//        Player.level.observe(activity, Observer {
+//            basePlayerHP = it * HP_MULTIPLAYER
+//            currnetPlayerHP = basePlayerHP
+//            playerHP.value = (currnetPlayerHP / basePlayerHP) * 100
+//            Log.d(D_TAG, "it is = " + it)
+//            Log.d(D_TAG, "base player hp = " + baseEnemyHP)
+//            Log.d(D_TAG,  "current player hp = " + currnetPlayerHP)
+//        })
         // get the starting enemy HP
         enemy.HP.observe(activity, Observer {
             baseEnemyHP = it.toDouble()
