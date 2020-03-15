@@ -8,7 +8,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.activity.viewModels
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
 import com.walkly.walkly.MainActivity
@@ -46,7 +45,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         if (currentUser != null) {
             // TODO: Show loading
             scope.launch {
-                PlayerRepository.initCurrentPlayer()
+                PlayerRepository.initPlayer()
                 withContext(Main) {
                     updateUI(currentUser)
                 }
@@ -67,7 +66,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         scope.launch {
             try {
                 val user = viewModel.signIn(email, password)
-                PlayerRepository.initCurrentPlayer()
+                PlayerRepository.initPlayer()
                 withContext(Main) {
                     updateUI(user)
                 }

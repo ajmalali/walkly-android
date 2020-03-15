@@ -43,7 +43,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         if (currentUser != null) {
             // TODO: Show loading
             scope.launch {
-                PlayerRepository.initCurrentPlayer()
+                PlayerRepository.initPlayer()
                 withContext(Main) {
                     updateUI(currentUser)
                 }
@@ -62,7 +62,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
             try {
                 val name = fieldName.text.toString()
                 val user = viewModel.createAccount(email, password, name)
-                PlayerRepository.initCurrentPlayer()
+                PlayerRepository.initPlayer()
                 withContext(Main) {
                     updateUI(user)
                 }

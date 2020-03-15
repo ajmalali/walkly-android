@@ -9,12 +9,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.walkly.walkly.models.Equipment
+import com.walkly.walkly.models.Player
 import kotlinx.coroutines.tasks.await
 
 private const val TAG = "AuthViewModel"
-
-//// TODO: Refactor
-//private const val DEFAULT_WEAPON = "386arrzpkvO1j8Q4etKx"
 
 class AuthViewModel : ViewModel() {
 
@@ -37,7 +35,7 @@ class AuthViewModel : ViewModel() {
         // [END sign_in_with_email]
     }
 
-    // Creates an account for the user, sets profile picture, and calls initializePlayer
+    // Creates an account for the user, sets profile picture, and calls initializePlayerInDB
     suspend fun createAccount(email: String, password: String, name: String): FirebaseUser? {
         var user: FirebaseUser? = null
         // [START create_user_with_email]
@@ -82,7 +80,8 @@ class AuthViewModel : ViewModel() {
                 "phoneNumber" to user.phoneNumber,
                 "lastUpdate" to null,
                 "photoURL" to user.photoUrl.toString()
-            ), SetOptions.merge()).await()
+            ), SetOptions.merge()
+        ).await()
 
         Log.d(TAG, "new user document was initialized successfully \nuid=${user.uid}")
     }

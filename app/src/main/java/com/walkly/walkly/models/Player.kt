@@ -12,7 +12,7 @@ data class Player(
     var lastUpdate: String? = "",
     var photoURL: String? = ""
 ) {
-    // Add other collections list
+    // TODO: Add other collections list
     var id: String = ""
     var friendList: MutableList<Friend>? = null
     var equipmentList: MutableList<Equipment>? = null

@@ -5,15 +5,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.firestore.ktx.getField
+import com.google.firebase.firestore.ktx.toObject
 import com.walkly.walkly.models.Equipment
-import com.walkly.walkly.models.Friend
 import com.walkly.walkly.models.Player
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlin.math.floor
+import com.walkly.walkly.models.Friend
 
 private const val TAG = "PlayerRepository"
 
@@ -30,6 +30,7 @@ private const val MAX_STAMINA = 300
 
 object PlayerRepository {
 
+    // Use this player object everywhere to access the current player by using the getPlayer() method
     private lateinit var currentPlayer: Player
 
     private val db = FirebaseFirestore.getInstance()
@@ -37,16 +38,12 @@ object PlayerRepository {
     private val userDocument = db.collection("users").document(userID)
     private val scope = CoroutineScope(IO)
 
-    init {
-
-    }
-
     fun getPlayer(): Player {
         return currentPlayer
     }
 
     // Gets the current player from firestore and initializes the currentPlayer object
-    suspend fun initCurrentPlayer() {
+    suspend fun initPlayer() {
         try {
             val snapshot = userDocument.get().await()
             deserialize(snapshot)
@@ -59,7 +56,7 @@ object PlayerRepository {
     }
 
     private fun deserialize(snapshot: DocumentSnapshot) {
-        currentPlayer = snapshot.toObject(Player::class.java)!!
+        currentPlayer = snapshot.toObject<Player>()!!
         currentPlayer.apply {
             id = snapshot.id
         }
@@ -68,16 +65,16 @@ object PlayerRepository {
     // Get friends from friends sub-collection of the current player
     suspend fun getFriends() {
         val friends = userDocument.collection("friends").get().await()
-        for (friend in friends.documents) {
-            currentPlayer.friendList?.add(friend.toObject(Friend::class.java)!!)
+        for (snapshot in friends.documents) {
+            currentPlayer.friendList?.add(snapshot.toObject<Friend>()!!)
         }
     }
 
     // Get equipment from equipment sub-collection of the current player
     suspend fun getEquipments() {
-        val equipments = userDocument.collection("friends").get().await()
+        val equipments = userDocument.collection("equipment").get().await()
         for (equipment in equipments.documents) {
-            currentPlayer.equipmentList?.add(equipment.toObject(Equipment::class.java)!!)
+            currentPlayer.equipmentList?.add(equipment.toObject<Equipment>()!!)
         }
     }
 
