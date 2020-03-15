@@ -23,10 +23,6 @@ private const val LEVEL_INCREMENT = 150
 private const val ENEMY_LEVEL_POINTS = 100L
 // max level difference between battle level and battle reward.
 private const val LEVEL_DIFF = 3
-// update every 36 seconds
-private const val INTERVAL = 36000L
-// max of 3 stamina points
-private const val MAX_STAMINA = 300
 
 object PlayerRepository {
 
@@ -119,11 +115,21 @@ object PlayerRepository {
         }
     }
 
-    fun joinedBattle() {
-        currentPlayer.stamina = currentPlayer.stamina?.minus(100)
-    }
-
-    fun syncModel() {
-        userDocument.update("stamina", currentPlayer.stamina)
+    // Syncs the current player with DB or store locally when no internet
+    // TODO: Store locally when no internet
+    suspend fun syncPlayer() {
+        userDocument.update(
+            hashMapOf<String, Any?>(
+            "name" to currentPlayer.name,
+            "email" to currentPlayer.email,
+            "stamina" to currentPlayer.stamina,
+            "points" to currentPlayer.points,
+            "level" to currentPlayer.level,
+            "progress" to currentPlayer.progress,
+            "currentEquipment" to currentPlayer.currentEquipment,
+            "currentHP" to currentPlayer.currentHP,
+            "lastUpdate" to null, // TODO: Still required?
+            "photoURL" to currentPlayer.photoURL.toString()
+        )).await()
     }
 }

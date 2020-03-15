@@ -77,7 +77,6 @@ class AuthViewModel : ViewModel() {
                 // TODO: Change to default equipment
                 "currentEquipment" to null,
                 "currentHP" to 100,
-                "phoneNumber" to user.phoneNumber,
                 "lastUpdate" to null,
                 "photoURL" to user.photoUrl.toString()
             ), SetOptions.merge()

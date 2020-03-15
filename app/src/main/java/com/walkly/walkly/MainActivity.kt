@@ -2,7 +2,6 @@ package com.walkly.walkly
 
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -14,26 +13,30 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.walkly.walkly.models.Equipment
-import com.walkly.walkly.models.Player
-import com.walkly.walkly.utilities.DistanceUtil
-import com.walkly.walkly.utilities.LocationUtil
+import com.google.firebase.firestore.FirebaseFirestoreException
+import com.walkly.walkly.repositories.PlayerRepository
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
-class MainActivity : AppCompatActivity(){
+private const val TAG = "MainActivity"
+
+class MainActivity : AppCompatActivity() {
 
     // nav bar colors
-    val SOLID_WHITE = Color.parseColor("#FFFFFF")
-    val WHITE = Color.parseColor("#8AFFFFFF")
+    private val SOLID_WHITE = Color.parseColor("#FFFFFF")
+    private val WHITE = Color.parseColor("#8AFFFFFF")
 
     private val cal = Calendar.getInstance()
 
     private val walkedDistance = MutableLiveData<Float>()
-//    val stamina = Player.stamina
+    private val currentPlayer = PlayerRepository.getPlayer()
+    val stamina = currentPlayer.stamina
 
     private val auth = FirebaseAuth.getInstance()
 
@@ -41,7 +44,7 @@ class MainActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-    //    val navView: BottomNavigationView = findViewById(R.id.nav_view)
+        //    val navView: BottomNavigationView = findViewById(R.id.nav_view)
 
         val navController = findNavController(R.id.nav_host_fragment)
         // Passing each menu ID as a set of Ids because each
@@ -53,7 +56,7 @@ class MainActivity : AppCompatActivity(){
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         supportActionBar?.hide()
-    //    navView.setupWithNavController(navController)
+        //    navView.setupWithNavController(navController)
 
         // TODO: refactor this
         // bottom nav
@@ -105,22 +108,9 @@ class MainActivity : AppCompatActivity(){
         // the player model should not be initialized before valid sign in
         // the authentication activity shall not has this code to avoid auth checking in if statements
 
-        if (auth.currentUser != null){
-
-//            stamina.observe(this, Observer {stamina ->
-//                Log.d("Stamina: ", stamina.toString())
-//            })
-
-
-        } else {
-            auth.addAuthStateListener {
-                if (it.currentUser != null){
-
-//                    stamina.observe(this, Observer {stamina ->
-//                        Log.d("Stamina: ", stamina.toString())
-//                    })
-//                    Player.startStaminaUpdates()
-                }
+        auth.addAuthStateListener {
+            if (it.currentUser != null) {
+                currentPlayer.startStaminaUpdates()
             }
         }
 
@@ -128,22 +118,34 @@ class MainActivity : AppCompatActivity(){
 
     }
 
-
-    override fun onStop() {
-        super.onStop()
-
-//        if (auth.currentUser != null)
-//            Player.stopStaminaUpdates()
-//
-//        if (auth.currentUser != null)
-//            Player.syncModel()
+    // TODO: (UI) Change to snackbar
+    private suspend fun displayMessage(message: String?) {
+        withContext(Dispatchers.Main) {
+            // If sign in fails, display a message to the user.
+            Log.d(TAG, "Error occurred")
+            Toast.makeText(
+                baseContext, message ?: "No error message",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
 
-    override fun onStart() {
-        super.onStart()
+    override fun onStop() {
+        super.onStop()
+        if (auth.currentUser != null) {
+            currentPlayer.stopStaminaUpdates()
 
-//        if (auth.currentUser != null)
-//            Player.startStaminaUpdates()
+            CoroutineScope(IO).launch {
+                try {
+                    PlayerRepository.syncPlayer()
+                } catch (e: FirebaseFirestoreException) {
+                    displayMessage(e.message)
+                } catch (e: Exception) {
+                    displayMessage(e.message)
+                }
+            }
+
+        }
     }
 }
