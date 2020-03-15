@@ -13,6 +13,7 @@ import android.widget.LinearLayout
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableResource
@@ -35,23 +36,23 @@ import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.models.Enemy.Companion.generateRandomEnemies
-import com.walkly.walkly.models.Player
 import com.walkly.walkly.offlineBattle.OfflineBattle
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_map.*
 import kotlin.random.Random
 
 class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
-    lateinit var v : View
+    lateinit var v: View
     private var permissionsManager: PermissionsManager = PermissionsManager(this)
-    private lateinit var mapViewModel: MapViewModel
+    private val mapViewModel: MapViewModel by viewModels()
+
     private lateinit var linearLayout: LinearLayout
     private lateinit var mapboxMap: MapboxMap
-    private lateinit var  symbol1: Symbol
-    private lateinit var  symbol2: Symbol
-    private lateinit var  symbol3: Symbol
-    private lateinit var  camera: LatLng
-    private lateinit var  enemies: Array<Enemy>
+    private lateinit var symbol1: Symbol
+    private lateinit var symbol2: Symbol
+    private lateinit var symbol3: Symbol
+    private lateinit var camera: LatLng
+    private lateinit var enemies: Array<Enemy>
 
 
     override fun onCreateView(
@@ -60,59 +61,48 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         savedInstanceState: Bundle?
     ): View? {
         Mapbox.getInstance(requireActivity().applicationContext, getString(R.string.access_token))
-        v =  inflater.inflate(R.layout.fragment_map, container, false)
+        v = inflater.inflate(R.layout.fragment_map, container, false)
         return v
     }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val level = "LEVEL ${mapViewModel.currentPlayer.level}"
+        user_level.text = level
+        progressBar2.progress = mapViewModel.currentPlayer.progress?.toInt() ?: 0
 
-//        Player.level.observe(this, Observer {
-//            user_level.text = "LEVEL $it"
-//        })
-//
-//        Player.progress.observe(this, Observer {
-//            progressBar2.progress = it.toInt()
-//        })
-
-
+        val stamina = mapViewModel.currentPlayer.stamina
         val btn_bg = join_button.background
 
-//        Player.stamina.observe(this, Observer {
-//            Log.d("stamina from map2", it.toString())
-//
-//            join_button.isClickable = true
-//            join_button.background.alpha = 255
-//
-//            if(it >= 300){
-//                //3 balls
-//                stamina1full.visibility = View.VISIBLE
-//                stamina2full.visibility = View.VISIBLE
-//                stamina3full.visibility = View.VISIBLE
-//
-//            }else if(it >= 200 ){
-//                //2 balls
-//                stamina1full.visibility = View.VISIBLE
-//                stamina2full.visibility = View.VISIBLE
-//                stamina3full.visibility = View.INVISIBLE
-//
-//            }else if(it >= 100){
-//                //1 ball
-//                stamina1full.visibility = View.VISIBLE
-//                stamina2full.visibility = View.INVISIBLE
-//                stamina3full.visibility = View.INVISIBLE
-//
-//            }else{
-//                //no balls
-//                stamina1full.visibility = View.INVISIBLE
-//                stamina2full.visibility = View.INVISIBLE
-//                stamina3full.visibility = View.INVISIBLE
-//
-//                // player cannot join a battle
-//                join_button.isClickable = false
-//                join_button.background.alpha = 100
-//            }
-//
-//        })
+        Log.d("stamina from map2", stamina.toString())
+
+        join_button.isClickable = true
+        join_button.background.alpha = 255
+
+        stamina?.let {
+            if (stamina <= 100) {
+                // no balls
+                stamina1full.visibility = View.INVISIBLE
+                stamina2full.visibility = View.INVISIBLE
+                stamina3full.visibility = View.INVISIBLE
+
+                // player cannot join a battle
+                join_button.isClickable = false
+                join_button.background.alpha = 100
+            } else {
+                if (stamina >= 300) {
+                    stamina3full.visibility = View.VISIBLE
+                }
+
+                if (stamina >= 200) {
+                    stamina2full.visibility = View.VISIBLE
+                }
+
+                if (stamina >= 100) {
+                    stamina1full.visibility = View.VISIBLE
+                }
+            }
+        }
 
         linearLayout = bottom_sheet
         //hide the bottom sheet
@@ -120,14 +110,17 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         mapView?.onCreate(savedInstanceState)
         mapView?.getMapAsync(this)
     }
+
     override fun onMapReady(mapboxMap: MapboxMap) {
-//        enemies = generateRandomEnemies(Player.level.value!!)
+        enemies = generateRandomEnemies(mapViewModel.currentPlayer.level ?: 1)
         this.mapboxMap = mapboxMap
         mapboxMap.uiSettings.isLogoEnabled = false
         mapboxMap.uiSettings.isZoomGesturesEnabled = false
         mapboxMap.uiSettings.isQuickZoomGesturesEnabled = false
         mapboxMap.uiSettings.isScrollGesturesEnabled = false
-        mapboxMap.setStyle(Style.Builder().fromUri("mapbox://styles/mapbox/cjerxnqt3cgvp2rmyuxbeqme7"))
+        mapboxMap.setStyle(
+            Style.Builder().fromUri("mapbox://styles/mapbox/cjerxnqt3cgvp2rmyuxbeqme7")
+        )
         {
             enableLocationComponent(it)
             val symbolManager = SymbolManager(mapView, mapboxMap, it)
@@ -140,34 +133,42 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                 //TODO: create a function to automate the process
                 //TODO: find a way to use custom icons in the API
                 var enemy_1_json = JsonObject()
-                enemy_1_json.addProperty("num",0)
+                enemy_1_json.addProperty("num", 0)
                 var enemy_2_json = JsonObject()
-                enemy_2_json.addProperty("num",1)
+                enemy_2_json.addProperty("num", 1)
                 var enemy_3_json = JsonObject()
-                enemy_3_json.addProperty("num",2)
-                var latRandom = Random.nextDouble(-1.0, 1.0)/1000
-                var lonRandom = Random.nextDouble(-1.0, 1.0)/1000
+                enemy_3_json.addProperty("num", 2)
+                var latRandom = Random.nextDouble(-1.0, 1.0) / 1000
+                var lonRandom = Random.nextDouble(-1.0, 1.0) / 1000
                 symbol1 = symbolManager.create(
                     SymbolOptions()
                         .withData(enemy_1_json)
-                        .withLatLng(LatLng(camera.latitude+ latRandom, camera.longitude+lonRandom))
+                        .withLatLng(
+                            LatLng(
+                                camera.latitude + latRandom,
+                                camera.longitude + lonRandom
+                            )
+                        )
                         .withIconImage("zoo-15")
-                        .withIconSize(2.5f))
+                        .withIconSize(2.5f)
+                )
 
 
                 symbol2 = symbolManager.create(
                     SymbolOptions()
                         .withData(enemy_2_json)
-                        .withLatLng(LatLng(camera.latitude+latRandom, camera.longitude))
+                        .withLatLng(LatLng(camera.latitude + latRandom, camera.longitude))
                         .withIconImage("fire-station-15")
-                        .withIconSize(2.5f))
+                        .withIconSize(2.5f)
+                )
 
                 symbol3 = symbolManager.create(
                     SymbolOptions()
                         .withData(enemy_3_json)
-                        .withLatLng(LatLng(camera.latitude, camera.longitude+lonRandom))
+                        .withLatLng(LatLng(camera.latitude, camera.longitude + lonRandom))
                         .withIconImage("rocket-15")
-                        .withIconSize(2.5f))
+                        .withIconSize(2.5f)
+                )
                 Log.d("mapchange:", camera.toString())
 
 
@@ -184,7 +185,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                 join_button.setOnClickListener {
 
                     // decreasing energy on battle join
-//                    Player.joinedBattle()
+                    mapViewModel.currentPlayer.joinBattle()
                     val intent = Intent(activity, OfflineBattle::class.java)
                     val bundle = Bundle()
                     bundle.putString("enemyId", curen.id.value)
@@ -199,18 +200,24 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                     bottom_sheet_text.setText(it.toString())
                 })
                 curen.level.observe(this, Observer {
-                    bottom_sheet_lvl.setText("Level: "+ it.toString())
+                    bottom_sheet_lvl.setText("Level: " + it.toString())
                 })
                 curen.HP.observe(this, Observer {
-                    bottom_sheet_health.setText("HP: "+it.toString())
+                    bottom_sheet_health.setText("HP: " + it.toString())
                 })
 
                 curen.id.observe(this, Observer {
                     val imagename = "boss" + it
-                    bossgif.setImageResource(resources.getIdentifier(imagename,"drawable",  activity?.packageName))
+                    bossgif.setImageResource(
+                        resources.getIdentifier(
+                            imagename,
+                            "drawable",
+                            activity?.packageName
+                        )
+                    )
                 })
 
-                curen.image.observe(this, Observer{
+                curen.image.observe(this, Observer {
 //                  TODO: there's a weird bug, simply passing the image name from the databse doesn't work, current fix is concatinating the enemy's id with its ID as seen in the preceding code block
 //                  bossgif.setImageResource(resources.getIdentifier(it.toString(),"drawable",  activity?.packageName))
 
@@ -234,12 +241,21 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         if (PermissionsManager.areLocationPermissionsGranted(requireActivity().applicationContext)) {
 
             // Create and customize the LocationComponent's options
-            val customLocationComponentOptions = LocationComponentOptions.builder(requireActivity().applicationContext)
-                .trackingGesturesManagement(true)
-                .accuracyColor(ContextCompat.getColor(requireActivity().applicationContext, R.color.colorPrimary))
-                .build()
+            val customLocationComponentOptions =
+                LocationComponentOptions.builder(requireActivity().applicationContext)
+                    .trackingGesturesManagement(true)
+                    .accuracyColor(
+                        ContextCompat.getColor(
+                            requireActivity().applicationContext,
+                            R.color.colorPrimary
+                        )
+                    )
+                    .build()
 
-            val locationComponentActivationOptions = LocationComponentActivationOptions.builder(requireActivity().applicationContext, loadedMapStyle)
+            val locationComponentActivationOptions = LocationComponentActivationOptions.builder(
+                    requireActivity().applicationContext,
+                    loadedMapStyle
+                )
                 .locationComponentOptions(customLocationComponentOptions)
                 .build()
 
@@ -264,20 +280,25 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         }
     }
 
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
         permissionsManager.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onExplanationNeeded(permissionsToExplain: List<String>) {
-       // Toast.makeText(this, "NOOOOOOOOOOOOOOOO", Toast.LENGTH_LONG).show()
+        // Toast.makeText(this, "NOOOOOOOOOOOOOOOO", Toast.LENGTH_LONG).show()
     }
 
     override fun onPermissionResult(granted: Boolean) {
         if (granted) {
             enableLocationComponent(mapboxMap.style!!)
         } else {
-          Toast.makeText(requireActivity().applicationContext, "YESSSSS", Toast.LENGTH_LONG).show()
-          //finish()
+            Toast.makeText(requireActivity().applicationContext, "YESSSSS", Toast.LENGTH_LONG)
+                .show()
+            //finish()
         }
     }
 
