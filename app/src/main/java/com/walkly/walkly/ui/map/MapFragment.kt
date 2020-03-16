@@ -3,7 +3,6 @@ package com.walkly.walkly.ui.map
 
 import android.annotation.SuppressLint
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,8 +14,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableResource
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.JsonObject
 import com.mapbox.android.core.permissions.PermissionsListener
@@ -36,7 +33,7 @@ import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.models.Enemy.Companion.generateRandomEnemies
-import com.walkly.walkly.offlineBattle.OfflineBattle
+import com.walkly.walkly.offlineBattle.OfflineBattleActivity
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_map.*
 import kotlin.random.Random
@@ -186,7 +183,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
 
                     // decreasing energy on battle join
                     mapViewModel.currentPlayer.joinBattle()
-                    val intent = Intent(activity, OfflineBattle::class.java)
+                    val intent = Intent(activity, OfflineBattleActivity::class.java)
                     val bundle = Bundle()
                     bundle.putString("enemyId", curen.id.value)
                     bundle.putLong("enemyHP", curen.HP.value!!)
@@ -194,7 +191,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                     bundle.putString("enemyLvl", curen.level.value.toString())
                     intent.putExtras(bundle)
                     startActivity(intent)
-                    activity?.finish()
+//                    activity?.finish()
                 }
                 curen.name.observe(this, Observer {
                     bottom_sheet_text.setText(it.toString())

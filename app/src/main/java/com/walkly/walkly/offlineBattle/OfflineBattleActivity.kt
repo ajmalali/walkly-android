@@ -15,7 +15,7 @@ import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.models.Player
 import kotlinx.android.synthetic.main.fragment_battle_activity.*
 
-class OfflineBattle : AppCompatActivity() {
+class OfflineBattleActivity : AppCompatActivity() {
 
     lateinit var viewModel: OfflineBattleViewModel
     private lateinit var viewModelFactory: OfflineBattleViewModelFactory
@@ -37,7 +37,12 @@ class OfflineBattle : AppCompatActivity() {
         val bundle = intent.extras
         lateinit var enemy: Enemy
         bundle?.let {
-            enemy = Enemy( bundle.getLong("playerLlevel"), bundle.getString("enemyId")!!, bundle.getLong("enemyHP") , bundle.getLong("enemyDmg") )
+            enemy = Enemy(
+                bundle.getLong("enemyLvl"),
+                bundle.getString("enemyId")!!,
+                bundle.getLong("enemyHP"),
+                bundle.getLong("enemyDmg")
+            )
         }
 
 
@@ -91,7 +96,13 @@ class OfflineBattle : AppCompatActivity() {
 
         viewModel.enemyImage.observe(this, Observer {
             val imagename = "boss" + bundle?.getString("enemyId")
-            boss_bitmoji.setImageResource(resources.getIdentifier(imagename,"drawable",  this.packageName))
+            boss_bitmoji.setImageResource(
+                resources.getIdentifier(
+                    imagename,
+                    "drawable",
+                    this.packageName
+                )
+            )
         })
 
         // NOTE TESTED

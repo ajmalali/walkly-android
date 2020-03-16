@@ -1,9 +1,7 @@
 package com.walkly.walkly.ui.battles
 
-import android.graphics.Color
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,13 +12,9 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Battle
-import com.walkly.walkly.models.OnlineBattle
-import com.walkly.walkly.models.Player
-import com.walkly.walkly.offlineBattle.OfflineBattle
 import com.walkly.walkly.onlineBattle.OnlineBattleActivity
 import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.ui.lobby.LobbyActivity
-import kotlinx.android.synthetic.main.fragment_battles.*
 import kotlinx.android.synthetic.main.fragment_host_join_battle.*
 
 class BattlesFragment : Fragment() {

@@ -1,15 +1,5 @@
 package com.walkly.walkly.models
 
-import android.util.Log
-import com.walkly.walkly.repositories.PlayerRepository
-import kotlinx.coroutines.*
-
-// max of 3 stamina points
-private const val MAX_STAMINA = 300
-
-// update every 36 seconds (idk why 36)
-private const val INTERVAL = 36000L
-
 private const val TAG = "class Player"
 
 data class Player(
@@ -28,26 +18,6 @@ data class Player(
     var id: String = ""
     var friendList: MutableList<Friend>? = null
     var equipmentList: MutableList<Equipment>? = null
-
-    private var update = false
-    private val job = Job()
-    private val scope = CoroutineScope(Dispatchers.Main + job)
-
-    fun stopStaminaUpdates() {
-        update = false
-    }
-
-    // Increases the stamina of the current player every 36 seconds
-    fun startStaminaUpdates() {
-        update = true
-        scope.launch {
-            while (update && stamina?.compareTo(MAX_STAMINA)!! < 0) {
-                delay(INTERVAL)
-                stamina = stamina?.inc()
-                Log.d(TAG, "Current stamina: $stamina")
-            }
-        }
-    }
 
     fun joinBattle() {
         stamina = stamina?.minus(100)

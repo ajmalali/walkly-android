@@ -17,12 +17,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.walkly.walkly.repositories.PlayerRepository
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
+
+// max of 3 stamina points
+private const val MAX_STAMINA = 300
+
+// update every 36 seconds (idk why 36)
+private const val INTERVAL = 3600L
 
 private const val TAG = "MainActivity"
 
@@ -35,8 +38,13 @@ class MainActivity : AppCompatActivity() {
     private val cal = Calendar.getInstance()
 
     private val walkedDistance = MutableLiveData<Float>()
+
     private val currentPlayer = PlayerRepository.getPlayer()
-    val stamina = currentPlayer.stamina
+    private val stamina = currentPlayer.stamina
+
+    private var update = false
+    private val job = Job()
+    private val scope = CoroutineScope(Dispatchers.Default + job)
 
     private val auth = FirebaseAuth.getInstance()
 
@@ -97,26 +105,9 @@ class MainActivity : AppCompatActivity() {
         btn_map.setTextColor(SOLID_WHITE)
         btn_map.compoundDrawableTintList = ColorStateList.valueOf(SOLID_WHITE)
 
-
-        walkedDistance.observe(this, Observer {
-            Log.d("Distance_walked steps", it.toString())
-            Toast.makeText(this, "steps are $it", Toast.LENGTH_LONG).show()
-        })
-
         cal.add(Calendar.MINUTE, -1000)
-
-        // the player model should not be initialized before valid sign in
-        // the authentication activity shall not has this code to avoid auth checking in if statements
-
-        auth.addAuthStateListener {
-            if (it.currentUser != null) {
-                currentPlayer.startStaminaUpdates()
-            }
-        }
-
-        // TODO: if connected to internet cache rewards locally
-
     }
+
 
     // TODO: (UI) Change to snackbar
     private suspend fun displayMessage(message: String?) {
@@ -130,14 +121,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    override fun onStart() {
+        super.onStart()
+        // the player model should not be initialized before valid sign in
+        // the authentication activity shall not has this code to avoid auth checking in if statements
 
+        // TODO: if connected to internet cache rewards locally
+        auth.addAuthStateListener {
+            it.currentUser?.let {
+                startStaminaUpdates()
+            }
+        }
+    }
+
+    // Sync player to DB before closing
     override fun onStop() {
         super.onStop()
-        if (auth.currentUser != null) {
-            currentPlayer.stopStaminaUpdates()
-
+        auth.currentUser?.let {
             CoroutineScope(IO).launch {
                 try {
+                    stopStaminaUpdates()
                     PlayerRepository.syncPlayer()
                 } catch (e: FirebaseFirestoreException) {
                     displayMessage(e.message)
@@ -148,4 +151,22 @@ class MainActivity : AppCompatActivity() {
 
         }
     }
+
+    private fun stopStaminaUpdates() {
+        update = false
+    }
+
+    // Increases the stamina of the current player every 36 seconds
+    private fun startStaminaUpdates() {
+        update = true
+        scope.launch {
+            while (update && currentPlayer.stamina?.compareTo(MAX_STAMINA)!! < 0) {
+                delay(INTERVAL)
+                currentPlayer.stamina = currentPlayer.stamina?.inc()
+                Log.d(TAG, "Current stamina: ${currentPlayer.stamina}")
+            }
+        }
+    }
+
+
 }

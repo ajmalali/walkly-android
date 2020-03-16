@@ -12,9 +12,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.walkly.walkly.R
 import com.walkly.walkly.databinding.ConsumablesBottomSheetBinding
 import com.walkly.walkly.models.Consumable
-import com.walkly.walkly.offlineBattle.ConsumableAdapter
-import com.walkly.walkly.offlineBattle.OfflineBattle
-import com.walkly.walkly.offlineBattle.OfflineBattleViewModel
 
 class ConsumablesBottomSheetDialog(val activity: AppCompatActivity) : BottomSheetDialogFragment(), ConsumableAdapter.OnConsumableUseListener {
 
@@ -49,9 +46,9 @@ class ConsumablesBottomSheetDialog(val activity: AppCompatActivity) : BottomShee
 
 //        battleActivityViewModel = ViewModelProviders.of(activity).get(BattleActivityViewModel::class.java)
 
-        battleActivityViewModel = (activity as OfflineBattle).viewModel
+        battleActivityViewModel = (activity as OfflineBattleActivity).viewModel
 
-        battleActivityViewModel.consumables.observe(this, Observer { list ->
+        battleActivityViewModel.consumables.observe(viewLifecycleOwner, Observer { list ->
             binding.progressBar.visibility = View.GONE
             binding.errorMessage.visibility = View.GONE
 
