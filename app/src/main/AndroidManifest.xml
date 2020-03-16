@@ -14,13 +14,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".ui.lobby.LobbyActivity"></activity>
+        <activity android:name=".ui.lobby.LobbyActivity" />
         <activity android:name=".onlineBattle.OnlineBattleActivity" />
         <activity android:name=".MainActivity" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".auth.SignUpActivity"
             android:parentActivityName=".auth.LoginActivity" />
         <activity
+            android:windowSoftInputMode="adjustResize"
             android:name=".auth.LoginActivity"
             android:label="@string/app_name">
             <intent-filter>
