@@ -64,42 +64,48 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val level = "LEVEL ${mapViewModel.currentPlayer.level}"
-        user_level.text = level
-        progressBar2.progress = mapViewModel.currentPlayer.progress?.toInt() ?: 0
 
-        val stamina = mapViewModel.currentPlayer.stamina
-        val btn_bg = join_button.background
+        mapViewModel.level.observe(viewLifecycleOwner, Observer {
+            val level = "LEVEL $it"
+            user_level.text = level
+        })
 
-        Log.d("stamina from map2", stamina.toString())
+        mapViewModel.progress.observe(viewLifecycleOwner, Observer {
+            player_progress.progress = it?.toInt() ?: 0
+        })
 
-        join_button.isClickable = true
-        join_button.background.alpha = 255
+        mapViewModel.stamina.observe(viewLifecycleOwner, Observer {
+            val stamina = it
+            join_button.isClickable = true
+            join_button.background.alpha = 255
 
-        stamina?.let {
-            if (stamina <= 100) {
-                // no balls
-                stamina1full.visibility = View.INVISIBLE
-                stamina2full.visibility = View.INVISIBLE
-                stamina3full.visibility = View.INVISIBLE
+            stamina?.let {
+                if (stamina <= 100) {
+                    // no balls
+                    stamina1full.visibility = View.INVISIBLE
+                    stamina2full.visibility = View.INVISIBLE
+                    stamina3full.visibility = View.INVISIBLE
 
-                // player cannot join a battle
-                join_button.isClickable = false
-                join_button.background.alpha = 100
-            } else {
-                if (stamina >= 300) {
-                    stamina3full.visibility = View.VISIBLE
-                }
+                    // player cannot join a battle
+                    join_button.isClickable = false
+                    join_button.background.alpha = 100
+                } else {
+                    if (stamina >= 300) {
+                        stamina3full.visibility = View.VISIBLE
+                    }
 
-                if (stamina >= 200) {
-                    stamina2full.visibility = View.VISIBLE
-                }
+                    if (stamina >= 200) {
+                        stamina2full.visibility = View.VISIBLE
+                    }
 
-                if (stamina >= 100) {
-                    stamina1full.visibility = View.VISIBLE
+                    if (stamina >= 100) {
+                        stamina1full.visibility = View.VISIBLE
+                    }
                 }
             }
-        }
+
+            Log.d("Stamina from map", stamina.toString())
+        })
 
         linearLayout = bottom_sheet
         //hide the bottom sheet

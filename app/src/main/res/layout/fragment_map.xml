@@ -36,8 +36,8 @@
             android:layout_width="75dp"
             android:layout_height="wrap_content"
             mapbox:layout_constraintStart_toStartOf="parent"
-            mapbox:layout_constraintEnd_toStartOf="@id/progressBar2"
-            mapbox:layout_constraintTop_toTopOf="@id/progressBar2"
+            mapbox:layout_constraintEnd_toStartOf="@id/player_progress"
+            mapbox:layout_constraintTop_toTopOf="@id/player_progress"
             android:text="LEVEL 1"
             android:layout_marginLeft="16dp"
             android:textColor="#FFFFFF"
@@ -45,7 +45,7 @@
             />
 
         <ProgressBar
-            android:id="@+id/progressBar2"
+            android:id="@+id/player_progress"
             style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="258dp"
             android:layout_height="12dp"
@@ -73,7 +73,7 @@
             android:background="@drawable/staminacircle"
             android:visibility="invisible"
             mapbox:layout_constraintStart_toStartOf="parent"
-            mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+            mapbox:layout_constraintTop_toBottomOf="@+id/player_progress" />
 
 
         <ImageView
@@ -85,7 +85,7 @@
             android:background="@drawable/staminacircle"
             android:visibility="invisible"
             mapbox:layout_constraintStart_toEndOf="@+id/stamina1full"
-            mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+            mapbox:layout_constraintTop_toBottomOf="@+id/player_progress" />
 
         <ImageView
             android:id="@+id/stamina3full"
@@ -96,7 +96,7 @@
             android:background="@drawable/staminacircle"
             android:visibility="invisible"
             mapbox:layout_constraintStart_toEndOf="@+id/stamina2full"
-            mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+            mapbox:layout_constraintTop_toBottomOf="@+id/player_progress" />
 
         <ImageView
             android:id="@+id/stamina1empty"
@@ -107,7 +107,7 @@
             android:layout_marginTop="4dp"
             android:background="@drawable/staminacircleempty"
             mapbox:layout_constraintStart_toStartOf="parent"
-            mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+            mapbox:layout_constraintTop_toBottomOf="@+id/player_progress" />
 
 
         <ImageView
@@ -118,7 +118,7 @@
             android:layout_marginTop="4dp"
             android:background="@drawable/staminacircleempty"
             mapbox:layout_constraintStart_toEndOf="@+id/stamina1empty"
-            mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+            mapbox:layout_constraintTop_toBottomOf="@+id/player_progress" />
 
         <ImageView
             android:id="@+id/stamina3empty"
@@ -128,7 +128,7 @@
             android:layout_marginTop="4dp"
             android:background="@drawable/staminacircleempty"
             mapbox:layout_constraintStart_toEndOf="@+id/stamina2empty"
-            mapbox:layout_constraintTop_toBottomOf="@+id/progressBar2" />
+            mapbox:layout_constraintTop_toBottomOf="@+id/player_progress" />
 
 
 
