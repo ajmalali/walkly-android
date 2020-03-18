@@ -23,6 +23,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.walkly.walkly.R
 import com.walkly.walkly.auth.LoginActivity
+import com.walkly.walkly.models.Player
 import com.walkly.walkly.repositories.EquipmentRepository.equipmentList
 import kotlinx.android.synthetic.main.dialog_wear_equipment.view.*
 import kotlinx.android.synthetic.main.fragment_profile.*
@@ -172,6 +173,7 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
     override fun onEquipmentClick(position: Int) {
         val equipment = adapter.equipmentList[position]
         profileViewModel.selectEquipment(equipment)
+        Player.equipment.value = equipment
         wearEquipmentDialog.dismiss()
         }
 }

@@ -67,7 +67,8 @@ class OfflineBattleViewModel (private val activity: AppCompatActivity,
 
             // get damage player can do based on equipment
             Player.equipment.observe(activity, Observer {
-                    playerDamage = it.value
+                    playerDamage = it.value!!
+                    Log.d(D_TAG,"player damage: $playerDamage")
             })
         }
         // get the starting player HP
