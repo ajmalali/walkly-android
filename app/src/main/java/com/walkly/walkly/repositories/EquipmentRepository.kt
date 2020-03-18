@@ -51,7 +51,7 @@ object EquipmentRepository {
     }
 
     fun wearEquipment(Equipment: Equipment, callback: (Equipment) -> Unit) {
-        userDocument.update("equipment", Equipment.id)
+        userDocument.update("equipped_weapon", Equipment.id)
             .addOnSuccessListener {
                 Log.d(TAG, "Success updating Equipment")
             }

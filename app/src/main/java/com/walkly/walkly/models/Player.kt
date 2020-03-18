@@ -71,8 +71,10 @@ object Player  {
                 level.value = snapshot.data?.get("level") as Long
                 progress.value = snapshot.data?.get("progress") as Long
                 points = snapshot.data?.get("points") as Long
-                equipment.value = Equipment(snapshot.data?.get("equipped_weapon") as String)
-
+                var equipped:Equipment = Equipment(snapshot.data?.get("equipped_weapon") as String)
+                firestore.collection("equipments").document(equipped.name!!).get().addOnSuccessListener {
+                    equipment.value = it.toObject(Equipment::class.java)
+                }
             } else {
                 Log.d("Player", "listener data is null")
             }
