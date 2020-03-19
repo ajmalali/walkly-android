@@ -6,14 +6,12 @@ import com.google.firebase.firestore.DocumentSnapshot
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.google.firebase.firestore.ktx.toObject
-import com.walkly.walkly.models.Equipment
-import com.walkly.walkly.models.Player
+import com.walkly.walkly.models.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlin.math.floor
-import com.walkly.walkly.models.Friend
 
 private const val TAG = "PlayerRepository"
 
@@ -58,37 +56,30 @@ object PlayerRepository {
         }
     }
 
-    // Get friends from friends sub-collection of the current player
-    suspend fun getFriends() {
-        val friends = userDocument.collection("friends").get().await()
-        for (snapshot in friends.documents) {
-            currentPlayer.friendList?.add(snapshot.toObject<Friend>()!!)
-        }
-    }
-
-    // Get equipment from equipment sub-collection of the current player
-    suspend fun getEquipments() {
-        val equipments = userDocument.collection("equipment").get().await()
-        for (equipment in equipments.documents) {
-            currentPlayer.equipmentList?.add(equipment.toObject<Equipment>()!!)
-        }
-    }
-
-    // Updates local player object in real time
-    private fun initListeners() {
-        userDocument.addSnapshotListener { snapshot, exception ->
-            if (exception != null) {
-                Log.e(TAG, "Player listen failed", exception)
-                return@addSnapshotListener
-            }
-
-            if (snapshot != null && snapshot.exists()) {
-                currentPlayer = snapshot.toObject(Player::class.java)!!
-            } else {
-                Log.d(TAG, "listener data is null")
-            }
-        }
-    }
+//    // Get friends from friends sub-collection of the current player
+//    suspend fun getFriends() {
+//        val friends = userDocument.collection("friends").get().await()
+//        for (snapshot in friends.documents) {
+//            currentPlayer.friendList?.add(snapshot.toObject<Friend>()!!)
+//        }
+//    }
+//
+//    // Get equipment from equipment sub-collection of the current player
+//    suspend fun getEquipments() {
+//        val equipments = userDocument.collection("equipment").get().await()
+//        for (equipment in equipments.documents) {
+//            currentPlayer.equipmentList?.add(equipment.toObject<Equipment>()!!)
+//        }
+//    }
+//
+//
+//    // Get achievements from achievements sub-collection of the current player
+//    suspend fun getAchievements() {
+//        val achievements = userDocument.collection("achievements").get().await()
+//        for (achievement in achievements.documents) {
+//            currentPlayer.achievementList?.add(achievement.toObject<Achievement>()!!)
+//        }
+//    }
 
     // TODO: calculate progress form points
     // to save computation time calculate it and store it every time points change

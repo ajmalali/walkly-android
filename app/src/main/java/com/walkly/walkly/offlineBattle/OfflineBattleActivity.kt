@@ -11,19 +11,18 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
 import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
-import com.walkly.walkly.models.Player
 import com.walkly.walkly.utilities.DistanceUtil
 import kotlinx.android.synthetic.main.fragment_battle_activity.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.util.*
+
+private const val TAG = "OfflineBattleActivity"
 
 class OfflineBattleActivity : AppCompatActivity() {
 
@@ -52,7 +51,7 @@ class OfflineBattleActivity : AppCompatActivity() {
         var enemy: Enemy? = null
         bundle?.let {
             enemy = Enemy(
-                bundle.getLong("enemyLvl"),
+                bundle.getString("enemyLvl")?.toLong()!!,
                 bundle.getString("enemyId")!!,
                 bundle.getLong("enemyHP"),
                 bundle.getLong("enemyDmg")
@@ -65,15 +64,13 @@ class OfflineBattleActivity : AppCompatActivity() {
 
         consumablesBottomSheetDialog = ConsumablesBottomSheetDialog(this)
 
+        viewModel.selectedConsumable.observe(this, Observer {
+            viewModel.useConsumable(it.type, it.value)
+        })
+
         use_items.setOnClickListener {
             consumablesBottomSheetDialog.show(supportFragmentManager, "consumableSheet")
         }
-
-        viewModel.selectedConsumable.observe(this, Observer {
-            useConsumable(it.type, it.value)
-            viewModel.removeSelectedConsumable()
-        })
-
 
         viewModel.playerHP.observe(this, Observer {
 //            player_health_bar.progress = it.toInt()
@@ -82,11 +79,13 @@ class OfflineBattleActivity : AppCompatActivity() {
                 loseDialog.show()
                 loseDialog.findViewById<Button>(R.id.button1)
                     .setOnClickListener {
+                        loseDialog.dismiss()
                         endGame()
                     }
             }
         })
 
+        // TODO: Fix points
         viewModel.enemyHP.observe(this, Observer {
 //            enemy_health_bar.progress = it.toInt()
             enemy_health_bar.setProgress(it, true)
@@ -97,6 +96,7 @@ class OfflineBattleActivity : AppCompatActivity() {
                 winDialog.show()
                 winDialog.findViewById<Button>(R.id.btn_collect)
                     .setOnClickListener {
+                        winDialog.dismiss()
                         endGame()
                     }
             }
@@ -134,6 +134,7 @@ class OfflineBattleActivity : AppCompatActivity() {
             leaveDialog.show()
             leaveDialog.findViewById<Button>(R.id.btn_leave)
                 .setOnClickListener {
+                    leaveDialog.dismiss()
                     endGame()
                 }
             leaveDialog.findViewById<Button>(R.id.btn_stay)
@@ -170,16 +171,9 @@ class OfflineBattleActivity : AppCompatActivity() {
     }
 
     private fun endGame() {
-        job.complete()
+        job.cancel()
         val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
-    }
-
-    private fun useConsumable(consumableType: String, consumableValue: Int) {
-        when (consumableType.toLowerCase(Locale.ROOT)) {
-            "attack" -> enemy_health_bar.progress -= consumableValue
-            "health" -> player_health_bar.progress += consumableValue
-        }
     }
 }

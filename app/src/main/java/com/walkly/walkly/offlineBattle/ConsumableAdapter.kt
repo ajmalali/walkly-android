@@ -20,10 +20,7 @@ class ConsumableAdapter(
         val layoutInflater = LayoutInflater.from(parent.context)
         val view: View = layoutInflater.inflate(R.layout.consumable, parent, false)
 
-        return ConsumableViewHolder(
-            view,
-            listener
-        )
+        return ConsumableViewHolder(view, listener)
     }
 
     override fun onBindViewHolder(holder: ConsumableViewHolder, position: Int) {

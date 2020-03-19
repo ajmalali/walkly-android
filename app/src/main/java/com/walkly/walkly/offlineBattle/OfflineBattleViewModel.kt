@@ -11,7 +11,10 @@ import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.repositories.ConsumablesRepository
 import com.walkly.walkly.repositories.PlayerRepository
 import com.walkly.walkly.utilities.DistanceUtil
+import kotlinx.android.synthetic.main.fragment_battle_activity.*
 import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
+import java.util.*
 
 private const val TAG = "OfflineBattleViewModel"
 
@@ -25,8 +28,6 @@ class OfflineBattleViewModel : ViewModel() {
 
     private val auth = FirebaseAuth.getInstance()
     private val currentPlayer = PlayerRepository.getPlayer()
-
-    var enemy: Enemy? = null
 
     private var baseEnemyHP = -1L
     private var currentEnemyHp = 0L
@@ -43,6 +44,8 @@ class OfflineBattleViewModel : ViewModel() {
     val enemyHP = MutableLiveData<Int>()
     val playerHP = MutableLiveData<Int>()
 
+    private var scope = CoroutineScope(IO)
+
     private val _consumables = MutableLiveData<List<Consumable>>()
     val consumables: LiveData<List<Consumable>>
         get() = _consumables
@@ -52,13 +55,14 @@ class OfflineBattleViewModel : ViewModel() {
         get() = _selectedConsumable
 
     init {
-
+        // Get current player's consumables
         getConsumables()
-        // get damage player can do based on equipment
+
+        // Get damage player can do based on equipment
 //        playerDamage = currentPlayer.currentEquipment?.value!!
         playerDamage = 5L
 
-        // get the starting player HP
+        // Get the starting player HP
         basePlayerHP = currentPlayer.level?.times(HP_MULTIPLAYER) ?: 1
         currentPlayerHP = basePlayerHP
         playerHpPercentage = ((currentPlayerHP * 100.0) / basePlayerHP).toInt()
@@ -67,13 +71,13 @@ class OfflineBattleViewModel : ViewModel() {
 
     fun initEnemy(enemy: Enemy) {
         if (baseEnemyHP == -1L) {
-            // get the starting enemy HP
+            // Get the starting enemy HP
 //        baseEnemyHP = enemy.HP
             baseEnemyHP = 100L
             currentEnemyHp = baseEnemyHP
             enemyHP.value = currentEnemyHp.toInt()
 
-            // get enemy damage
+            // Get enemy damage
 //            enemyDamage = enemy.damage
             enemyDamage = 1L
         }
@@ -101,23 +105,37 @@ class OfflineBattleViewModel : ViewModel() {
         }
     }
 
-    private fun getConsumables() {
-        if (_consumables.value != null) {
-            _consumables.value = ConsumablesRepository.consumableList
-        } else {
-            ConsumablesRepository.getConsumables { list ->
-                _consumables.value = list
+    fun useConsumable(consumableType: String, consumableValue: Int) {
+        when (consumableType.toLowerCase(Locale.ROOT)) {
+            "attack" -> {
+                currentEnemyHp -= consumableValue
+                enemyHpPercentage = ((currentEnemyHp * 100.0) / baseEnemyHP).toInt()
+                enemyHP.value = enemyHpPercentage
             }
+            "health" -> {
+                currentPlayerHP += consumableValue
+                if (currentPlayerHP > basePlayerHP) {
+                    currentPlayerHP = basePlayerHP
+                }
+                playerHpPercentage = ((currentPlayerHP * 100) / basePlayerHP).toInt()
+                playerHP.value = playerHpPercentage
+            }
+        }
+        removeSelectedConsumable()
+    }
+
+    private fun getConsumables() {
+        scope.launch {
+            _consumables.postValue(ConsumablesRepository.getConsumables())
         }
     }
 
     fun selectConsumable(consumable: Consumable) {
         _selectedConsumable.value = consumable
+        Log.d(TAG, "${_selectedConsumable.value}")
     }
 
-    fun removeSelectedConsumable() {
-        ConsumablesRepository.removeConsumable(selectedConsumable.value!!) { updatedList ->
-            _consumables.value = updatedList
-        }
+    private fun removeSelectedConsumable() {
+        _consumables.value = ConsumablesRepository.removeConsumable(selectedConsumable.value!!)
     }
 }

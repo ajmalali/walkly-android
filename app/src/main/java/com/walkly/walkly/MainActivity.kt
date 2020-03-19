@@ -15,6 +15,7 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.walkly.walkly.repositories.ConsumablesRepository
 import com.walkly.walkly.repositories.PlayerRepository
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
@@ -134,6 +135,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    // TODO: Syncing happens here
     // Sync player to DB before closing
     override fun onStop() {
         super.onStop()
@@ -142,6 +144,7 @@ class MainActivity : AppCompatActivity() {
                 try {
                     stopStaminaUpdates()
                     PlayerRepository.syncPlayer()
+                    ConsumablesRepository.syncConsumables()
                 } catch (e: FirebaseFirestoreException) {
                     displayMessage(e.message)
                 } catch (e: Exception) {
