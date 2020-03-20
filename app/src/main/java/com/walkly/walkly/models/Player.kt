@@ -14,12 +14,7 @@ data class Player(
     var lastUpdate: String? = "",
     var photoURL: String? = ""
 ) {
-    // TODO: Add other collections list
     var id: String = ""
-//    var friendList: MutableList<Friend>? = null
-//    var equipmentList: MutableList<Equipment>? = null
-//    var consumableList: MutableList<Consumable>? = null
-//    var achievementList: MutableList<Achievement>? = null
 
     fun joinBattle() {
         stamina = stamina?.minus(100)

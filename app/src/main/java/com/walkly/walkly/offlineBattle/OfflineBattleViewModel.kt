@@ -46,18 +46,7 @@ class OfflineBattleViewModel : ViewModel() {
 
     private var scope = CoroutineScope(IO)
 
-    private val _consumables = MutableLiveData<List<Consumable>>()
-    val consumables: LiveData<List<Consumable>>
-        get() = _consumables
-
-    private val _selectedConsumable = MutableLiveData<Consumable>()
-    val selectedConsumable: LiveData<Consumable>
-        get() = _selectedConsumable
-
     init {
-        // Get current player's consumables
-        getConsumables()
-
         // Get damage player can do based on equipment
 //        playerDamage = currentPlayer.currentEquipment?.value!!
         playerDamage = 5L
@@ -121,21 +110,5 @@ class OfflineBattleViewModel : ViewModel() {
                 playerHP.value = playerHpPercentage
             }
         }
-        removeSelectedConsumable()
-    }
-
-    private fun getConsumables() {
-        scope.launch {
-            _consumables.postValue(ConsumablesRepository.getConsumables())
-        }
-    }
-
-    fun selectConsumable(consumable: Consumable) {
-        _selectedConsumable.value = consumable
-        Log.d(TAG, "${_selectedConsumable.value}")
-    }
-
-    private fun removeSelectedConsumable() {
-        _consumables.value = ConsumablesRepository.removeConsumable(selectedConsumable.value!!)
     }
 }

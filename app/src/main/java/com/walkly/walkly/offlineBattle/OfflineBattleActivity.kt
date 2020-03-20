@@ -11,10 +11,11 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
-import com.bumptech.glide.Glide
 import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
+import com.walkly.walkly.ui.consumables.ConsumablesBottomSheetDialog
+import com.walkly.walkly.ui.consumables.ConsumablesViewModel
 import com.walkly.walkly.utilities.DistanceUtil
 import kotlinx.android.synthetic.main.fragment_battle_activity.*
 import kotlinx.coroutines.CoroutineScope
@@ -26,7 +27,8 @@ private const val TAG = "OfflineBattleActivity"
 
 class OfflineBattleActivity : AppCompatActivity() {
 
-    val viewModel: OfflineBattleViewModel by viewModels()
+    private val viewModel: OfflineBattleViewModel by viewModels()
+    private val consumablesViewModel: ConsumablesViewModel by viewModels()
 
     private lateinit var loseDialog: AlertDialog
     private lateinit var leaveDialog: AlertDialog
@@ -62,14 +64,16 @@ class OfflineBattleActivity : AppCompatActivity() {
 
         distanceUtil = DistanceUtil(this, walkedDistance)
 
-        consumablesBottomSheetDialog = ConsumablesBottomSheetDialog(this)
+        consumablesBottomSheetDialog =
+            ConsumablesBottomSheetDialog(this)
 
-        viewModel.selectedConsumable.observe(this, Observer {
+        consumablesViewModel.selectedConsumable.observe(this, Observer {
             viewModel.useConsumable(it.type, it.value)
+            consumablesViewModel.removeSelectedConsumable()
         })
 
         use_items.setOnClickListener {
-            consumablesBottomSheetDialog.show(supportFragmentManager, "consumableSheet")
+            consumablesBottomSheetDialog.show(supportFragmentManager, ConsumablesBottomSheetDialog.TAG)
         }
 
         viewModel.playerHP.observe(this, Observer {

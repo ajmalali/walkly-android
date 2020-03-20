@@ -31,6 +31,11 @@ object ConsumablesRepository {
             consumableList.add(consumable.toObject<Consumable>()!!)
         }
 
+        // For testing only
+        if (consumableList.isEmpty()) {
+            initConsumableList()
+        }
+
         return consumableList
     }
 
@@ -51,23 +56,19 @@ object ConsumablesRepository {
     }
 
 
+    // TODO: Add default consumables
     // Adds 3 new consumables to the current user. just for test purposes
-    suspend fun initConsumable(): MutableList<Consumable> {
+    private fun initConsumableList() {
         var ref = userDocument.collection("consumables").document()
         var consumable = Consumable("consumable 1", 2, "image", "health", 40).addId(ref.id)
-        ref.set(consumable).await()
         consumableList.add(consumable)
 
         ref = userDocument.collection("consumables").document()
         consumable = Consumable("consumable 2", 3, "image", "attack", 30).addId(ref.id)
-        ref.set(consumable).await()
         consumableList.add(consumable)
 
         ref = userDocument.collection("consumables").document()
         consumable = Consumable("consumable 3", 3, "image", "attack", 40).addId(ref.id)
-        ref.set(consumable).await()
         consumableList.add(consumable)
-
-        return consumableList
     }
 }

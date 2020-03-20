@@ -1,4 +1,4 @@
-package com.walkly.walkly.offlineBattle
+package com.walkly.walkly.ui.consumables
 
 import android.os.Bundle
 import android.util.Log
@@ -8,13 +8,13 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.walkly.walkly.R
 import com.walkly.walkly.databinding.ConsumablesBottomSheetBinding
 import com.walkly.walkly.models.Consumable
+import com.walkly.walkly.offlineBattle.OfflineBattleViewModel
 
 class ConsumablesBottomSheetDialog(val activity: AppCompatActivity) : BottomSheetDialogFragment(),
     ConsumableAdapter.OnConsumableUseListener {
@@ -22,7 +22,7 @@ class ConsumablesBottomSheetDialog(val activity: AppCompatActivity) : BottomShee
     private lateinit var binding: ConsumablesBottomSheetBinding
     private lateinit var adapter: ConsumableAdapter
     private var consumableList = mutableListOf<Consumable>()
-    private val viewModel: OfflineBattleViewModel by activityViewModels()
+    private val consumablesViewModel: ConsumablesViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,12 +39,15 @@ class ConsumablesBottomSheetDialog(val activity: AppCompatActivity) : BottomShee
 
         binding.consumableRecyclerView.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-        adapter = ConsumableAdapter(consumableList, this)
+        adapter = ConsumableAdapter(
+            consumableList,
+            this
+        )
         binding.consumableRecyclerView.adapter = adapter
 
         binding.progressBar.visibility = View.VISIBLE
 
-        viewModel.consumables.observe(viewLifecycleOwner, Observer { list ->
+        consumablesViewModel.consumables.observe(viewLifecycleOwner, Observer { list ->
             binding.progressBar.visibility = View.GONE
             binding.errorMessage.visibility = View.GONE
 
@@ -63,7 +66,11 @@ class ConsumablesBottomSheetDialog(val activity: AppCompatActivity) : BottomShee
         Log.d("BottomSheet", "position: $position")
         val consumable = adapter.consumableList[position]
         Log.d("BottomSheet", "$consumable")
-        viewModel.selectConsumable(consumable)
+        consumablesViewModel.selectConsumable(consumable)
         dismiss()
+    }
+
+    companion object {
+        const val TAG = "ConsumablesBottomSheet"
     }
 }

@@ -56,31 +56,6 @@ object PlayerRepository {
         }
     }
 
-//    // Get friends from friends sub-collection of the current player
-//    suspend fun getFriends() {
-//        val friends = userDocument.collection("friends").get().await()
-//        for (snapshot in friends.documents) {
-//            currentPlayer.friendList?.add(snapshot.toObject<Friend>()!!)
-//        }
-//    }
-//
-//    // Get equipment from equipment sub-collection of the current player
-//    suspend fun getEquipments() {
-//        val equipments = userDocument.collection("equipment").get().await()
-//        for (equipment in equipments.documents) {
-//            currentPlayer.equipmentList?.add(equipment.toObject<Equipment>()!!)
-//        }
-//    }
-//
-//
-//    // Get achievements from achievements sub-collection of the current player
-//    suspend fun getAchievements() {
-//        val achievements = userDocument.collection("achievements").get().await()
-//        for (achievement in achievements.documents) {
-//            currentPlayer.achievementList?.add(achievement.toObject<Achievement>()!!)
-//        }
-//    }
-
     // TODO: calculate progress form points
     // to save computation time calculate it and store it every time points change
     fun updatePoints(enemyLevel: Int) {

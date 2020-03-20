@@ -1,4 +1,4 @@
-package com.walkly.walkly.offlineBattle
+package com.walkly.walkly.ui.consumables
 
 import android.graphics.Color
 import android.view.LayoutInflater
@@ -20,7 +20,10 @@ class ConsumableAdapter(
         val layoutInflater = LayoutInflater.from(parent.context)
         val view: View = layoutInflater.inflate(R.layout.consumable, parent, false)
 
-        return ConsumableViewHolder(view, listener)
+        return ConsumableViewHolder(
+            view,
+            listener
+        )
     }
 
     override fun onBindViewHolder(holder: ConsumableViewHolder, position: Int) {

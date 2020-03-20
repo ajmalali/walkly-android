@@ -11,9 +11,8 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
-import com.walkly.walkly.offlineBattle.ConsumablesBottomSheetDialog
+import com.walkly.walkly.ui.consumables.ConsumablesBottomSheetDialog
 import com.walkly.walkly.utilities.DistanceUtil
-import kotlinx.android.synthetic.main.activity_online_battle.*
 import kotlinx.android.synthetic.main.activity_online_battle.bar_enemy_hp
 import kotlinx.android.synthetic.main.activity_online_battle.bar_player_hp
 import kotlinx.coroutines.CoroutineScope
@@ -21,7 +20,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import java.util.*
 
 class OnlineBattleActivity : AppCompatActivity() {
 
