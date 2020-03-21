@@ -2,17 +2,11 @@ package com.walkly.walkly.offlineBattle
 
 import android.util.Log
 import androidx.lifecycle.*
-import androidx.lifecycle.Observer
-import com.google.firebase.auth.FirebaseAuth
-import com.walkly.walkly.models.Consumable
 import com.walkly.walkly.models.Enemy
-import com.walkly.walkly.repositories.ConsumablesRepository
 import com.walkly.walkly.repositories.PlayerRepository
-import com.walkly.walkly.utilities.DistanceUtil
-import kotlinx.android.synthetic.main.fragment_battle_activity.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
-import java.io.Serializable
+
 import java.util.*
 
 private const val TAG = "OfflineBattleViewModel"
@@ -22,23 +16,22 @@ class OfflineBattleViewModel : ViewModel() {
     var battleEnded: Boolean = false
 
     // used to specify how frequently enemy hits
-    private val HIT_FREQUENCY = 3000L
+    val HIT_FREQUENCY = 3000L
 
     // used to convert player level to HP
     private val HP_MULTIPLAYER = 100
 
-    private val auth = FirebaseAuth.getInstance()
     private val currentPlayer = PlayerRepository.getPlayer()
 
-    private var baseEnemyHP = -1L
-    private var currentEnemyHp = 0L
-    private var enemyHpPercentage = 100
-    private var enemyDamage = 0L
+    var baseEnemyHP = -1L
+    var currentEnemyHp = 0L
+    var enemyHpPercentage = 100
+    var enemyDamage = 0L
 
-    private var basePlayerHP = 1L
-    private var currentPlayerHP = 0L
-    private var playerHpPercentage = 100
-    private var playerDamage = 0L
+    var basePlayerHP = 1L
+    var currentPlayerHP = 0L
+    var playerHpPercentage = 100
+    var playerDamage = 0L
 
     // view observes these
     // Health bar values
@@ -113,52 +106,4 @@ class OfflineBattleViewModel : ViewModel() {
             }
         }
     }
-
-//    class OfflineServiceInfo(
-//        val enemyHealth: Int, val enemyPower: Int,
-//        val playerHealth: Int, val playerPower: Int, val frequency: Long
-//    ) : Serializable
-//
-//    private var pauseTime = -1L
-//    var battleEnded = false
-//
-//    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
-//    fun startBackgroundService() {
-//        val extras = OfflineServiceInfo(
-//            currentEnemyHp.toInt(), enemyDamage.toInt(),
-//            currentPlayerHP.toInt(), 1, HIT_FREQUENCY
-//        )
-//
-//        pauseTime = Date().time
-//
-//        if (!battleEnded) {
-//            Intent(activity, BackgroundOfflineBattleService::class.java).also {
-//                it.putExtra("info", extras)
-//                activity.startService(it)
-//            }
-//
-//        }
-//
-//    }
-//
-//    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-//    fun StopBackgroundService() {
-//        Intent(activity, BackgroundOfflineBattleService::class.java).also {
-//            activity.stopService(it)
-//        }
-//
-//        val damageMultiples = (Date().time - pauseTime) / FREQUENCY
-//        if (damageMultiples > 0) {
-//            var playerHppercentage = (currentPlayerHP * 100) / basePlayerHP
-//            playerHP.value = playerHppercentage
-//        }
-//
-//        scope.launch {
-//            val steps = distanceUtil.getStepsUntil(pauseTime)
-//            if (steps != null && steps != -1) {
-//                activity.tv_no_of_steps.text =
-//                    "${steps + (activity as OfflineBattleActivity).steps}"
-//            }
-//        }
-//    }
 }

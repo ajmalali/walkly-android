@@ -10,6 +10,7 @@ import com.walkly.walkly.models.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.tasks.await
 import kotlin.math.floor
 
@@ -32,8 +33,13 @@ object PlayerRepository {
     private val userDocument = db.collection("users").document(userID)
     private val scope = CoroutineScope(IO)
 
-    fun getPlayer(): Player {
-        return currentPlayer
+    fun getPlayer(): Player = runBlocking {
+        if (::currentPlayer.isInitialized) {
+            currentPlayer
+        } else {
+            initPlayer()
+            currentPlayer
+        }
     }
 
     // Gets the current player from firestore and initializes the currentPlayer object

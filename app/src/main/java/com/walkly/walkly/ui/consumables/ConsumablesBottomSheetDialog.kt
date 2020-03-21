@@ -54,7 +54,7 @@ class ConsumablesBottomSheetDialog(val activity: AppCompatActivity) : BottomShee
                 binding.errorMessage.visibility = View.VISIBLE
             } else {
                 adapter.consumableList = list
-                adapter.notifyDataSetChanged()
+//                adapter.notifyDataSetChanged()
             }
         })
 

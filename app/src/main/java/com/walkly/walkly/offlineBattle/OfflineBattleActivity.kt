@@ -9,7 +9,7 @@ import android.widget.Button
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
@@ -22,6 +22,8 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.io.Serializable
+import java.util.*
 
 private const val TAG = "OfflineBattleActivity"
 
@@ -39,7 +41,7 @@ class OfflineBattleActivity : AppCompatActivity() {
 
     private lateinit var distanceUtil: DistanceUtil
     private var steps = 0
-
+    private var pauseTime = -1L
 
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
@@ -53,7 +55,6 @@ class OfflineBattleActivity : AppCompatActivity() {
         initDialogs()
 
         val bundle = intent.extras
-
         // ??
         if (bundle?.getString("result") == "lose") {
             loseDialog.show()
@@ -83,6 +84,44 @@ class OfflineBattleActivity : AppCompatActivity() {
             })
 
             startBattle()
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Intent(this, BackgroundOfflineBattleService::class.java).also {
+            this.stopService(it)
+        }
+
+        val damageMultiples = (Date().time - pauseTime) / viewModel.HIT_FREQUENCY
+        if (damageMultiples > 0) {
+            val playerHppercentage = ((viewModel.currentPlayerHP * 100) / viewModel.basePlayerHP)
+            viewModel.playerHP.value = playerHppercentage.toInt()
+        }
+
+        scope.launch {
+            val steps = distanceUtil.getStepsUntil(pauseTime)
+            if (steps != null && steps != -1) {
+                val text = "$steps"
+                tv_no_of_steps.text = text
+            }
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        val extras = OfflineServiceInfo(
+            viewModel.currentEnemyHp.toInt(), viewModel.enemyDamage.toInt(),
+            viewModel.currentPlayerHP.toInt(), 1, viewModel.HIT_FREQUENCY
+        )
+
+        pauseTime = Date().time
+
+        if (!viewModel.battleEnded) {
+            Intent(this, BackgroundOfflineBattleService::class.java).also {
+                it.putExtra("info", extras)
+                this.startService(it)
+            }
         }
     }
 
@@ -210,4 +249,10 @@ class OfflineBattleActivity : AppCompatActivity() {
         startActivity(intent)
         finish()
     }
+
+    class OfflineServiceInfo(
+        val enemyHealth: Int, val enemyPower: Int,
+        val playerHealth: Int, val playerPower: Int, val frequency: Long
+    ) : Serializable
+
 }

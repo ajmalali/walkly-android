@@ -26,7 +26,7 @@ import java.util.*
 private const val MAX_STAMINA = 300
 
 // update every 36 seconds (idk why 36)
-private const val INTERVAL = 3600L
+private const val INTERVAL = 36000L
 
 private const val TAG = "MainActivity"
 
