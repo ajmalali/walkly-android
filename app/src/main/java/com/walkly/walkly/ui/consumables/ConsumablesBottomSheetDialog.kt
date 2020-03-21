@@ -14,7 +14,6 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.walkly.walkly.R
 import com.walkly.walkly.databinding.ConsumablesBottomSheetBinding
 import com.walkly.walkly.models.Consumable
-import com.walkly.walkly.offlineBattle.OfflineBattleViewModel
 
 class ConsumablesBottomSheetDialog(val activity: AppCompatActivity) : BottomSheetDialogFragment(),
     ConsumableAdapter.OnConsumableUseListener {

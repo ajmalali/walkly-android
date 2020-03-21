@@ -1,20 +1,32 @@
 package com.walkly.walkly.models
 
-class Equipment(
-    val name: String = "",
-    val level: Int = 0,
-    val image: String = "",
-    val type: String = "",
-    val value: Long = 0
-    ) {
-        lateinit var id: String
+data class Equipment(
+    var name: String? = "",
+    var level: Long? = 0,
+    var type: String? = "",
+    var image: String? = "",
+    var value: Long? = 0
+) {
+    var id: String? = null
 
-        // Used to add ID of a user and using document.toObject method
-        fun addId(value: String): Equipment {
-            this.id = value
-            return this
+    fun addId(value: String): Equipment {
+        this.id = value
+        return this
+    }
+
+    companion object {
+        fun getDefaultEquipment(): Equipment {
+            return Equipment(
+                name = "sword_x",
+                type = "attack",
+                value = 5,
+                level = 1,
+                image = "equipment"
+            ).addId("gYQRFbka5BcjzbaocN6N")
         }
     }
+}
+
 //    private val userEquipments = mutableListOf<Equipment>()
 //    private val listOfEquipments = mutableListOf<Equipment>()
 //    private var userEquipment = this

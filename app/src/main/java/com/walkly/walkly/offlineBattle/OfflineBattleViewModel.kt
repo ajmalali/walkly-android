@@ -14,6 +14,7 @@ import com.walkly.walkly.utilities.DistanceUtil
 import kotlinx.android.synthetic.main.fragment_battle_activity.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
+import java.io.Serializable
 import java.util.*
 
 private const val TAG = "OfflineBattleViewModel"
@@ -36,7 +37,7 @@ class OfflineBattleViewModel : ViewModel() {
 
     private var basePlayerHP = 1L
     private var currentPlayerHP = 0L
-    private var playerHpPercentage: Int = 100
+    private var playerHpPercentage = 100
     private var playerDamage = 0L
 
     // view observes these
@@ -80,6 +81,69 @@ class OfflineBattleViewModel : ViewModel() {
         enemyHpPercentage = ((currentEnemyHp * 100.0) / baseEnemyHP).toInt()
         enemyHP.value = enemyHpPercentage
         Log.d(TAG, "Current enemy health: $currentEnemyHp")
+        // reduce enemy HP by distance walked * equipment value
+        walkedDistance.observe(activity, Observer {
+            currentEnemyHp -= it * 5    // this should be `playerDamage` but it is always zero
+            enemyHpPercentage = ((currentEnemyHp * 100.0) / baseEnemyHP).toLong()
+            enemyHP.value = enemyHpPercentage
+            Log.d(D_TAG, "distance = " + it)
+        })
+
+        // reduce player HP by time * enemy damage
+
+
+
+    }
+
+    class OfflineServiceInfo(val enemyHealth: Int, val enemyPower: Int,
+                             val playerHealth: Int, val playerPower: Int, val frequency: Long) : Serializable
+    private var pauseTime = -1L
+    var battleEnded = false
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    fun startBackgroundService(){
+        val extras = OfflineServiceInfo(
+            currentEnemyHp.toInt(), enemyDamage.toInt(),
+            currentPlayerHP.toInt(), 1, FREQUENCY)
+
+        pauseTime = Date().time
+
+        if (!battleEnded){
+            Intent(activity, BackgroundOfflineBattleService::class.java).also {
+                it.putExtra("info", extras)
+                activity.startService(it)
+            }
+
+        }
+
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    fun StopBackgroundService(){
+        Intent(activity, BackgroundOfflineBattleService::class.java).also {
+            activity.stopService(it)
+        }
+
+        val damageMultiples = (Date().time - pauseTime) / FREQUENCY
+        if (damageMultiples > 0){
+            var playerHppercentage = (currentPlayerHP * 100) / basePlayerHP
+            playerHP.value = playerHppercentage
+        }
+
+        scope.launch {
+            val steps = distanceUtil.getStepsUntil(pauseTime)
+            if (steps != null && steps != -1) {
+                activity.tv_no_of_steps.text = "${steps + (activity as OfflineBattleActivity).steps}"
+            }
+        }
+    }
+
+    fun startBattle(){
+        distanceUtil = DistanceUtil(activity, walkedDistance)
+
+        scope.launch {
+            damagePlayer()
+        }
     }
 
     // WARNING: won't work while screen is off
