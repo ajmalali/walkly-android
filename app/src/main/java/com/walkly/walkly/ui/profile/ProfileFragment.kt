@@ -173,7 +173,7 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
     override fun onEquipmentClick(position: Int) {
         val equipment = adapter.equipmentList[position]
         profileViewModel.selectEquipment(equipment)
-        Player.equipment.value = equipment
+//        Player.equipment.value = equipment
         wearEquipmentDialog.dismiss()
         }
 }

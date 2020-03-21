@@ -74,39 +74,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
             player_progress.progress = it?.toInt() ?: 0
         })
 
-        mapViewModel.stamina.observe(viewLifecycleOwner, Observer {
-            val stamina = it
-            join_button.isClickable = true
-            join_button.background.alpha = 255
-
-            stamina?.let {
-                if (stamina <= 100) {
-                    // no balls
-                    stamina1full.visibility = View.INVISIBLE
-                    stamina2full.visibility = View.INVISIBLE
-                    stamina3full.visibility = View.INVISIBLE
-
-                    // player cannot join a battle
-                    join_button.isClickable = false
-                    join_button.background.alpha = 100
-                } else {
-                    if (stamina >= 300) {
-                        stamina3full.visibility = View.VISIBLE
-                    }
-
-                    if (stamina >= 200) {
-                        stamina2full.visibility = View.VISIBLE
-                    }
-
-                    if (stamina >= 100) {
-                        stamina1full.visibility = View.VISIBLE
-                    }
-                }
-            }
-
-            Log.d("Stamina from map", stamina.toString())
-        })
-
         linearLayout = bottom_sheet
         //hide the bottom sheet
         BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_HIDDEN
@@ -227,6 +194,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                 })
 
                 BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_COLLAPSED
+
                 updateTopBar()
             }
             // }
@@ -293,42 +261,38 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         // Toast.makeText(this, "NOOOOOOOOOOOOOOOO", Toast.LENGTH_LONG).show()
     }
 
-    fun updateTopBar(){
-        Player.stamina.observe(this, Observer {
-            Log.d("stamina from map2", it.toString())
-
+    private fun updateTopBar() {
+        mapViewModel.stamina.observe(viewLifecycleOwner, Observer {
+            val stamina = it
             join_button.isClickable = true
             join_button.background.alpha = 255
 
-            if(it >= 300){
-                //3 balls
-                stamina1full.visibility = View.VISIBLE
-                stamina2full.visibility = View.VISIBLE
-                stamina3full.visibility = View.VISIBLE
+            stamina?.let {
+                if (stamina <= 100) {
+                    // no balls
+                    stamina1full.visibility = View.INVISIBLE
+                    stamina2full.visibility = View.INVISIBLE
+                    stamina3full.visibility = View.INVISIBLE
 
-            }else if(it >= 200 ){
-                //2 balls
-                stamina1full.visibility = View.VISIBLE
-                stamina2full.visibility = View.VISIBLE
-                stamina3full.visibility = View.INVISIBLE
+                    // player cannot join a battle
+                    join_button.isClickable = false
+                    join_button.background.alpha = 100
+                } else {
+                    if (stamina >= 300) {
+                        stamina3full.visibility = View.VISIBLE
+                    }
 
-            }else if(it >= 100){
-                //1 ball
-                stamina1full.visibility = View.VISIBLE
-                stamina2full.visibility = View.INVISIBLE
-                stamina3full.visibility = View.INVISIBLE
+                    if (stamina >= 200) {
+                        stamina2full.visibility = View.VISIBLE
+                    }
 
-            }else{
-                //no balls
-                stamina1full.visibility = View.INVISIBLE
-                stamina2full.visibility = View.INVISIBLE
-                stamina3full.visibility = View.INVISIBLE
-
-                // player cannot join a battle
-                join_button.isClickable = false
-                join_button.background.alpha = 100
+                    if (stamina >= 100) {
+                        stamina1full.visibility = View.VISIBLE
+                    }
+                }
             }
 
+            Log.d("Stamina from map", stamina.toString())
         })
     }
 
