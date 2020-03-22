@@ -9,8 +9,7 @@ data class Consumable(
     val type: String = "",
     val value: Int = 0
 ) {
-    @Exclude
-    var id: String? = ""
+    var id: String? = null
 
     // Used to add ID of a user and using document.toObject method
     fun addId(value: String): Consumable {

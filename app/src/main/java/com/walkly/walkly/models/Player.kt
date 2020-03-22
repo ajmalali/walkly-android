@@ -17,8 +17,7 @@ data class Player(
     var photoURL: String? = null
 ) {
 
-    @Exclude
-    var id: String = ""
+    @get:Exclude var id: String? = null
 
     fun joinBattle() {
         stamina = stamina?.minus(100)

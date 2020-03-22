@@ -87,6 +87,10 @@ object PlayerRepository {
         }
     }
 
+    fun wearEquipment(equipment: Equipment) {
+        currentPlayer.currentEquipment = equipment
+    }
+
     // Syncs the current player with DB or store locally when no internet
     // TODO: Store locally when no internet
     // TODO: Update sub-collections also

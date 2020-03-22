@@ -12,8 +12,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,29 +23,32 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.storage.FirebaseStorage
 import com.walkly.walkly.R
 import com.walkly.walkly.auth.LoginActivity
-import com.walkly.walkly.models.Player
-import com.walkly.walkly.repositories.EquipmentRepository.equipmentList
+import com.walkly.walkly.models.Consumable
+import com.walkly.walkly.models.Equipment
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_wear_equipment.view.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 
-@SuppressLint("Registered")
+private const val TAG = "ProfileFragment"
+
 class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
-    lateinit var v: View
+
     private lateinit var auth: FirebaseAuth
 
     private lateinit var wearEquipmentDialog: AlertDialog
     private lateinit var wearEquipmentBuilder: AlertDialog.Builder
-    private val adapter = EquipmentAdapter(equipmentList,this)
-    private lateinit var profileViewModel: ProfileViewModel
+    private lateinit var adapter: EquipmentAdapter
+
+    private val profileViewModel: ProfileViewModel by viewModels()
+    private var equipmentList = mutableListOf<Equipment>()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        v = inflater.inflate(R.layout.fragment_profile, container, false)
-        return v
+        return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -53,118 +56,107 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
 
         auth = FirebaseAuth.getInstance()
 
-        // showing user name
+        // Showing user name
         val userName = auth.currentUser?.displayName
-
+        val text: String
         if (userName != null) {
-            tv_username.text = "Hello $userName"
+            text = "Hello $userName"
         } else {
-            tv_username.text = "error: could not retrieve user name"
+            text = "Error: could not retrieve user name"
             tv_username.setTextColor(Color.RED)
         }
 
-        //Wear Equipment Dialog
+        tv_username.text = text
 
+        // Wear Equipment Dialog
         val inflater = layoutInflater
-        val dialogView = inflater.inflate(R.layout.dialog_wear_equipment, null) as View
+        val dialogView = inflater.inflate(R.layout.dialog_wear_equipment, container) as View
         wearEquipmentBuilder = AlertDialog.Builder(this.context)
             .setView(dialogView)
 
-        profileViewModel = ViewModelProviders.of(this)
-            .get(ProfileViewModel::class.java)
-
         val rv = dialogView.findViewById(R.id.equipment_recycler_view) as RecyclerView
-        rv.layoutManager = GridLayoutManager(context,2,GridLayoutManager.HORIZONTAL,false)
+        rv.layoutManager = GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false)
 
         profileViewModel.equipments.observe(viewLifecycleOwner, Observer { list ->
             dialogView.progressBar.visibility = View.GONE
             if (list.isEmpty()) {
-                Log.e("here","EMPTYYY")
+                Log.e(TAG, "EMPTYYY")
             } else {
-                Log.d("here",list.toString())
+                Log.d(TAG, "$list")
                 adapter.equipmentList = list
-                if(list.size < 5){
-                    rv.layoutManager = GridLayoutManager(context,2,GridLayoutManager.VERTICAL,false)
-                }else{
-                    rv.layoutManager = GridLayoutManager(context,2,GridLayoutManager.HORIZONTAL,false)
+                if (list.size < 5) {
+                    rv.layoutManager =
+                        GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
+                } else {
+                    rv.layoutManager =
+                        GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false)
                 }
                 adapter.notifyDataSetChanged()
             }
         })
 
-
+        adapter = EquipmentAdapter(equipmentList, this)
         rv.adapter = adapter
         wearEquipmentDialog = wearEquipmentBuilder.create()
 
-
         // click listeners
-
+        val navController = view.findNavController()
         tv_signout.setOnClickListener {
             signOut()
         }
 
         tv_view_leaderboard.setOnClickListener {
-            view.findNavController().navigate(R.id.action_navigation_home_to_leaderboardFragment)
+            navController.navigate(R.id.action_navigation_home_to_leaderboardFragment)
         }
 
         tv_view_friends.setOnClickListener {
-            view.findNavController().navigate(R.id.action_navigation_profile_to_friendsFragment)
+            navController.navigate(R.id.action_navigation_profile_to_friendsFragment)
         }
 
         tv_account_settings.setOnClickListener {
-            view.findNavController().navigate(R.id.action_navigation_profile_to_accountSettingsFragment)
+            navController.navigate(R.id.action_navigation_profile_to_accountSettingsFragment)
         }
 
         tv_level.setOnClickListener {
-            view.findNavController().navigate(R.id.action_navigation_profile_to_statistics)
+            navController.navigate(R.id.action_navigation_profile_to_statistics)
         }
+
         tv_wear_equipment.setOnClickListener {
             wearEquipmentDialog.show()
             //To make the background for the dialog Transparent
             wearEquipmentDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
+
         tv_view_achievements.setOnClickListener {
             view.findNavController().navigate(R.id.action_navigation_profile_to_achievementFragment)
 
         }
 
         // TODO make it faster
-        // TODO refactor
-
         Glide.with(this)
-            .load(
-                auth.currentUser?.photoUrl
-            )
+            .load(profileViewModel.currentPlayer.photoURL)
             .into(img_avatar)
 
-        var equipmentUri: Uri
-        FirebaseFirestore.getInstance()
-            .collection("users")
-            .document(auth.uid!!)
-            .get()
-            .addOnSuccessListener {
-                val equipmentId = it.data?.get("equipped_weapon") as String
-                 FirebaseStorage.getInstance()
-                    .getReference("equipments/${equipmentId}.png")
-                    .downloadUrl
-                     .addOnSuccessListener {
-                         equipmentUri = it
-                         Glide.with(this)
-                             .load(equipmentUri)
-                             .into(img_equipment)
-                     }
-            }
+
+        // TODO: Refactor
+        Glide.with(this)
+            .load(profileViewModel.currentPlayer.currentEquipment?.image)
+            .into(img_equipment)
+
+//        var equipmentUri: Uri
+//        FirebaseStorage.getInstance()
+//            .getReference("equipments/${profileViewModel.currentPlayer.currentEquipment?.id}.png")
+//            .downloadUrl
+//            .addOnSuccessListener {
+//                equipmentUri = it
+//                Glide.with(this)
+//                    .load(equipmentUri)
+//                    .into(img_equipment)
+//            }
     }
-
-
 
     private fun signOut() {
         FirebaseAuth.getInstance().signOut()
-        updateUI()
-    }
-
-    private fun updateUI() {
-
         val intent = Intent(activity, LoginActivity::class.java)
         startActivity(intent)
         activity?.finish()
@@ -173,7 +165,6 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
     override fun onEquipmentClick(position: Int) {
         val equipment = adapter.equipmentList[position]
         profileViewModel.selectEquipment(equipment)
-//        Player.equipment.value = equipment
         wearEquipmentDialog.dismiss()
-        }
+    }
 }

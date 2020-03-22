@@ -32,9 +32,9 @@ object ConsumablesRepository {
         }
 
         // For testing only
-        if (consumableList.isEmpty()) {
-            initConsumableList()
-        }
+//        if (consumableList.isEmpty()) {
+//            initConsumableList()
+//        }
 
         return consumableList
     }
@@ -46,12 +46,13 @@ object ConsumablesRepository {
         return consumableList
     }
 
+    // TODO: Store locally when no internet
     suspend fun syncConsumables() {
         for (consumable in removedList) {
-            collection.document(consumable.id).delete().await()
+            collection.document(consumable.id!!).delete().await()
         }
         for (consumable in consumableList) {
-            collection.document(consumable.id).set(consumable).await()
+            collection.document(consumable.id!!).set(consumable).await()
         }
     }
 
