@@ -1,5 +1,7 @@
 package com.walkly.walkly.models
 
+import com.google.firebase.firestore.Exclude
+
 data class Equipment(
     var name: String? = "",
     var level: Long? = 0,
@@ -7,6 +9,7 @@ data class Equipment(
     var image: String? = "",
     var value: Long? = 0
 ) {
+    @Exclude
     var id: String? = null
 
     fun addId(value: String): Equipment {

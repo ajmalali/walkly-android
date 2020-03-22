@@ -66,21 +66,21 @@ class AuthViewModel : ViewModel() {
         //  id of the document
         // TODO: discuss and add more fields
 
-        db.collection("users").document(user?.uid!!).set(
-            hashMapOf(
-                "name" to user.displayName,
-                "email" to user.email,
-                "stamina" to 300L,
-                "points" to 0L,
-                "level" to 1L,
-                "progress" to 0L,
-                // TODO: Change to default equipment
-                "currentEquipment" to null,
-                "currentHP" to 100,
-                "lastUpdate" to null,
-                "photoURL" to user.photoUrl.toString()
+        val ref = db.collection("users").document(user?.uid!!)
+        val defaultEquipment = Equipment.getDefaultEquipment()
+        ref.set(
+            Player(
+                name = user.displayName,
+                email = user.email,
+                currentEquipment = Equipment.getDefaultEquipment(),
+                photoURL = user.photoUrl.toString()
             ), SetOptions.merge()
         ).await()
+
+        // Add equipment to sub-collection
+        ref.collection("equipments")
+            .document(defaultEquipment.id!!)
+            .set(defaultEquipment).await()
 
         Log.d(TAG, "new user document was initialized successfully \nuid=${user.uid}")
     }
