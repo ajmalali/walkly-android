@@ -10,7 +10,7 @@ data class Player(
     var currentEquipment: Equipment? = null,
     var currentHP: Long? = 100L,
     var level: Long? = 1,
-    var stamina: Long? = 300L,
+    var stamina: Long? = 300L, // TODO: Could be LiveData
     var points: Long? = 0,
     var progress: Long? = 0,
     var lastUpdate: String? = null,

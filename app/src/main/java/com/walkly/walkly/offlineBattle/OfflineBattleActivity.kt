@@ -17,6 +17,7 @@ import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.ui.consumables.ConsumablesBottomSheetDialog
 import com.walkly.walkly.ui.consumables.ConsumablesViewModel
 import com.walkly.walkly.utilities.DistanceUtil
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_battle_activity.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -54,56 +55,66 @@ class OfflineBattleActivity : AppCompatActivity() {
 
         initDialogs()
 
+        leaveBattle.setOnClickListener {
+            leaveDialog.show()
+        }
+
         val bundle = intent.extras
-        // ??
-        if (bundle?.getString("result") == "lose") {
-            loseDialog.show()
-        } else if (bundle?.getString("result") == "win") {
-            winDialog.show()
+        // From notification
+        when {
+            bundle?.getString("result") == "lose" -> {
+                loseDialog.show()
+            }
+            bundle?.getString("result") == "win" -> {
+                winDialog.show()
+            }
+            else -> {
+                initEnemy(bundle)
+                initHealthListeners()
+                initConsumables()
 
-        } else {
-            initEnemy(bundle)
-            initHealthListeners()
-            initConsumables()
-
-            distanceUtil = DistanceUtil(this, walkedDistance)
-
-            // NOT TESTED
-            // Since starting time is now where the walked distance = 0
-            // TODO: Change to Enemy Health / player equipment
-            var steps = 0
-            var totalSteps = "$steps / 1000"
-            tv_no_of_steps.text = totalSteps
-
-            walkedDistance.observe(this, Observer {
-                viewModel.damageEnemy(it)
-                steps += it.toInt()
-                totalSteps = "$steps / 1000"
+                // NOT TESTED
+                // Since starting time is now where the walked distance = 0
+                // TODO: Change to Enemy Health / player equipment
+                var steps = 0
+                var totalSteps = "$steps / 1000"
                 tv_no_of_steps.text = totalSteps
-                Log.d("steps = ", it.toString())
-            })
 
-            startBattle()
+                walkedDistance.observe(this, Observer {
+                    viewModel.damageEnemy(it)
+                    steps += it.toInt()
+                    totalSteps = "$steps / 1000"
+                    tv_no_of_steps.text = totalSteps
+                    Log.d("steps = ", it.toString())
+                })
+
+                startBattle()
+            }
         }
     }
 
     override fun onResume() {
         super.onResume()
-        Intent(this, BackgroundOfflineBattleService::class.java).also {
-            this.stopService(it)
-        }
+        if (!viewModel.battleEnded) {
+            Intent(this, BackgroundOfflineBattleService::class.java).also {
+                this.stopService(it)
+            }
 
-        val damageMultiples = (Date().time - pauseTime) / viewModel.HIT_FREQUENCY
-        if (damageMultiples > 0) {
-            val playerHppercentage = ((viewModel.currentPlayerHP * 100) / viewModel.basePlayerHP)
-            viewModel.playerHP.value = playerHppercentage.toInt()
-        }
+            distanceUtil = DistanceUtil(this, walkedDistance)
 
-        scope.launch {
-            val steps = distanceUtil.getStepsUntil(pauseTime)
-            if (steps != null && steps != -1) {
-                val text = "$steps"
-                tv_no_of_steps.text = text
+            val damageMultiples = (Date().time - pauseTime) / viewModel.HIT_FREQUENCY
+            if (damageMultiples > 0) {
+                val playerHppercentage =
+                    ((viewModel.currentPlayerHP * 100) / viewModel.basePlayerHP)
+                viewModel.playerHP.value = playerHppercentage.toInt()
+            }
+
+            scope.launch {
+                val steps = distanceUtil.getStepsUntil(pauseTime)
+                if (steps != null && steps != -1) {
+                    val text = "$steps"
+                    tv_no_of_steps.text = text
+                }
             }
         }
     }
@@ -127,33 +138,44 @@ class OfflineBattleActivity : AppCompatActivity() {
 
     private fun initDialogs() {
         // Leave Dialog
+        val leaveInflater = layoutInflater.inflate(R.layout.dialog_battle_leave, container)
         leaveDialog = AlertDialog.Builder(this)
-            .setView(R.layout.dialog_battle_leave)
+            .setView(leaveInflater)
             .create()
-
-        leaveBattle.setOnClickListener {
-            viewModel.battleEnded = true
-            leaveDialog.show()
-            leaveDialog.findViewById<Button>(R.id.btn_leave)
-                .setOnClickListener {
-                    leaveDialog.dismiss()
-                    endGame()
-                }
-            leaveDialog.findViewById<Button>(R.id.btn_stay)
-                .setOnClickListener {
-                    leaveDialog.dismiss()
-                }
-        }
+        leaveInflater.findViewById<Button>(R.id.btn_leave)
+            .setOnClickListener {
+                leaveDialog.dismiss()
+                viewModel.battleEnded = true
+                endGame()
+            }
+        leaveInflater.findViewById<Button>(R.id.btn_stay)
+            .setOnClickListener {
+                leaveDialog.dismiss()
+            }
 
         // Win Dialog
+        val winInflater = layoutInflater.inflate(R.layout.dialog_battle_won, container)
         winDialog = AlertDialog.Builder(this)
-            .setView(R.layout.dialog_battle_won)
+            .setView(winInflater)
             .create()
 
+        winInflater.findViewById<Button>(R.id.btn_collect)
+            .setOnClickListener {
+                winDialog.dismiss()
+                endGame()
+            }
+
         // Lose Dialog
+        val loseInflater = layoutInflater.inflate(R.layout.dialog_battle_lost, container)
         loseDialog = AlertDialog.Builder(this)
-            .setView(R.layout.dialog_battle_lost)
+            .setView(loseInflater)
             .create()
+
+        loseInflater.findViewById<Button>(R.id.go_home)
+            .setOnClickListener {
+                loseDialog.dismiss()
+                endGame()
+            }
     }
 
     private fun initEnemy(bundle: Bundle?) {
@@ -203,13 +225,9 @@ class OfflineBattleActivity : AppCompatActivity() {
 //            player_health_bar.progress = it.toInt()
             player_health_bar.setProgress(it, true)
             if (it <= 0) {
-                loseDialog.show()
                 viewModel.battleEnded = true
-                loseDialog.findViewById<Button>(R.id.button1)
-                    .setOnClickListener {
-                        loseDialog.dismiss()
-                        endGame()
-                    }
+                loseDialog.show()
+
             }
         })
 
@@ -223,11 +241,6 @@ class OfflineBattleActivity : AppCompatActivity() {
                 getReward()
                 viewModel.battleEnded = true
                 winDialog.show()
-                winDialog.findViewById<Button>(R.id.btn_collect)
-                    .setOnClickListener {
-                        winDialog.dismiss()
-                        endGame()
-                    }
             }
         })
     }

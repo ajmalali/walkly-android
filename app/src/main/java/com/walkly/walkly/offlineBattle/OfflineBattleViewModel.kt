@@ -16,7 +16,7 @@ class OfflineBattleViewModel : ViewModel() {
     var battleEnded: Boolean = false
 
     // used to specify how frequently enemy hits
-    val HIT_FREQUENCY = 3000L
+    val HIT_FREQUENCY = 100L
 
     // used to convert player level to HP
     private val HP_MULTIPLAYER = 100
@@ -71,6 +71,9 @@ class OfflineBattleViewModel : ViewModel() {
     fun damageEnemy(steps: Float) {
 //        currentEnemyHp -= steps * currentPlayer.currentEquipment?.value!!
         currentEnemyHp -= steps.toLong()
+        if (currentEnemyHp <= 0) {
+            battleEnded = true
+        }
         enemyHpPercentage = ((currentEnemyHp * 100.0) / baseEnemyHP).toInt()
         enemyHP.value = enemyHpPercentage
         Log.d(TAG, "Current enemy health: $currentEnemyHp")
@@ -80,13 +83,15 @@ class OfflineBattleViewModel : ViewModel() {
     // WARNING: won't work while screen is off
     // reduce player HP by time * enemy damage
     suspend fun damagePlayer() {
-        while (true) {
+        while (currentPlayerHP >= 0 && !battleEnded) {
             delay(HIT_FREQUENCY)
             currentPlayerHP -= enemyDamage
             playerHpPercentage = ((currentPlayerHP * 100) / basePlayerHP).toInt()
             playerHP.value = playerHpPercentage
             Log.d(TAG, "Current player health = $currentPlayerHP")
         }
+
+        battleEnded = true
     }
 
     fun useConsumable(consumableType: String, consumableValue: Int) {

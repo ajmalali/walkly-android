@@ -85,7 +85,7 @@ class OnlineBattleActivity : AppCompatActivity() {
             bar_player_hp.progress = it.toInt()
             if (it <= 0) {
                 loseDialog.show()
-                loseDialog.findViewById<Button>(R.id.button1)
+                loseDialog.findViewById<Button>(R.id.go_home)
                     .setOnClickListener {
                         endGame()
                     }
