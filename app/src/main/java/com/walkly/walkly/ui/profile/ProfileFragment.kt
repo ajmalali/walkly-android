@@ -57,10 +57,10 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
         val userName = auth.currentUser?.displayName
 
         if (userName != null) {
-            tv_username.text = "Hello $userName"
+            tv_welcome.text = "Hi $userName"
         } else {
-            tv_username.text = "error: could not retrieve user name"
-            tv_username.setTextColor(Color.RED)
+            Log.e(TAG, "failed to retrieve user name")
+            tv_welcome.text = "Hello"
         }
 
         //Wear Equipment Dialog
@@ -99,31 +99,23 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
 
         // click listeners
 
-        tv_signout.setOnClickListener {
-            signOut()
-        }
-
-        tv_view_leaderboard.setOnClickListener {
+        menu_item_leaderboard.setOnClickListener {
             view.findNavController().navigate(R.id.action_navigation_home_to_leaderboardFragment)
         }
 
-        tv_view_friends.setOnClickListener {
+        menu_item_friends.setOnClickListener {
             view.findNavController().navigate(R.id.action_navigation_profile_to_friendsFragment)
         }
 
-        tv_account_settings.setOnClickListener {
-            view.findNavController().navigate(R.id.action_navigation_profile_to_accountSettingsFragment)
-        }
-
-        tv_level.setOnClickListener {
+        menu_item_statistics.setOnClickListener {
             view.findNavController().navigate(R.id.action_navigation_profile_to_statistics)
         }
-        tv_wear_equipment.setOnClickListener {
+        btn_change_equipment.setOnClickListener {
             wearEquipmentDialog.show()
             //To make the background for the dialog Transparent
             wearEquipmentDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
-        tv_view_achievements.setOnClickListener {
+        menu_item_achievements.setOnClickListener {
             view.findNavController().navigate(R.id.action_navigation_profile_to_achievementFragment)
 
         }
@@ -176,4 +168,8 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
         Player.equipment.value = equipment
         wearEquipmentDialog.dismiss()
         }
+
+    companion object{
+        private const val TAG = "profile_fragment"
+    }
 }
