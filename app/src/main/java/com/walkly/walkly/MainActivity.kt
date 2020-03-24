@@ -2,7 +2,6 @@ package com.walkly.walkly
 
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -15,13 +14,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.walkly.walkly.models.Equipment
 import com.walkly.walkly.models.Player
-import com.walkly.walkly.utilities.DistanceUtil
-import com.walkly.walkly.utilities.LocationUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import java.util.*
@@ -131,7 +125,7 @@ class MainActivity : AppCompatActivity(){
         })
 
         Player.progress.observe(this, Observer {
-            progressBar2.progress = it.toInt()
+            progressBar.progress = it.toInt()
         })
 
         updateTopBar()
@@ -168,27 +162,27 @@ class MainActivity : AppCompatActivity(){
 
             if(it >= 300){
                 //3 balls
-                stamina1full.visibility = View.VISIBLE
-                stamina2full.visibility = View.VISIBLE
-                stamina3full.visibility = View.VISIBLE
+                view_energy_ball_1.alpha = 1f
+                view_energy_ball_2.alpha = 1f
+                view_energy_ball_3.alpha = 1f
 
             }else if(it >= 200 ){
                 //2 balls
-                stamina1full.visibility = View.VISIBLE
-                stamina2full.visibility = View.VISIBLE
-                stamina3full.visibility = View.INVISIBLE
+                view_energy_ball_1.alpha = 1f
+                view_energy_ball_2.alpha = 1f
+                view_energy_ball_3.alpha = 0.5f
 
             }else if(it >= 100){
                 //1 ball
-                stamina1full.visibility = View.VISIBLE
-                stamina2full.visibility = View.INVISIBLE
-                stamina3full.visibility = View.INVISIBLE
+                view_energy_ball_1.alpha = 1f
+                view_energy_ball_2.alpha = 0.5f
+                view_energy_ball_3.alpha = 0.5f
 
             }else{
                 //no balls
-                stamina1full.visibility = View.INVISIBLE
-                stamina2full.visibility = View.INVISIBLE
-                stamina3full.visibility = View.INVISIBLE
+                view_energy_ball_1.alpha = 0.5f
+                view_energy_ball_2.alpha = 0.5f
+                view_energy_ball_3.alpha = 0.5f
 
                 // player cannot join a battle
                 join_button.isClickable = false
