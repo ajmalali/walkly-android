@@ -6,6 +6,7 @@ import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -22,6 +23,7 @@ import com.walkly.walkly.models.Player
 import com.walkly.walkly.utilities.DistanceUtil
 import com.walkly.walkly.utilities.LocationUtil
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import java.util.*
 
 class MainActivity : AppCompatActivity(){
@@ -124,6 +126,16 @@ class MainActivity : AppCompatActivity(){
             }
         }
 
+        Player.level.observe(this, Observer {
+            user_level.text = "LEVEL $it"
+        })
+
+        Player.progress.observe(this, Observer {
+            progressBar2.progress = it.toInt()
+        })
+
+        updateTopBar()
+
         // TODO: if connected to internet cache rewards locally
 
     }
@@ -145,5 +157,44 @@ class MainActivity : AppCompatActivity(){
 
         if (auth.currentUser != null)
             Player.startStaminaUpdates()
+    }
+
+    fun updateTopBar(){
+        Player.stamina.observe(this, Observer {
+            Log.d("stamina from map2", it.toString())
+
+            join_button.isClickable = true
+            join_button.background.alpha = 255
+
+            if(it >= 300){
+                //3 balls
+                stamina1full.visibility = View.VISIBLE
+                stamina2full.visibility = View.VISIBLE
+                stamina3full.visibility = View.VISIBLE
+
+            }else if(it >= 200 ){
+                //2 balls
+                stamina1full.visibility = View.VISIBLE
+                stamina2full.visibility = View.VISIBLE
+                stamina3full.visibility = View.INVISIBLE
+
+            }else if(it >= 100){
+                //1 ball
+                stamina1full.visibility = View.VISIBLE
+                stamina2full.visibility = View.INVISIBLE
+                stamina3full.visibility = View.INVISIBLE
+
+            }else{
+                //no balls
+                stamina1full.visibility = View.INVISIBLE
+                stamina2full.visibility = View.INVISIBLE
+                stamina3full.visibility = View.INVISIBLE
+
+                // player cannot join a battle
+                join_button.isClickable = false
+                join_button.background.alpha = 100
+            }
+
+        })
     }
 }
