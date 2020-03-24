@@ -14,6 +14,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.AppBarConfiguration
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.JsonObject
 import com.mapbox.android.core.permissions.PermissionsListener
@@ -34,6 +36,7 @@ import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.models.Enemy.Companion.generateRandomEnemies
 import com.walkly.walkly.offlineBattle.OfflineBattleActivity
+import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_map.*
 import kotlin.random.Random
@@ -79,6 +82,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_HIDDEN
         mapView?.onCreate(savedInstanceState)
         mapView?.getMapAsync(this)
+
+        val appBarConfiguration = AppBarConfiguration(findNavController().graph, drawer_layout)
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {

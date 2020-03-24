@@ -1,24 +1,38 @@
 package com.walkly.walkly
 
+import android.app.AlertDialog
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
+import android.widget.Button
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.navigation.NavigationView
+import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.walkly.walkly.models.Feedback
 import com.walkly.walkly.repositories.ConsumablesRepository
 import com.walkly.walkly.repositories.EquipmentRepository
 import com.walkly.walkly.repositories.PlayerRepository
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.dialog_send_feedback.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import java.util.*
@@ -40,14 +54,14 @@ class MainActivity : AppCompatActivity() {
     private val cal = Calendar.getInstance()
 
     private val walkedDistance = MutableLiveData<Float>()
-
+    private val db = FirebaseFirestore.getInstance()
     private val currentPlayer = PlayerRepository.getPlayer()
     private val stamina = currentPlayer.stamina
 
     private var update = false
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Default + job)
-
+    private lateinit var feedbackDialog: AlertDialog
     private val auth = FirebaseAuth.getInstance()
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -62,11 +76,49 @@ class MainActivity : AppCompatActivity() {
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
-            )
+            ), drawer_layout
         )
+
         setupActionBarWithNavController(navController, appBarConfiguration)
         supportActionBar?.hide()
         //    navView.setupWithNavController(navController)
+
+        // Send Feedback dialog
+        val feedbackInflater =
+            layoutInflater.inflate(R.layout.dialog_send_feedback, container, false)
+        val feedbackDialog = AlertDialog.Builder(this)
+            .setView(feedbackInflater)
+            .create()
+
+        val feedbackLayout = feedbackInflater.findViewById<TextInputLayout>(R.id.feedback_content)
+
+        feedbackInflater.findViewById<Button>(R.id.send_feedback_button)
+            .setOnClickListener {
+                val content: String? = feedbackLayout.editText?.text.toString()
+                if (content != null && content.isNotEmpty()) {
+                    val feedback = Feedback(auth.currentUser?.uid!!, content, Timestamp.now())
+                    db.collection("feedbacks").add(feedback)
+                        .addOnSuccessListener {
+                            feedbackDialog.dismiss()
+                            Toast.makeText(
+                                baseContext, "Thank you for your feedback!",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                }
+            }
+
+        val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
+        val navigationView = findViewById<NavigationView>(R.id.side_drawer_navigation)
+//        val toggle = ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+
+        navigationView.setNavigationItemSelectedListener {
+            if (it.itemId == R.id.send_feedback) {
+                drawer.closeDrawer(GravityCompat.END)
+                feedbackDialog.show()
+            }
+            true
+        }
 
         // TODO: refactor this
         // bottom nav
@@ -109,7 +161,6 @@ class MainActivity : AppCompatActivity() {
 
         cal.add(Calendar.MINUTE, -1000)
     }
-
 
     // TODO: (UI) Change to snackbar
     private suspend fun displayMessage(message: String?) {
