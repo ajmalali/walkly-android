@@ -11,7 +11,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="16dp"
         android:text="@string/feedback_title"
         android:textAlignment="center"
@@ -24,11 +24,12 @@
 
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/feedback_content"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
+        android:layout_height="150dp"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginEnd="24dp"
         android:layout_marginBottom="16dp"
         android:hint="@string/feedback_hint"
         app:layout_constraintBottom_toTopOf="@+id/send_feedback_button"
@@ -39,14 +40,17 @@
         <com.google.android.material.textfield.TextInputEditText
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:inputType="textMultiLine" />
+            android:inputType="textMultiLine"
+            android:textColor="#FFFFFF"
+            android:gravity="top"
+            tools:text="HERE SOME " />
     </com.google.android.material.textfield.TextInputLayout>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/send_feedback_button"
         android:layout_width="111dp"
         android:layout_height="42dp"
-        android:layout_marginBottom="8dp"
+        android:layout_marginBottom="24dp"
         android:backgroundTint="#FF6577"
         android:gravity="center"
         android:text="@string/send"
