@@ -4,24 +4,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.walkly.walkly.R
-import com.walkly.walkly.generated.callback.OnClickListener
 import com.walkly.walkly.models.Quest
-import kotlinx.android.synthetic.main.bottom_sheet_quest.*
+import com.walkly.walkly.repositories.QuestsRepository
 import kotlinx.android.synthetic.main.fragment_quests.*
 import kotlinx.android.synthetic.main.list_quest.view.*
-import java.util.ArrayList
 
 class QuestsFragment : Fragment(), QuestAdapter.QuestClickListener {
 
-    val quests = ArrayList<Quest>().apply {
-        add(Quest("Largest Mosque", 500, "It has Three Towers"))
-        add(Quest("Tallest Red Building", 1750, "It Glows at Night"))
-    }
+    private lateinit var quests: List<Quest>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -33,8 +27,10 @@ class QuestsFragment : Fragment(), QuestAdapter.QuestClickListener {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        quests_recycler_view.adapter = QuestAdapter(quests, this)
+        QuestsRepository.getQuests {
+            quests = it
+            quests_recycler_view.adapter = QuestAdapter(quests, this)
+        }
     }
 
     override fun onQuestClicker(postion: Int) {
