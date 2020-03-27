@@ -2,10 +2,10 @@ package com.walkly.walkly
 
 import android.content.res.ColorStateList
 import android.graphics.Color
-import android.location.Location
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -14,14 +14,10 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
-import com.walkly.walkly.models.Equipment
 import com.walkly.walkly.models.Player
-import com.walkly.walkly.utilities.DistanceUtil
-import com.walkly.walkly.utilities.LocationUtil
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import java.util.*
 
 class MainActivity : AppCompatActivity(){
@@ -124,6 +120,16 @@ class MainActivity : AppCompatActivity(){
             }
         }
 
+        Player.level.observe(this, Observer {
+            user_level.text = "LEVEL $it"
+        })
+
+        Player.progress.observe(this, Observer {
+            progressBar.progress = it.toInt()
+        })
+
+        updateTopBar()
+
         // TODO: if connected to internet cache rewards locally
 
     }
@@ -145,5 +151,44 @@ class MainActivity : AppCompatActivity(){
 
         if (auth.currentUser != null)
             Player.startStaminaUpdates()
+    }
+
+    fun updateTopBar(){
+        Player.stamina.observe(this, Observer {
+            Log.d("stamina from map2", it.toString())
+
+            join_button.isClickable = true
+            join_button.background.alpha = 255
+
+            if(it >= 300){
+                //3 balls
+                view_energy_ball_1.alpha = 1f
+                view_energy_ball_2.alpha = 1f
+                view_energy_ball_3.alpha = 1f
+
+            }else if(it >= 200 ){
+                //2 balls
+                view_energy_ball_1.alpha = 1f
+                view_energy_ball_2.alpha = 1f
+                view_energy_ball_3.alpha = 0.5f
+
+            }else if(it >= 100){
+                //1 ball
+                view_energy_ball_1.alpha = 1f
+                view_energy_ball_2.alpha = 0.5f
+                view_energy_ball_3.alpha = 0.5f
+
+            }else{
+                //no balls
+                view_energy_ball_1.alpha = 0.5f
+                view_energy_ball_2.alpha = 0.5f
+                view_energy_ball_3.alpha = 0.5f
+
+                // player cannot join a battle
+                join_button.isClickable = false
+                join_button.background.alpha = 100
+            }
+
+        })
     }
 }

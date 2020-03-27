@@ -25,6 +25,9 @@
          <action
             android:id="@+id/action_navigation_profile_to_achievementFragment"
             app:destination="@id/achievementFragment"/>
+        <action
+            android:id="@+id/action_navigation_profile_to_questsFragment"
+            app:destination="@id/questsFragment" />
 
     </fragment>
 
@@ -69,17 +72,26 @@
     <fragment
         android:id="@+id/accountSettingsFragment"
         android:name="com.walkly.walkly.ui.profile.AccountSettingsFragment"
-        android:label="AccountSettingsFragment" />
+        android:label="AccountSettingsFragment"
+        tools:layout="@layout/fragment_account_settings"/>
     <fragment
         android:id="@+id/friendsFragment"
         android:name="com.walkly.walkly.ui.profile.FriendsFragment"
-        android:label="FriendsFragment" />
+        android:label="FriendsFragment"
+        tools:layout="@layout/fragment_friends"/>
     <fragment
         android:id="@+id/statisticsFragment"
         android:name="com.walkly.walkly.ui.profile.StatisticsFragment"
-        android:label="StatisticsFragment"/>
+        android:label="StatisticsFragment"
+        tools:layout="@layout/fragment_statistics"/>
   <fragment
         android:id="@+id/achievementFragment"
         android:name="com.walkly.walkly.ui.profile.AchievementFragment"
-        android:label="AchievmeentFragment"/>
+        android:label="AchievmeentFragment"
+        tools:layout="@layout/fragment_achievements"/>
+    <fragment
+        android:id="@+id/questsFragment"
+        android:name="com.walkly.walkly.ui.profile.QuestsFragment"
+        android:label="QuestsFragment"
+        tools:layout="@layout/fragment_quests"/>
 </navigation>

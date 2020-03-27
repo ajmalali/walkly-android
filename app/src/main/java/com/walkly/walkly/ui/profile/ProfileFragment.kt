@@ -27,6 +27,7 @@ import com.walkly.walkly.models.Player
 import com.walkly.walkly.repositories.EquipmentRepository.equipmentList
 import kotlinx.android.synthetic.main.dialog_wear_equipment.view.*
 import kotlinx.android.synthetic.main.fragment_profile.*
+import java.lang.NullPointerException
 
 
 @SuppressLint("Registered")
@@ -57,10 +58,10 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
         val userName = auth.currentUser?.displayName
 
         if (userName != null) {
-            tv_username.text = "Hello $userName"
+            tv_welcome.text = "Hi $userName"
         } else {
-            tv_username.text = "error: could not retrieve user name"
-            tv_username.setTextColor(Color.RED)
+            Log.e(TAG, "failed to retrieve user name")
+            tv_welcome.text = "Hello"
         }
 
         //Wear Equipment Dialog
@@ -98,32 +99,27 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
 
 
         // click listeners
-
-        tv_signout.setOnClickListener {
-            signOut()
+        menu_item_quests.setOnClickListener {
+            view.findNavController().navigate(R.id.action_navigation_profile_to_questsFragment)
         }
 
-        tv_view_leaderboard.setOnClickListener {
+        menu_item_leaderboard.setOnClickListener {
             view.findNavController().navigate(R.id.action_navigation_home_to_leaderboardFragment)
         }
 
-        tv_view_friends.setOnClickListener {
+        menu_item_friends.setOnClickListener {
             view.findNavController().navigate(R.id.action_navigation_profile_to_friendsFragment)
         }
 
-        tv_account_settings.setOnClickListener {
-            view.findNavController().navigate(R.id.action_navigation_profile_to_accountSettingsFragment)
-        }
-
-        tv_level.setOnClickListener {
+        menu_item_statistics.setOnClickListener {
             view.findNavController().navigate(R.id.action_navigation_profile_to_statistics)
         }
-        tv_wear_equipment.setOnClickListener {
+        btn_change_equipment.setOnClickListener {
             wearEquipmentDialog.show()
             //To make the background for the dialog Transparent
             wearEquipmentDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
-        tv_view_achievements.setOnClickListener {
+        menu_item_achievements.setOnClickListener {
             view.findNavController().navigate(R.id.action_navigation_profile_to_achievementFragment)
 
         }
@@ -149,9 +145,13 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
                     .downloadUrl
                      .addOnSuccessListener {
                          equipmentUri = it
+                         try {
                          Glide.with(this)
                              .load(equipmentUri)
                              .into(img_equipment)
+                         } catch (npe: NullPointerException){
+                             // do nothing
+                         }
                      }
             }
     }
@@ -176,4 +176,8 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
         Player.equipment.value = equipment
         wearEquipmentDialog.dismiss()
         }
+
+    companion object{
+        private const val TAG = "profile_fragment"
+    }
 }
