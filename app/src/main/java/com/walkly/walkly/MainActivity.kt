@@ -6,9 +6,8 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
-import android.view.MenuItem
 import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.ActionBarDrawerToggle
@@ -16,13 +15,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
-import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -32,7 +28,6 @@ import com.walkly.walkly.repositories.ConsumablesRepository
 import com.walkly.walkly.repositories.EquipmentRepository
 import com.walkly.walkly.repositories.PlayerRepository
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.dialog_send_feedback.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import java.util.*
@@ -90,11 +85,11 @@ class MainActivity : AppCompatActivity() {
             .setView(feedbackInflater)
             .create()
 
-        val feedbackLayout = feedbackInflater.findViewById<TextInputLayout>(R.id.feedback_content)
+        val feedbackLayout = feedbackInflater.findViewById<EditText>(R.id.feedback_content)
 
         feedbackInflater.findViewById<Button>(R.id.send_feedback_button)
             .setOnClickListener {
-                val content: String? = feedbackLayout.editText?.text.toString()
+                val content: String? = feedbackLayout.text.toString()
                 if (content != null && content.isNotEmpty()) {
                     val feedback = Feedback(auth.currentUser?.uid!!, content, Timestamp.now())
                     db.collection("feedbacks").add(feedback)
