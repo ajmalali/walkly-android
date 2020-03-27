@@ -27,6 +27,7 @@ import com.walkly.walkly.models.Player
 import com.walkly.walkly.repositories.EquipmentRepository.equipmentList
 import kotlinx.android.synthetic.main.dialog_wear_equipment.view.*
 import kotlinx.android.synthetic.main.fragment_profile.*
+import java.lang.NullPointerException
 
 
 @SuppressLint("Registered")
@@ -98,6 +99,9 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
 
 
         // click listeners
+        menu_item_quests.setOnClickListener {
+            view.findNavController().navigate(R.id.action_navigation_profile_to_questsFragment)
+        }
 
         menu_item_leaderboard.setOnClickListener {
             view.findNavController().navigate(R.id.action_navigation_home_to_leaderboardFragment)
@@ -141,9 +145,13 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
                     .downloadUrl
                      .addOnSuccessListener {
                          equipmentUri = it
+                         try {
                          Glide.with(this)
                              .load(equipmentUri)
                              .into(img_equipment)
+                         } catch (npe: NullPointerException){
+                             // do nothing
+                         }
                      }
             }
     }
