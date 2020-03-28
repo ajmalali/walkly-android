@@ -14,7 +14,9 @@ import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.resource.drawable.DrawableResource
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.JsonObject
@@ -37,6 +39,7 @@ import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.models.Enemy.Companion.generateRandomEnemies
 import com.walkly.walkly.models.Player
 import com.walkly.walkly.offlineBattle.OfflineBattle
+import com.walkly.walkly.repositories.EnemyRepository
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_map.*
 import kotlin.random.Random
@@ -44,7 +47,9 @@ import kotlin.random.Random
 class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
     lateinit var v : View
     private var permissionsManager: PermissionsManager = PermissionsManager(this)
-    private lateinit var mapViewModel: MapViewModel
+    private val mapViewModel: MapViewModel by lazy {
+        ViewModelProviders.of(this).get(MapViewModel::class.java)
+    }
     private lateinit var linearLayout: LinearLayout
     private lateinit var mapboxMap: MapboxMap
     private lateinit var  symbol1: Symbol
@@ -121,9 +126,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         mapView?.getMapAsync(this)
     }
     override fun onMapReady(mapboxMap: MapboxMap) {
-        enemies = arrayOf(Enemy("name", 0, "id", "url", 0, 0),
-            Enemy("name", 0, "id", "url", 100, 1),
-            Enemy("name", 0, "id", "url", 100, 1))
+        mapViewModel.enemies.observe(viewLifecycleOwner, Observer {
+            enemies = it
+        })
+//            arrayOf(Enemy("name", 0, "id", "url", 0, 0),
+//            Enemy("name", 0, "id", "url", 100, 1),
+//            Enemy("name", 0, "id", "url", 100, 1))
 
         //generateRandomEnemies(Player.level.value!!)
         this.mapboxMap = mapboxMap
@@ -204,7 +212,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                 bottom_sheet_text.setText(curen.name)
                 bottom_sheet_lvl.setText("Level: "+ curen.level)
                 bottom_sheet_health.setText("HP: "+ curen.HP_)
-
+                Glide.with(activity!!)
+                        .load(curen.image)
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
+                        .into(activity!!.bossgif)
                 BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_COLLAPSED
 
             }
