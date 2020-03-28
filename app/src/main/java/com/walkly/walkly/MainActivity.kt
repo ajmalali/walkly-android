@@ -1,11 +1,11 @@
 package com.walkly.walkly
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +15,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.firebase.auth.FirebaseAuth
+import com.walkly.walkly.auth.LoginActivity
 import com.walkly.walkly.models.Player
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
@@ -37,9 +38,27 @@ class MainActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-    //    val navView: BottomNavigationView = findViewById(R.id.nav_view)
+
+        menu.setOnClickListener {
+            drawer_layout.open()
+        }
 
         val navController = findNavController(R.id.nav_host_fragment)
+        nav_view.setNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.nav_settings -> {
+                    navController.navigate(R.id.accountSettingsFragment)
+                    drawer_layout.close()
+                    return@setNavigationItemSelectedListener true
+                }
+                R.id.nav_logout -> {
+                    signOut()
+                    return@setNavigationItemSelectedListener false
+                }
+            }
+            return@setNavigationItemSelectedListener false
+        }
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
@@ -132,6 +151,20 @@ class MainActivity : AppCompatActivity(){
 
         // TODO: if connected to internet cache rewards locally
 
+    }
+
+    private fun signOut() {
+        auth.signOut()
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        this?.finish()
+    }
+
+    override fun onBackPressed() {
+        if (drawer_layout.isOpen)
+            drawer_layout.close()
+        else
+            super.onBackPressed()
     }
 
 
