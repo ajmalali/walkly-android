@@ -1,6 +1,7 @@
 package com.walkly.walkly
 
 import android.app.AlertDialog
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
@@ -21,8 +22,10 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.android.material.navigation.NavigationView
 import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.walkly.walkly.auth.LoginActivity
 import com.walkly.walkly.models.Feedback
 import com.walkly.walkly.repositories.ConsumablesRepository
 import com.walkly.walkly.repositories.EquipmentRepository
@@ -30,6 +33,8 @@ import com.walkly.walkly.repositories.PlayerRepository
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.android.synthetic.main.bottom_sheet_layout.*
+import kotlinx.android.synthetic.main.dialog_feedback.*
 import java.util.*
 
 // max of 3 stamina points
@@ -63,57 +68,68 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        //    val navView: BottomNavigationView = findViewById(R.id.nav_view)
+
+        menu.setOnClickListener {
+            drawer_layout.open()
+        }
 
         val navController = findNavController(R.id.nav_host_fragment)
+        nav_view.setNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.nav_settings -> {
+                    navController.navigate(R.id.accountSettingsFragment)
+                    drawer_layout.close()
+                    return@setNavigationItemSelectedListener true
+                }
+                R.id.nav_send_feedback -> {
+                    val feedbackDialog = AlertDialog.Builder(this)
+                        .setView(R.layout.dialog_feedback)
+                        .create()
+                    feedbackDialog.show()
+                    feedbackDialog.findViewById<Button>(R.id.btn_cancel)
+                        ?.setOnClickListener {
+                            feedbackDialog.dismiss()
+                        }
+                    feedbackDialog.findViewById<Button>(R.id.btn_send)
+                        ?.setOnClickListener {
+                            val title = feedbackDialog.findViewById<EditText>(R.id.et_title)?.text.toString()
+                            val content = feedbackDialog.findViewById<EditText>(R.id.et_content)?.text.toString()
+                            FirebaseFirestore.getInstance().collection("feedbacks")
+                                .add(hashMapOf(
+                                    "title" to title,
+                                    "content" to content,
+                                    "timestamp" to FieldValue.serverTimestamp(),
+                                    "userID" to auth.currentUser?.uid,
+                                    "closed" to false
+                                ))
+                                .addOnSuccessListener {
+                                    feedbackDialog.dismiss()
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(this, "Failed to send feedback. Check your connection", Toast.LENGTH_LONG)
+                                }
+                        }
+
+                    drawer_layout.close()
+                }
+                R.id.nav_logout -> {
+                    signOut()
+                }
+            }
+            return@setNavigationItemSelectedListener false
+        }
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
-            ), drawer_layout
+            )
         )
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         supportActionBar?.hide()
         //    navView.setupWithNavController(navController)
-
-        // Send Feedback dialog
-        val feedbackInflater =
-            layoutInflater.inflate(R.layout.dialog_send_feedback, container, false)
-        val feedbackDialog = AlertDialog.Builder(this)
-            .setView(feedbackInflater)
-            .create()
-
-        val feedbackLayout = feedbackInflater.findViewById<EditText>(R.id.feedback_content)
-
-        feedbackInflater.findViewById<Button>(R.id.send_feedback_button)
-            .setOnClickListener {
-                val content: String? = feedbackLayout.text.toString()
-                if (content != null && content.isNotEmpty()) {
-                    val feedback = Feedback(auth.currentUser?.uid!!, content, Timestamp.now())
-                    db.collection("feedbacks").add(feedback)
-                        .addOnSuccessListener {
-                            feedbackDialog.dismiss()
-                            Toast.makeText(
-                                baseContext, "Thank you for your feedback!",
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        }
-                }
-            }
-
-        val drawer = findViewById<DrawerLayout>(R.id.drawer_layout)
-        val navigationView = findViewById<NavigationView>(R.id.side_drawer_navigation)
-//        val toggle = ActionBarDrawerToggle(this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close)
-
-        navigationView.setNavigationItemSelectedListener {
-            if (it.itemId == R.id.send_feedback) {
-                drawer.closeDrawer(GravityCompat.END)
-                feedbackDialog.show()
-            }
-            true
-        }
 
         // TODO: refactor this
         // bottom nav
@@ -182,6 +198,21 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun signOut() {
+        auth.signOut()
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        this?.finish()
+    }
+
+    override fun onBackPressed() {
+        if (drawer_layout.isOpen)
+            drawer_layout.close()
+        else
+            super.onBackPressed()
+    }
+
+
     // TODO: Syncing happens here
     // Sync everything to DB before closing
     override fun onStop() {
@@ -218,6 +249,4 @@ class MainActivity : AppCompatActivity() {
             }
         }
     }
-
-
 }

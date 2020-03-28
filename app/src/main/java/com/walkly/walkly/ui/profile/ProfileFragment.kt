@@ -28,6 +28,8 @@ import com.walkly.walkly.models.Equipment
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_wear_equipment.view.*
 import kotlinx.android.synthetic.main.fragment_profile.*
+import java.lang.NullPointerException
+import java.lang.NullPointerException
 
 
 private const val TAG = "ProfileFragment"
@@ -100,34 +102,27 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
         wearEquipmentDialog = wearEquipmentBuilder.create()
 
         // click listeners
-        val navController = view.findNavController()
-        tv_signout.setOnClickListener {
-            signOut()
+        menu_item_quests.setOnClickListener {
+            view.findNavController().navigate(R.id.action_navigation_profile_to_questsFragment)
         }
 
-        tv_view_leaderboard.setOnClickListener {
-            navController.navigate(R.id.action_navigation_home_to_leaderboardFragment)
+        menu_item_leaderboard.setOnClickListener {
+            view.findNavController().navigate(R.id.action_navigation_home_to_leaderboardFragment)
         }
 
-        tv_view_friends.setOnClickListener {
-            navController.navigate(R.id.action_navigation_profile_to_friendsFragment)
+        menu_item_friends.setOnClickListener {
+            view.findNavController().navigate(R.id.action_navigation_profile_to_friendsFragment)
         }
 
-        tv_account_settings.setOnClickListener {
-            navController.navigate(R.id.action_navigation_profile_to_accountSettingsFragment)
+        menu_item_statistics.setOnClickListener {
+            view.findNavController().navigate(R.id.action_navigation_profile_to_statistics)
         }
-
-        tv_level.setOnClickListener {
-            navController.navigate(R.id.action_navigation_profile_to_statistics)
-        }
-
-        tv_wear_equipment.setOnClickListener {
+        btn_change_equipment.setOnClickListener {
             wearEquipmentDialog.show()
             //To make the background for the dialog Transparent
             wearEquipmentDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
-
-        tv_view_achievements.setOnClickListener {
+        menu_item_achievements.setOnClickListener {
             view.findNavController().navigate(R.id.action_navigation_profile_to_achievementFragment)
 
         }
@@ -139,9 +134,13 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
 
 
         // TODO: Refactor
-        Glide.with(this)
-            .load(profileViewModel.currentPlayer.currentEquipment?.image)
-            .into(img_equipment)
+        try {
+            Glide.with(this)
+                .load(profileViewModel.currentPlayer.currentEquipment?.image)
+                .into(img_equipment)
+        } catch (npe: NullPointerException){
+            // do nothing
+        }
 
 //        var equipmentUri: Uri
 //        FirebaseStorage.getInstance()

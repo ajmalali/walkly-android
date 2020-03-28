@@ -76,6 +76,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         mapViewModel.progress.observe(viewLifecycleOwner, Observer {
             player_progress.progress = it?.toInt() ?: 0
         })
+        val btn_bg = join_button.background
 
         linearLayout = bottom_sheet
         //hide the bottom sheet
@@ -199,8 +200,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                 })
 
                 BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_COLLAPSED
-
-                updateTopBar()
             }
             // }
 
