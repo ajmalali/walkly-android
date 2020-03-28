@@ -15,7 +15,8 @@ import kotlinx.android.synthetic.main.list_quest.view.*
 
 class QuestsFragment : Fragment(), QuestAdapter.QuestClickListener {
 
-    private lateinit var quests: List<Quest>
+    private lateinit var quests: MutableList<Quest>
+    private lateinit var adapter: QuestAdapter
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -28,15 +29,19 @@ class QuestsFragment : Fragment(), QuestAdapter.QuestClickListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         QuestsRepository.getQuests {
-            quests = it
-            quests_recycler_view.adapter = QuestAdapter(quests, this)
+            quests = it.toMutableList()
+            adapter = QuestAdapter(quests, this)
+            quests_recycler_view.adapter = adapter
         }
     }
 
     override fun onQuestClicker(postion: Int) {
         val bottomSheet = QuestBottomSheetDialog(
-            quests[postion].hint
-        )
+            quests[postion]
+        ) {
+            quests.remove(it)
+            adapter.notifyDataSetChanged()
+        }
         bottomSheet.show(parentFragmentManager, "qbs")
     }
 }
@@ -55,6 +60,7 @@ class QuestAdapter(private val quests: List<Quest>, val clickListener: QuestClic
     interface QuestClickListener{
         fun onQuestClicker(postion: Int)
     }
+
 }
 
 class QuestViewHolder(view: View, val clickListener: QuestAdapter.QuestClickListener) : RecyclerView.ViewHolder(view), View.OnClickListener {
