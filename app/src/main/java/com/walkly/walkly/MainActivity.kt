@@ -7,20 +7,17 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import androidx.lifecycle.Observer
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.view.GravityCompat
-import androidx.drawerlayout.widget.DrawerLayout
 import androidx.lifecycle.MutableLiveData
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
-import com.google.android.material.navigation.NavigationView
-import com.google.firebase.Timestamp
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -31,10 +28,9 @@ import com.walkly.walkly.repositories.ConsumablesRepository
 import com.walkly.walkly.repositories.EquipmentRepository
 import com.walkly.walkly.repositories.PlayerRepository
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.android.synthetic.main.bottom_sheet_layout.*
-import kotlinx.android.synthetic.main.dialog_feedback.*
 import java.util.*
 
 // max of 3 stamina points
@@ -53,10 +49,9 @@ class MainActivity : AppCompatActivity() {
 
     private val cal = Calendar.getInstance()
 
-    private val walkedDistance = MutableLiveData<Float>()
     private val db = FirebaseFirestore.getInstance()
     private val currentPlayer = PlayerRepository.getPlayer()
-    private val stamina = currentPlayer.stamina
+    private val stamina = MutableLiveData<Long>()
 
     private var update = false
     private val job = Job()
@@ -92,21 +87,34 @@ class MainActivity : AppCompatActivity() {
                         }
                     feedbackDialog.findViewById<Button>(R.id.btn_send)
                         ?.setOnClickListener {
-                            val title = feedbackDialog.findViewById<EditText>(R.id.et_title)?.text.toString()
-                            val content = feedbackDialog.findViewById<EditText>(R.id.et_content)?.text.toString()
-                            FirebaseFirestore.getInstance().collection("feedbacks")
-                                .add(hashMapOf(
-                                    "title" to title,
-                                    "content" to content,
-                                    "timestamp" to FieldValue.serverTimestamp(),
-                                    "userID" to auth.currentUser?.uid,
-                                    "closed" to false
-                                ))
+                            val title =
+                                feedbackDialog.findViewById<EditText>(R.id.et_title)?.text.toString()
+                            val content =
+                                feedbackDialog.findViewById<EditText>(R.id.et_content)?.text.toString()
+                            db.collection("feedbacks")
+                                .add(
+                                    hashMapOf(
+                                        "title" to title,
+                                        "content" to content,
+                                        "timestamp" to FieldValue.serverTimestamp(),
+                                        "userID" to auth.currentUser?.uid,
+                                        "closed" to false
+                                    )
+                                )
                                 .addOnSuccessListener {
                                     feedbackDialog.dismiss()
+                                    Toast.makeText(
+                                        baseContext, "Thank you for your feedback!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                                 .addOnFailureListener {
-                                    Toast.makeText(this, "Failed to send feedback. Check your connection", Toast.LENGTH_LONG)
+                                    Toast.makeText(
+                                        this,
+                                        "Failed to send feedback. Check your connection",
+                                        Toast.LENGTH_LONG
+                                    )
+                                        .show()
                                 }
                         }
 
@@ -171,6 +179,42 @@ class MainActivity : AppCompatActivity() {
         btn_map.compoundDrawableTintList = ColorStateList.valueOf(SOLID_WHITE)
 
         cal.add(Calendar.MINUTE, -1000)
+        updateTopBar()
+    }
+
+    private fun updateTopBar() {
+        stamina.observe(this, Observer {
+            val stamina = it
+            join_button.isClickable = true
+            join_button.background.alpha = 255
+
+            stamina.let {
+                if (stamina <= 100) {
+                    // no balls
+                    view_energy_ball_3.visibility = View.INVISIBLE
+                    view_energy_ball_2.visibility = View.INVISIBLE
+                    view_energy_ball_1.visibility = View.INVISIBLE
+
+                    // player cannot join a battle
+                    join_button.isClickable = false
+                    join_button.background.alpha = 100
+                } else {
+                    if (stamina >= 300) {
+                        view_energy_ball_3.visibility = View.VISIBLE
+                    }
+
+                    if (stamina >= 200) {
+                        view_energy_ball_2.visibility = View.VISIBLE
+                    }
+
+                    if (stamina >= 100) {
+                        view_energy_ball_1.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            Log.d("Stamina from map", stamina.toString())
+        })
     }
 
     // TODO: (UI) Change to snackbar
@@ -202,7 +246,7 @@ class MainActivity : AppCompatActivity() {
         auth.signOut()
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
-        this?.finish()
+        this.finish()
     }
 
     override fun onBackPressed() {
@@ -245,6 +289,7 @@ class MainActivity : AppCompatActivity() {
             while (update && currentPlayer.stamina?.compareTo(MAX_STAMINA)!! < 0) {
                 delay(INTERVAL)
                 currentPlayer.stamina = currentPlayer.stamina?.inc()
+                stamina.postValue(currentPlayer.stamina)
                 Log.d(TAG, "Current stamina: ${currentPlayer.stamina}")
             }
         }

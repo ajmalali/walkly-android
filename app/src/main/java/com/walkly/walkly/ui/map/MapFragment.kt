@@ -36,7 +36,6 @@ import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.models.Enemy.Companion.generateRandomEnemies
 import com.walkly.walkly.offlineBattle.OfflineBattleActivity
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_map.*
 import kotlin.random.Random
@@ -68,14 +67,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        mapViewModel.level.observe(viewLifecycleOwner, Observer {
-            val level = "LEVEL $it"
-            user_level.text = level
-        })
-
-        mapViewModel.progress.observe(viewLifecycleOwner, Observer {
-            player_progress.progress = it?.toInt() ?: 0
-        })
         val btn_bg = join_button.background
 
         linearLayout = bottom_sheet
@@ -83,8 +74,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_HIDDEN
         mapView?.onCreate(savedInstanceState)
         mapView?.getMapAsync(this)
-
-        val appBarConfiguration = AppBarConfiguration(findNavController().graph, drawer_layout)
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
@@ -263,41 +252,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
 
     override fun onExplanationNeeded(permissionsToExplain: List<String>) {
         // Toast.makeText(this, "NOOOOOOOOOOOOOOOO", Toast.LENGTH_LONG).show()
-    }
-
-    private fun updateTopBar() {
-        mapViewModel.stamina.observe(viewLifecycleOwner, Observer {
-            val stamina = it
-            join_button.isClickable = true
-            join_button.background.alpha = 255
-
-            stamina?.let {
-                if (stamina <= 100) {
-                    // no balls
-                    stamina1full.visibility = View.INVISIBLE
-                    stamina2full.visibility = View.INVISIBLE
-                    stamina3full.visibility = View.INVISIBLE
-
-                    // player cannot join a battle
-                    join_button.isClickable = false
-                    join_button.background.alpha = 100
-                } else {
-                    if (stamina >= 300) {
-                        stamina3full.visibility = View.VISIBLE
-                    }
-
-                    if (stamina >= 200) {
-                        stamina2full.visibility = View.VISIBLE
-                    }
-
-                    if (stamina >= 100) {
-                        stamina1full.visibility = View.VISIBLE
-                    }
-                }
-            }
-
-            Log.d("Stamina from map", stamina.toString())
-        })
     }
 
     override fun onPermissionResult(granted: Boolean) {

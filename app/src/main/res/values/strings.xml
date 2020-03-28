@@ -67,13 +67,14 @@
     <string name="settings">Settings</string>
     <string name="pvp_invites">PvP Invites</string>
     <string name="send_feedback">Send Feedback</string>
-    <string name="policy">Policy</string>
+    <string name="policy">Privacy Policy</string>
     <string name="feedback_title">Tell us your thoughts</string>
     <string name="send">Send</string>
     <string name="feedback_hint">Your Feedback</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="actions">Actions</string>
 
 
 </resources>

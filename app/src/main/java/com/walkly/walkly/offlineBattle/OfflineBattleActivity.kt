@@ -17,7 +17,6 @@ import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.ui.consumables.ConsumablesBottomSheetDialog
 import com.walkly.walkly.ui.consumables.ConsumablesViewModel
 import com.walkly.walkly.utilities.DistanceUtil
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.fragment_battle_activity.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,7 +40,6 @@ class OfflineBattleActivity : AppCompatActivity() {
     private val walkedDistance = MutableLiveData<Float>()
 
     private lateinit var distanceUtil: DistanceUtil
-    private var steps = 0
     private var pauseTime = -1L
 
     private val job = Job()
@@ -138,7 +136,7 @@ class OfflineBattleActivity : AppCompatActivity() {
 
     private fun initDialogs() {
         // Leave Dialog
-        val leaveInflater = layoutInflater.inflate(R.layout.dialog_battle_leave, container)
+        val leaveInflater = layoutInflater.inflate(R.layout.dialog_battle_leave, null)
         leaveDialog = AlertDialog.Builder(this)
             .setView(leaveInflater)
             .create()
@@ -154,7 +152,7 @@ class OfflineBattleActivity : AppCompatActivity() {
             }
 
         // Win Dialog
-        val winInflater = layoutInflater.inflate(R.layout.dialog_battle_won, container)
+        val winInflater = layoutInflater.inflate(R.layout.dialog_battle_won, null)
         winDialog = AlertDialog.Builder(this)
             .setView(winInflater)
             .create()
@@ -166,7 +164,7 @@ class OfflineBattleActivity : AppCompatActivity() {
             }
 
         // Lose Dialog
-        val loseInflater = layoutInflater.inflate(R.layout.dialog_battle_lost, container)
+        val loseInflater = layoutInflater.inflate(R.layout.dialog_battle_lost, null)
         loseDialog = AlertDialog.Builder(this)
             .setView(loseInflater)
             .create()

@@ -25,10 +25,8 @@ import com.walkly.walkly.R
 import com.walkly.walkly.auth.LoginActivity
 import com.walkly.walkly.models.Consumable
 import com.walkly.walkly.models.Equipment
-import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.dialog_wear_equipment.view.*
 import kotlinx.android.synthetic.main.fragment_profile.*
-import java.lang.NullPointerException
 import java.lang.NullPointerException
 
 
@@ -65,14 +63,14 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
             text = "Hello $userName"
         } else {
             text = "Error: could not retrieve user name"
-            tv_username.setTextColor(Color.RED)
+            tv_welcome.setTextColor(Color.RED)
         }
 
-        tv_username.text = text
+        tv_welcome.text = text
 
         // Wear Equipment Dialog
         val inflater = layoutInflater
-        val dialogView = inflater.inflate(R.layout.dialog_wear_equipment, container) as View
+        val dialogView = inflater.inflate(R.layout.dialog_wear_equipment, null) as View
         wearEquipmentBuilder = AlertDialog.Builder(this.context)
             .setView(dialogView)
 
