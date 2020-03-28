@@ -193,10 +193,10 @@ class BattlesFragment : Fragment() {
         override fun onBindViewHolder(holder: EnemyHolder, position: Int) {
             val enemy = enemies[position]
             holder.apply {
-                battleName.text = enemy.name.value.toString()
-                enemyName = enemy.name.value.toString()
-                enemyHP = enemy.HP.value!!.toInt()
-                enemyLevel = enemy.level.value!!.toInt()
+//                battleName.text = enemy.name.value.toString()
+//                enemyName = enemy.name.value.toString()
+//                enemyHP = enemy.HP.value!!.toInt()
+//                enemyLevel = enemy.level.value!!.toInt()
             }
         }
     }

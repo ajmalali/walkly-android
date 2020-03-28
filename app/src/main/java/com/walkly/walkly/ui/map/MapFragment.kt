@@ -59,25 +59,25 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Mapbox.getInstance(activity!!.applicationContext, getString(R.string.access_token))
+        Mapbox.getInstance(requireActivity().applicationContext, getString(R.string.access_token))
         v =  inflater.inflate(R.layout.fragment_map, container, false)
         return v
     }
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Player.level.observe(this, Observer {
+        Player.level.observe(viewLifecycleOwner, Observer {
             user_level.text = "LEVEL $it"
         })
 
-        Player.progress.observe(this, Observer {
+        Player.progress.observe(viewLifecycleOwner, Observer {
             progressBar2.progress = it.toInt()
         })
 
 
         val btn_bg = join_button.background
 
-        Player.stamina.observe(this, Observer {
+        Player.stamina.observe(viewLifecycleOwner, Observer {
             Log.d("stamina from map2", it.toString())
 
             join_button.isClickable = true
@@ -121,7 +121,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         mapView?.getMapAsync(this)
     }
     override fun onMapReady(mapboxMap: MapboxMap) {
-        enemies = generateRandomEnemies(Player.level.value!!)
+        enemies = arrayOf(Enemy("name", 0, "id", "url", 0, 0),
+            Enemy("name", 0, "id", "url", 100, 1),
+            Enemy("name", 0, "id", "url", 100, 1))
+
+        //generateRandomEnemies(Player.level.value!!)
         this.mapboxMap = mapboxMap
         mapboxMap.uiSettings.isLogoEnabled = false
         mapboxMap.uiSettings.isZoomGesturesEnabled = false
@@ -187,39 +191,22 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                     Player.joinedBattle()
                     val intent = Intent(activity, OfflineBattle::class.java)
                     val bundle = Bundle()
-                    bundle.putString("enemyId", curen.id.value)
-                    bundle.putLong("enemyHP", curen.HP.value!!)
-                    bundle.putLong("enemyDmg", curen.damage.value!!)
-                    bundle.putString("enemyLvl", curen.level.value.toString())
+                    bundle.putString("enemyName", curen.name)
+                    bundle.putString("enemyId", curen.id)
+                    bundle.putLong("enemyHP", curen.HP_)
+                    bundle.putString("enemyImg", curen.image)
+                    bundle.putLong("enemyDmg", curen.DMG_)
+                    bundle.putString("enemyLvl", curen.level.toString())
                     intent.putExtras(bundle)
                     startActivity(intent)
                     activity?.finish()
                 }
-                curen.name.observe(this, Observer {
-                    bottom_sheet_text.setText(it.toString())
-                })
-                curen.level.observe(this, Observer {
-                    bottom_sheet_lvl.setText("Level: "+ it.toString())
-                })
-                curen.HP.observe(this, Observer {
-                    bottom_sheet_health.setText("HP: "+it.toString())
-                })
-
-                curen.id.observe(this, Observer {
-                    val imagename = "boss" + it
-                    bossgif.setImageResource(resources.getIdentifier(imagename,"drawable",  activity?.packageName))
-                })
-
-                curen.image.observe(this, Observer{
-//                  TODO: there's a weird bug, simply passing the image name from the databse doesn't work, current fix is concatinating the enemy's id with its ID as seen in the preceding code block
-//                  bossgif.setImageResource(resources.getIdentifier(it.toString(),"drawable",  activity?.packageName))
-
-                })
+                bottom_sheet_text.setText(curen.name)
+                bottom_sheet_lvl.setText("Level: "+ curen.level)
+                bottom_sheet_health.setText("HP: "+ curen.HP_)
 
                 BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_COLLAPSED
-                //Get the battle name from Battles[i] and set this variable to it
-                //Same for the image
-                //TV.setText(symbol.latLng.toString())
+
             }
             // }
 
@@ -231,15 +218,15 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
     @SuppressLint("MissingPermission")
     private fun enableLocationComponent(loadedMapStyle: Style) {
         // Check if permissions are enabled and if not request
-        if (PermissionsManager.areLocationPermissionsGranted(activity!!.applicationContext)) {
+        if (PermissionsManager.areLocationPermissionsGranted(requireActivity().applicationContext)) {
 
             // Create and customize the LocationComponent's options
-            val customLocationComponentOptions = LocationComponentOptions.builder(activity!!.applicationContext)
+            val customLocationComponentOptions = LocationComponentOptions.builder(requireActivity().applicationContext)
                 .trackingGesturesManagement(true)
-                .accuracyColor(ContextCompat.getColor(activity!!.applicationContext, R.color.colorPrimary))
+                .accuracyColor(ContextCompat.getColor(requireActivity().applicationContext, R.color.colorPrimary))
                 .build()
 
-            val locationComponentActivationOptions = LocationComponentActivationOptions.builder(activity!!.applicationContext, loadedMapStyle)
+            val locationComponentActivationOptions = LocationComponentActivationOptions.builder(requireActivity().applicationContext, loadedMapStyle)
                 .locationComponentOptions(customLocationComponentOptions)
                 .build()
 
@@ -260,7 +247,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
             }
         } else {
             permissionsManager = PermissionsManager(this)
-            permissionsManager.requestLocationPermissions(activity!!)
+            permissionsManager.requestLocationPermissions(requireActivity())
         }
     }
 
@@ -276,7 +263,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         if (granted) {
             enableLocationComponent(mapboxMap.style!!)
         } else {
-          Toast.makeText(activity!!.applicationContext, "YESSSSS", Toast.LENGTH_LONG).show()
+          Toast.makeText(requireActivity().applicationContext, "YESSSSS", Toast.LENGTH_LONG).show()
           //finish()
         }
     }

@@ -40,8 +40,8 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
 
     private val auth = FirebaseAuth.getInstance()
 
-    private var baseEnemyHP = 0.0
-    private var enemyDamage = 0L
+    private var baseEnemyHP = enemy.HP_
+    private var enemyDamage = enemy.DMG_
     private var currentEnemyHp = 0.0
     private var enemyHpPercentage = 100L
     private var basePlayerHP = 1L
@@ -83,20 +83,11 @@ class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewM
             Log.d(D_TAG,  "current player hp = " + currnetPlayerHP)
         })
         // get the starting enemy HP
-        enemy.HP.observe(activity, Observer {
-            baseEnemyHP = it.toDouble()
-            currentEnemyHp = baseEnemyHP
-            enemyHP.value = baseEnemyHP.toLong()
-        })
+            enemyHP.value = baseEnemyHP
         // get enemy image
-        enemy.image.observe(activity, Observer {
-            enemyImage.value = it
-        })
+            enemyImage.value = enemy.image
         // get enemy damage
-        enemy.damage.observe(activity, Observer {
-            enemyDamage = it
-        })
-
+            enemyDamage = enemy.DMG_
 
 
         // reduce enemy HP by distance walked * equipment value

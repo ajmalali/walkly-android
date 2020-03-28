@@ -36,8 +36,12 @@ class OfflineBattle : AppCompatActivity() {
         setContentView(R.layout.fragment_battle_activity)
 
         val bundle = intent.extras
-        val enemy = Enemy( bundle.getLong("playerLlevel"), bundle.getString("enemyId"), bundle.getLong("enemyHP") , bundle.getLong("enemyDmg") )
-
+        val enemy = Enemy(bundle?.getString("enemyName")!!,
+            bundle?.getLong("enemyLevel")!!,
+            bundle.getString("enemyId")!!,
+            bundle.getString("enemyImg")!!,
+            bundle.getLong("enemyHP"),
+            bundle.getLong("enemyDmg"))
         consumablesBottomSheetDialog =
             ConsumablesBottomSheetDialog(this)
 
@@ -76,7 +80,7 @@ class OfflineBattle : AppCompatActivity() {
         viewModel.enemyHP.observe(this, Observer {
             enemy_health_bar.progress = it.toInt()
             if (it <= 0) {
-                enemy.level.value?.toInt()?.let { it1 -> Player.updatePoints(it1) }
+                enemy.level.toInt()?.let { it1 -> Player.updatePoints(it1) }
                 getReward()
                 winDialog.show()
                 winDialog.findViewById<Button>(R.id.btn_collect)
@@ -87,7 +91,7 @@ class OfflineBattle : AppCompatActivity() {
         })
 
         viewModel.enemyImage.observe(this, Observer {
-            val imagename = "boss" + bundle.getString("enemyId")
+            val imagename = "boss" + bundle!!.getString("enemyId")
             boss_bitmoji.setImageResource(resources.getIdentifier(imagename,"drawable",  this.packageName))
         })
 
