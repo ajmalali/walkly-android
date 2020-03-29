@@ -36,7 +36,6 @@ import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
-import com.walkly.walkly.models.Enemy.Companion.generateRandomEnemies
 import com.walkly.walkly.models.Player
 import com.walkly.walkly.offlineBattle.OfflineBattle
 import com.walkly.walkly.repositories.EnemyRepository
@@ -129,11 +128,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
         mapViewModel.enemies.observe(viewLifecycleOwner, Observer {
             enemies = it
         })
-//            arrayOf(Enemy("name", 0, "id", "url", 0, 0),
-//            Enemy("name", 0, "id", "url", 100, 1),
-//            Enemy("name", 0, "id", "url", 100, 1))
 
-        //generateRandomEnemies(Player.level.value!!)
         this.mapboxMap = mapboxMap
         mapboxMap.uiSettings.isLogoEnabled = false
         mapboxMap.uiSettings.isZoomGesturesEnabled = false

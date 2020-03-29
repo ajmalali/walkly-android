@@ -44,7 +44,7 @@ class BattlesFragment : Fragment() {
         battlesRecyclerView = view.findViewById(R.id.battles_recycler_view)
 
         // initalize recylcer view
-        battlesViewModel.battleList.observe(this, Observer { list ->
+        battlesViewModel.battleList.observe(viewLifecycleOwner, Observer { list ->
             list?.let {
                 if(list.isEmpty()) {
                     progressBar.visibility = View.GONE
@@ -60,7 +60,7 @@ class BattlesFragment : Fragment() {
         val joinBtn: RadioButton = view.findViewById(R.id.join_button)
        joinBtn.setOnClickListener {
            hideHeader()
-           battlesViewModel.battleList.observe(this, Observer { list ->
+           battlesViewModel.battleList.observe(viewLifecycleOwner, Observer { list ->
                list?.let {
                    if(list.isEmpty()) {
                        progressBar.visibility = View.GONE
@@ -76,7 +76,7 @@ class BattlesFragment : Fragment() {
         // host button lisetner
         val hostBtn: RadioButton = view.findViewById(R.id.host_button)
         hostBtn.setOnClickListener {
-            battlesViewModel.enemyList.observe(this, Observer { list ->
+            battlesViewModel.enemyList.observe(viewLifecycleOwner, Observer { list ->
                 list?.let {
                     if(list.isEmpty()) {
                         progressBar.visibility = View.GONE
@@ -104,7 +104,6 @@ class BattlesFragment : Fragment() {
         }
 
         override fun onClick(p0: View?) {
-            // Add your on click logic here
             //this.background.setBackgroundColor(Color.parseColor("#340055"))
             battlesViewModel.joinListner(this.battleID)
 
@@ -193,10 +192,10 @@ class BattlesFragment : Fragment() {
         override fun onBindViewHolder(holder: EnemyHolder, position: Int) {
             val enemy = enemies[position]
             holder.apply {
-//                battleName.text = enemy.name.value.toString()
-//                enemyName = enemy.name.value.toString()
-//                enemyHP = enemy.HP.value!!.toInt()
-//                enemyLevel = enemy.level.value!!.toInt()
+                battleName.text = enemy.name.toString()
+                enemyName = enemy.name.toString()
+                enemyHP = enemy.HP_.toInt()
+                enemyLevel = enemy.level.toInt()
             }
         }
     }

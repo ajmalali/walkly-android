@@ -36,16 +36,16 @@ data class Enemy(var name: String, var level: Long, var id: String, var image: S
 //    }
 
 
-    companion object {
-        fun generateRandomEnemies(playerLevel: Long): Array<Enemy>{
-
-            var enemy1 = Enemy("",playerLevel + (1..3).random(), (1..3).random().toString(),"",playerLevel * 100 * (1..3).random(), playerLevel * (1..3).random())
-            var enemy2 = Enemy("",playerLevel + (1..3).random(), (1..3).random().toString(),"",playerLevel * 100 * (1..3).random(), playerLevel * (1..3).random())
-            var enemy3 = Enemy("",playerLevel + (1..3).random(), (1..3).random().toString(),"",playerLevel * 100 * (1..3).random(), playerLevel * (1..3).random())
-
-            return arrayOf(enemy1, enemy2, enemy3)
-        }
-    }
+//    companion object {
+//        fun generateRandomEnemies(playerLevel: Long): Array<Enemy>{
+//
+//            var enemy1 = Enemy("",playerLevel + (1..3).random(), (1..3).random().toString(),"",playerLevel * 100 * (1..3).random(), playerLevel * (1..3).random())
+//            var enemy2 = Enemy("",playerLevel + (1..3).random(), (1..3).random().toString(),"",playerLevel * 100 * (1..3).random(), playerLevel * (1..3).random())
+//            var enemy3 = Enemy("",playerLevel + (1..3).random(), (1..3).random().toString(),"",playerLevel * 100 * (1..3).random(), playerLevel * (1..3).random())
+//
+//            return arrayOf(enemy1, enemy2, enemy3)
+//        }
+//    }
 
 //    fun setEnemyLocation(lat: Double, long: Double){
 //        this.location.latitude= lat

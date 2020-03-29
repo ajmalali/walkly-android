@@ -42,24 +42,29 @@ class BattlesViewModel : ViewModel() {
 
     init {
         getBattles()
-//        getEnemies()
+        getEnemies()
     }
 
-//    fun getEnemies() {
-//        db.collection("enemies")
-//            .get()
-//            .addOnSuccessListener { result ->
-//                for (document in result) {
-//                    val item = Enemy(document.data.get("level") as Long, document.id, document.data.get("health") as Long ,document.data.get("damage") as Long)
-//                    tempEnemyList.add(item)
-//                }
-//                tempEnemyList = tempEnemyList.toMutableList()
-//                _enemyList.value = tempEnemyList
-//            }
-//            .addOnFailureListener { exception ->
-//                Log.d(TAG, "Error getting friends documents.", exception)
-//            }
-//    }
+    fun getEnemies() {
+        db.collection("enemies")
+            .get()
+            .addOnSuccessListener { result ->
+                for (enemydoc in result) {
+                    val item = Enemy(enemydoc.data?.get("name") as String,
+                        (1L..3L).random(),
+                        enemydoc.id,
+                        enemydoc.data?.get("image") as String,
+                         100L * (1L..3L).random(),
+                        (1L..3L).random())
+                    tempEnemyList.add(item)
+                }
+                tempEnemyList = tempEnemyList.toMutableList()
+                _enemyList.value = tempEnemyList
+            }
+            .addOnFailureListener { exception ->
+                Log.d(TAG, "Error getting friends documents.", exception)
+            }
+    }
 
     fun getBattles() {
         db.collection("online_battles")

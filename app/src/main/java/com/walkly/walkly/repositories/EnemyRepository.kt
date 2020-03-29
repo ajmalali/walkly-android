@@ -5,14 +5,20 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.walkly.walkly.models.Enemy
 import kotlinx.coroutines.tasks.await
 
-private const val TAG = "ConsumableRepository"
+private const val TAG = "EnemyRepository"
 
 // Singleton repository object
 object EnemyRepository {
-    private val db = FirebaseFirestore.getInstance()
+    private val settings = FirebaseFirestoreSettings.Builder()
+    .setPersistenceEnabled(true)
+    .build()
+    private val db = FirebaseFirestore.getInstance().also {
+            it.firestoreSettings = settings
+}
     private val userID: String = FirebaseAuth.getInstance().currentUser?.uid.toString()
     private val enemyCollection = db.collection("enemies")
 
