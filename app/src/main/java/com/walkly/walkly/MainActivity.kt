@@ -1,13 +1,16 @@
 package com.walkly.walkly
 
+import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.View
+import android.widget.Button
+import android.widget.EditText
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -15,9 +18,13 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
+import com.google.firebase.firestore.FirebaseFirestore
+import com.walkly.walkly.auth.LoginActivity
 import com.walkly.walkly.models.Player
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
+import kotlinx.android.synthetic.main.dialog_feedback.*
 import java.util.*
 
 class MainActivity : AppCompatActivity(){
@@ -37,9 +44,57 @@ class MainActivity : AppCompatActivity(){
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-    //    val navView: BottomNavigationView = findViewById(R.id.nav_view)
+
+        menu.setOnClickListener {
+            drawer_layout.open()
+        }
 
         val navController = findNavController(R.id.nav_host_fragment)
+        nav_view.setNavigationItemSelectedListener {
+            when (it.itemId) {
+                R.id.nav_settings -> {
+                    navController.navigate(R.id.accountSettingsFragment)
+                    drawer_layout.close()
+                    return@setNavigationItemSelectedListener true
+                }
+                R.id.nav_send_feedback -> {
+                    val feedbackDialog = AlertDialog.Builder(this)
+                        .setView(R.layout.dialog_feedback)
+                        .create()
+                    feedbackDialog.show()
+                    feedbackDialog.findViewById<Button>(R.id.btn_cancel)
+                        ?.setOnClickListener {
+                            feedbackDialog.dismiss()
+                        }
+                    feedbackDialog.findViewById<Button>(R.id.btn_send)
+                        ?.setOnClickListener {
+                            val title = feedbackDialog.findViewById<EditText>(R.id.et_title)?.text.toString()
+                            val content = feedbackDialog.findViewById<EditText>(R.id.et_content)?.text.toString()
+                            FirebaseFirestore.getInstance().collection("feedbacks")
+                                .add(hashMapOf(
+                                    "title" to title,
+                                    "content" to content,
+                                    "timestamp" to FieldValue.serverTimestamp(),
+                                    "userID" to auth.currentUser?.uid,
+                                    "closed" to false
+                                ))
+                                .addOnSuccessListener {
+                                    feedbackDialog.dismiss()
+                                }
+                                .addOnFailureListener {
+                                    Toast.makeText(this, "Failed to send feedback. Check your connection", Toast.LENGTH_LONG)
+                                }
+                        }
+
+                    drawer_layout.close()
+                }
+                R.id.nav_logout -> {
+                    signOut()
+                }
+            }
+            return@setNavigationItemSelectedListener false
+        }
+
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
         val appBarConfiguration = AppBarConfiguration(
@@ -132,6 +187,20 @@ class MainActivity : AppCompatActivity(){
 
         // TODO: if connected to internet cache rewards locally
 
+    }
+
+    private fun signOut() {
+        auth.signOut()
+        val intent = Intent(this, LoginActivity::class.java)
+        startActivity(intent)
+        this?.finish()
+    }
+
+    override fun onBackPressed() {
+        if (drawer_layout.isOpen)
+            drawer_layout.close()
+        else
+            super.onBackPressed()
     }
 
 
