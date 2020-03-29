@@ -1,27 +1,40 @@
 package com.walkly.walkly.ui.profile
 
+import android.Manifest
+import android.app.Activity
+import android.content.Context
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
 import android.widget.TextView
+import androidx.annotation.RequiresApi
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.RecyclerView
 import com.walkly.walkly.R
-import com.walkly.walkly.generated.callback.OnClickListener
 import com.walkly.walkly.models.Quest
-import kotlinx.android.synthetic.main.bottom_sheet_quest.*
+import com.walkly.walkly.repositories.QuestsRepository
 import kotlinx.android.synthetic.main.fragment_quests.*
 import kotlinx.android.synthetic.main.list_quest.view.*
-import java.util.ArrayList
 
 class QuestsFragment : Fragment(), QuestAdapter.QuestClickListener {
 
-    val quests = ArrayList<Quest>().apply {
-        add(Quest("Largest Mosque", 500, "It has Three Towers"))
-        add(Quest("Tallest Red Building", 1750, "It Glows at Night"))
-    }
+    private var MY_PERMISSIONS_REQUEST_ACESS_FINE_LOCATION = System.identityHashCode(activity).and(0xFFF)
+
+    private var quests: MutableList<Quest> = mutableListOf<Quest>()
+    private lateinit var adapter: QuestAdapter
+    private lateinit var locationManager: LocationManager
+
+    private lateinit var locationListner: LocationListener
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -31,17 +44,84 @@ class QuestsFragment : Fragment(), QuestAdapter.QuestClickListener {
         return inflater.inflate(R.layout.fragment_quests, container, false)
     }
 
+
+    @RequiresApi(Build.VERSION_CODES.M)
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        QuestsRepository.getQuests {
+            quests = it.toMutableList()
+            adapter = QuestAdapter(quests, this)
+            quests_recycler_view.adapter = adapter
+            initLocation()
+        }
 
-        quests_recycler_view.adapter = QuestAdapter(quests, this)
+    }
+
+    private fun initLocation() {
+
+        locationManager = ContextCompat.getSystemService(context as Context, LocationManager::class.java) as LocationManager
+
+        if (ActivityCompat.checkSelfPermission(
+                this.context as Context,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(
+                this.context as Context,
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) != PackageManager.PERMISSION_GRANTED
+        ) {
+            // TODO: Consider calling
+            //    ActivityCompat#requestPermissions
+            Log.e("Location_ERROR", "permission is not granted")
+            if (ActivityCompat.shouldShowRequestPermissionRationale(this.activity as Activity,
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
+
+            } else {
+                ActivityCompat.requestPermissions(this.activity as Activity,
+                    arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
+                    MY_PERMISSIONS_REQUEST_ACESS_FINE_LOCATION)
+            }
+            // here to request the missing permissions, and then overriding
+            //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
+            //                                          int[] grantResults)
+            // to handle the case where the user grants the permission. See the documentation
+            // for ActivityCompat#requestPermissions for more details.
+
+        }
+
+        locationListner  = object : LocationListener{
+            override fun onLocationChanged(location: Location?) {
+                if (location != null) {
+                    quests.forEach {
+                        it.calculateDistance(location)
+                    }
+                    adapter.notifyDataSetChanged()
+                }
+            }
+            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {
+                // no op
+            }
+            override fun onProviderEnabled(provider: String?) {
+                Log.i(TAG, "$provider is enabled")
+            }
+            override fun onProviderDisabled(provider: String?) {
+                Log.i(TAG, "$provider is disabled")
+            }
+        }
+        locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 5000L, 5F, locationListner)
     }
 
     override fun onQuestClicker(postion: Int) {
         val bottomSheet = QuestBottomSheetDialog(
-            quests[postion].hint
-        )
+            quests[postion]
+        ) {
+            quests.remove(it)
+            adapter.notifyDataSetChanged()
+        }
         bottomSheet.show(parentFragmentManager, "qbs")
+    }
+
+    companion object{
+        private const val TAG = "Quest Fragment"
     }
 }
 class QuestAdapter(private val quests: List<Quest>, val clickListener: QuestClickListener) : RecyclerView.Adapter<QuestViewHolder>(){
@@ -59,6 +139,7 @@ class QuestAdapter(private val quests: List<Quest>, val clickListener: QuestClic
     interface QuestClickListener{
         fun onQuestClicker(postion: Int)
     }
+
 }
 
 class QuestViewHolder(view: View, val clickListener: QuestAdapter.QuestClickListener) : RecyclerView.ViewHolder(view), View.OnClickListener {
