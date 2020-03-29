@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Quest
@@ -23,11 +24,16 @@ class QuestBottomSheetDialog(val quest: Quest, val callback: (Quest) -> Unit ) :
         super.onViewCreated(view, savedInstanceState)
         tv_quest_hint.text = quest.hint
         btn_complete.setOnClickListener {
-            QuestsRepository.completeQuest(quest) {
-                if (it){
-                    callback(quest)
-                    dismiss()
+            if (quest.closeEnough) {
+                QuestsRepository.completeQuest(quest) {
+                    if (it) {
+                        callback(quest)
+                        dismiss()
+                    }
                 }
+            } else {
+                Toast.makeText(context,"You need to be withing 10 meters to complete the quest", Toast.LENGTH_LONG)
+                    .show()
             }
         }
     }
