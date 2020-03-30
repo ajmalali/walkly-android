@@ -13,13 +13,7 @@ private const val TAG = "EnemyRepository"
 
 // Singleton repository object
 object EnemyRepository {
-    private val settings = FirebaseFirestoreSettings.Builder()
-    .setPersistenceEnabled(true)
-    .build()
-    private val db = FirebaseFirestore.getInstance().also {
-            it.firestoreSettings = settings
-}
-    private val userID: String = FirebaseAuth.getInstance().currentUser?.uid.toString()
+    private val db = FirebaseFirestore.getInstance()
     private val enemyCollection = db.collection("enemies")
 
     private var _enemy = MutableLiveData<Enemy>()

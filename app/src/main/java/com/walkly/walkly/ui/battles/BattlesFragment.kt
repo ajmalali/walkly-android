@@ -188,8 +188,8 @@ class BattlesFragment : Fragment() {
             holder.apply {
                 battleName.text = enemy.name.toString()
                 enemyName = enemy.name.toString()
-                enemyHP = enemy.HP_.toInt()
-                enemyLevel = enemy.level.toInt()
+                enemyHP = enemy.health?.toInt() ?: 100
+                enemyLevel = enemy.level?.toInt() ?: 1
             }
         }
     }

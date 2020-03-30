@@ -5,7 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.walkly.walkly.repositories.PlayerRepository
 import com.walkly.walkly.models.Enemy
-import com.walkly.walkly.models.Player
 import com.walkly.walkly.repositories.EnemyRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -39,7 +38,7 @@ class MapViewModel : ViewModel() {
 
     private fun fetchEnemies(playerLevel: Long?){
         CoroutineScope(IO).launch {
-            _enemies.postValue(EnemyRepository.generateRandomEnemies(Player.level.value))
+            _enemies.postValue(EnemyRepository.generateRandomEnemies(playerLevel))
         }
     }
 }

@@ -14,8 +14,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -36,7 +34,6 @@ import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
-import com.walkly.walkly.models.Enemy.Companion.generateRandomEnemies
 import com.walkly.walkly.offlineBattle.OfflineBattleActivity
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_map.*
@@ -160,17 +157,17 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                     val bundle = Bundle()
                     bundle.putString("enemyName", curen.name)
                     bundle.putString("enemyId", curen.id)
-                    bundle.putLong("enemyHP", curen.HP_)
+                    bundle.putLong("enemyHP", curen.health ?: 100)
                     bundle.putString("enemyImg", curen.image)
-                    bundle.putLong("enemyDmg", curen.DMG_)
+                    bundle.putLong("enemyDmg", curen.damage ?: 1)
                     bundle.putString("enemyLvl", curen.level.toString())
                     intent.putExtras(bundle)
                     startActivity(intent)
-                    activity?.finish()
+//                    activity?.finish()
                 }
                 bottom_sheet_text.setText(curen.name)
                 bottom_sheet_lvl.setText("Level: "+ curen.level)
-                bottom_sheet_health.setText("HP: "+ curen.HP_)
+                bottom_sheet_health.setText("HP: "+ curen.health)
                 Glide.with(activity!!)
                         .load(curen.image)
                         .diskCacheStrategy(DiskCacheStrategy.DATA)

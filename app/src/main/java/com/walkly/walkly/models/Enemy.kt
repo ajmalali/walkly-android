@@ -13,7 +13,14 @@ import com.google.firebase.firestore.FirebaseFirestoreSettings
 
 //private var enemyCollection = firestore.collection("enemies")
 
-data class Enemy(var name: String, var level: Long, var id: String, var image: String, var HP_: Long, var DMG_: Long)  {
+data class Enemy(
+    var name: String?,
+    var level: Long?,
+    var id: String?,
+    var image: String?,
+    var health: Long?,
+    var damage: Long?
+) {
 //    val id = MutableLiveData<String>()
 //    val name = MutableLiveData<String>()
 //    val image = MutableLiveData<String>()

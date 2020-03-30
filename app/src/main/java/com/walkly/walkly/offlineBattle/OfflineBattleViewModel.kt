@@ -16,7 +16,7 @@ class OfflineBattleViewModel : ViewModel() {
     var battleEnded: Boolean = false
 
     // used to specify how frequently enemy hits
-    val HIT_FREQUENCY = 100L
+    val HIT_FREQUENCY = 3000L
 
     // used to convert player level to HP
     private val HP_MULTIPLAYER = 100
