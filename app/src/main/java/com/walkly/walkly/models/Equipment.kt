@@ -1,5 +1,7 @@
 package com.walkly.walkly.models
 
+import com.google.firebase.firestore.Exclude
+
 data class Equipment(
     var name: String? = "",
     var level: Long? = 0,
@@ -7,6 +9,7 @@ data class Equipment(
     var image: String? = "",
     var value: Long? = 0
 ) {
+
     var id: String? = null
 
     fun addId(value: String): Equipment {
@@ -21,7 +24,7 @@ data class Equipment(
                 type = "attack",
                 value = 5,
                 level = 1,
-                image = "equipment"
+                image = "https://firebasestorage.googleapis.com/v0/b/walkly-81d94.appspot.com/o/equipments%2F386arrzpkvO1j8Q4etKx.png?alt=media&token=2e860246-d0cd-46f6-bb80-b70756d36887"
             ).addId("gYQRFbka5BcjzbaocN6N")
         }
     }

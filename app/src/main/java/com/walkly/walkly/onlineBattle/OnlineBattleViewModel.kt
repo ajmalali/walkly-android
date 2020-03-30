@@ -53,7 +53,7 @@ class OnlineBattleViewModel() : ViewModel() {
         get() = _selectedConsumable
 
     init {
-        getConsumables()
+//        getConsumables()
         combinedHP.value = 100L
         enemyHP.value = 100L
         // TODO: HARDCODED VALUES! MUST BE REFACTORED
@@ -140,25 +140,25 @@ class OnlineBattleViewModel() : ViewModel() {
 
     }
 
-    private fun getConsumables() {
-        if (_consumables.value != null) {
-            _consumables.value = ConsumablesRepository.consumableList
-        } else {
-            ConsumablesRepository.getConsumables { list ->
-                _consumables.value = list
-            }
-        }
-    }
-
-    fun selectConsumable(consumable: Consumable) {
-        _selectedConsumable.value = consumable
-    }
-
-    fun removeSelectedConsumable() {
-        ConsumablesRepository.removeConsumable(selectedConsumable.value!!) { updatedList ->
-            _consumables.value = updatedList
-        }
-    }
+//    private fun getConsumables() {
+//        if (_consumables.value != null) {
+//            _consumables.value = ConsumablesRepository.consumableList
+//        } else {
+//            ConsumablesRepository.getConsumables { list ->
+//                _consumables.value = list
+//            }
+//        }
+//    }
+//
+//    fun selectConsumable(consumable: Consumable) {
+//        _selectedConsumable.value = consumable
+//    }
+//
+//    fun removeSelectedConsumable() {
+//        ConsumablesRepository.removeConsumable(selectedConsumable.value!!) { updatedList ->
+//            _consumables.value = updatedList
+//        }
+//    }
 
     fun stopGame() {
         registration.remove()

@@ -12,7 +12,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.RecyclerView
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Battle
-import com.walkly.walkly.models.Player
 import com.walkly.walkly.onlineBattle.OnlineBattleActivity
 import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.ui.lobby.LobbyActivity
@@ -39,7 +38,7 @@ class BattlesFragment : Fragment() {
         battlesRecyclerView = view.findViewById(R.id.battles_recycler_view)
 
         // initalize recylcer view
-        battlesViewModel.battleList.observe(this, Observer { list ->
+        battlesViewModel.battleList.observe(viewLifecycleOwner, Observer { list ->
             list?.let {
                 if(list.isEmpty()) {
                     progressBar.visibility = View.GONE
@@ -55,7 +54,7 @@ class BattlesFragment : Fragment() {
         val joinBtn: RadioButton = view.findViewById(R.id.join_button)
        joinBtn.setOnClickListener {
            hideHeader()
-           battlesViewModel.battleList.observe(this, Observer { list ->
+           battlesViewModel.battleList.observe(viewLifecycleOwner, Observer { list ->
                list?.let {
                    if(list.isEmpty()) {
                        progressBar.visibility = View.GONE
@@ -71,7 +70,7 @@ class BattlesFragment : Fragment() {
         // host button lisetner
         val hostBtn: RadioButton = view.findViewById(R.id.host_button)
         hostBtn.setOnClickListener {
-            battlesViewModel.enemyList.observe(this, Observer { list ->
+            battlesViewModel.enemyList.observe(viewLifecycleOwner, Observer { list ->
                 list?.let {
                     if(list.isEmpty()) {
                         progressBar.visibility = View.GONE
@@ -103,7 +102,7 @@ class BattlesFragment : Fragment() {
             //this.background.setBackgroundColor(Color.parseColor("#340055"))
             battlesViewModel.joinListner(this.battleID)
 
-            Player.joinedBattle()
+//            Player.joinedBattle()
             val intent = Intent(activity, OnlineBattleActivity::class.java)
             val bundle = Bundle()
             bundle.putString("battleId", battleID)
@@ -158,7 +157,7 @@ class BattlesFragment : Fragment() {
             create_button.setOnClickListener {
                 battlesViewModel.hostListner(this.enemyName, this.enemyHP)
                 battlesViewModel.hostedBattleID.observe(activity!!, Observer {battle_ID->
-                    Player.joinedBattle()
+//                    Player.joinedBattle()
                     val intent = Intent(activity, LobbyActivity::class.java)
                     val bundle = Bundle()
                     bundle.putString("battleId", battle_ID)

@@ -34,25 +34,25 @@ class StatisticsFragment : Fragment()  {
         var distanceView: TextView = view.findViewById(R.id.tv_distance)
         var stepsView: TextView = view.findViewById(R.id.tv_steps)
 
-        statisticsViewModel.steps.observe(this, Observer { steps ->
+        statisticsViewModel.steps.observe(viewLifecycleOwner, Observer { steps ->
             steps?.let {
                 stepsView.setText("$it \n Steps Walked")
             }
         })
 
-        statisticsViewModel.enemies.observe(this, Observer {enemies ->
+        statisticsViewModel.enemies.observe(viewLifecycleOwner, Observer {enemies ->
             enemies?.let {
                 enemiesView.setText("$it \n Enemies Defeated")
             }
         })
 
-        statisticsViewModel.raids.observe(this, Observer {raids ->
+        statisticsViewModel.raids.observe(viewLifecycleOwner, Observer {raids ->
             raids?.let {
                 raidsView.setText("$it \n Raids Defeated")
             }
         })
 
-        statisticsViewModel.distance.observe(this, Observer {distance ->
+        statisticsViewModel.distance.observe(viewLifecycleOwner, Observer {distance ->
             distance?.let {
                 distanceView.setText("$it \n Km Walked")
             }

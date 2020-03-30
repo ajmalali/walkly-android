@@ -83,7 +83,7 @@
         app:layout_constraintBottom_toBottomOf="@id/menu_item_quests"
         android:textSize="20sp"
         android:textColor="@color/white"
-        android:layout_marginLeft="24dp"
+        android:layout_marginStart="24dp"
         android:text="Quests"/>
     
     <ImageView
@@ -114,7 +114,7 @@
         app:layout_constraintBottom_toBottomOf="@id/menu_item_friends"
         android:textSize="20sp"
         android:textColor="@color/white"
-        android:layout_marginLeft="24dp"
+        android:layout_marginStart="24dp"
         android:text="Friends"/>
 
     <ImageView
@@ -145,7 +145,7 @@
         app:layout_constraintBottom_toBottomOf="@id/menu_item_leaderboard"
         android:textSize="20sp"
         android:textColor="@color/white"
-        android:layout_marginLeft="24dp"
+        android:layout_marginStart="24dp"
         android:text="Leaderboard"/>
 
     <ImageView
@@ -176,7 +176,7 @@
         app:layout_constraintBottom_toBottomOf="@id/menu_item_achievements"
         android:textSize="20sp"
         android:textColor="@color/white"
-        android:layout_marginLeft="24dp"
+        android:layout_marginStart="24dp"
         android:text="Achievements"/>
 
     <ImageView
@@ -207,7 +207,7 @@
         app:layout_constraintBottom_toBottomOf="@id/menu_item_statistics"
         android:textSize="20sp"
         android:textColor="@color/white"
-        android:layout_marginLeft="24dp"
+        android:layout_marginStart="24dp"
         android:text="Statistics"/>
 
     <ImageView

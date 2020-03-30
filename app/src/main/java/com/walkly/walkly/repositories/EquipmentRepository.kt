@@ -3,7 +3,13 @@ package com.walkly.walkly.repositories
 import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
+import com.walkly.walkly.models.Consumable
 import com.walkly.walkly.models.Equipment
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 private const val TAG = "EquipmentRepository"
 
@@ -13,51 +19,28 @@ object EquipmentRepository {
     private val db = FirebaseFirestore.getInstance()
     private val userID: String = FirebaseAuth.getInstance().currentUser?.uid.toString()
     private val userDocument = db.collection("users").document(userID)
-    val equipmentList = mutableListOf<Equipment>()
-    private val eqIdList = mutableListOf<Equipment>()
+
+    private val equipmentList = mutableListOf<Equipment>()
 
     // Get Equipments of the current user
-    fun getEquipment(callback: (List<Equipment>) -> Unit) {
-        eqIdList.clear()
-        equipmentList.clear()
-        db.collection("equipments")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    val equipment = document.toObject(Equipment::class.java).addId(document.id)
-                    eqIdList.add(equipment)
-                }
-                userDocument.collection("equipments")
-                    .get()
-                    .addOnSuccessListener { res ->
-                        for (document in res) {
-                            val it: MutableIterator<Equipment> = eqIdList.iterator()
-                            while (it.hasNext()) {
-                                val eq: Equipment = it.next()
-                                if (eq.id == document.id) {
-                                    equipmentList.add(eq)
-                                    Log.d(TAG, "added ${eq.id}")
-                                }
-                            }
-                            Log.d(TAG, "List After: $equipmentList")
-                            callback(equipmentList)
-                        }
-                    }
+    suspend fun getEquipments(): MutableList<Equipment> {
+        if (equipmentList.isNotEmpty()) {
+            return equipmentList
+        }
 
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "Error getting documents: ", exception)
-            }
+        val equipments = userDocument.collection("equipments").get().await()
+        for (equipment in equipments.documents) {
+            equipmentList.add(equipment.toObject<Equipment>()!!)
+        }
+
+        return equipmentList
     }
 
-    fun wearEquipment(Equipment: Equipment, callback: (Equipment) -> Unit) {
-        userDocument.update("equipped_weapon", Equipment.id)
-            .addOnSuccessListener {
-                Log.d(TAG, "Success updating Equipment")
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "Error updating equipment: ", exception)
-            }
-
+    // TODO: Store locally when no internet
+    suspend fun syncEquipment() {
+        for (equipment in equipmentList) {
+            userDocument.collection("equipments")
+                .document(equipment.id!!).set(equipment).await()
+        }
     }
 }

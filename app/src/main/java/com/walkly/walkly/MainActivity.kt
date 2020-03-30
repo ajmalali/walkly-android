@@ -1,43 +1,62 @@
 package com.walkly.walkly
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import androidx.lifecycle.Observer
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.walkly.walkly.auth.LoginActivity
-import com.walkly.walkly.models.Player
+import com.walkly.walkly.models.Feedback
+import com.walkly.walkly.repositories.ConsumablesRepository
+import com.walkly.walkly.repositories.EquipmentRepository
+import com.walkly.walkly.repositories.PlayerRepository
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
-import kotlinx.android.synthetic.main.dialog_feedback.*
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
 import java.util.*
 
-class MainActivity : AppCompatActivity(){
+// max of 3 stamina points
+private const val MAX_STAMINA = 300
+
+// update every 36 seconds (idk why 36)
+private const val INTERVAL = 36000L
+
+private const val TAG = "MainActivity"
+
+class MainActivity : AppCompatActivity() {
 
     // nav bar colors
-    val SOLID_WHITE = Color.parseColor("#FFFFFF")
-    val WHITE = Color.parseColor("#8AFFFFFF")
+    private val SOLID_WHITE = Color.parseColor("#FFFFFF")
+    private val WHITE = Color.parseColor("#8AFFFFFF")
 
     private val cal = Calendar.getInstance()
 
-    private val walkedDistance = MutableLiveData<Float>()
-    val stamina = Player.stamina
+    private val db = FirebaseFirestore.getInstance()
+    private val currentPlayer = PlayerRepository.getPlayer()
+    private val stamina = MutableLiveData<Long>()
 
+    private var update = false
+    private val job = Job()
+    private val scope = CoroutineScope(Dispatchers.Default + job)
+    private lateinit var feedbackDialog: AlertDialog
     private val auth = FirebaseAuth.getInstance()
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -68,21 +87,34 @@ class MainActivity : AppCompatActivity(){
                         }
                     feedbackDialog.findViewById<Button>(R.id.btn_send)
                         ?.setOnClickListener {
-                            val title = feedbackDialog.findViewById<EditText>(R.id.et_title)?.text.toString()
-                            val content = feedbackDialog.findViewById<EditText>(R.id.et_content)?.text.toString()
-                            FirebaseFirestore.getInstance().collection("feedbacks")
-                                .add(hashMapOf(
-                                    "title" to title,
-                                    "content" to content,
-                                    "timestamp" to FieldValue.serverTimestamp(),
-                                    "userID" to auth.currentUser?.uid,
-                                    "closed" to false
-                                ))
+                            val title =
+                                feedbackDialog.findViewById<EditText>(R.id.et_title)?.text.toString()
+                            val content =
+                                feedbackDialog.findViewById<EditText>(R.id.et_content)?.text.toString()
+                            db.collection("feedbacks")
+                                .add(
+                                    hashMapOf(
+                                        "title" to title,
+                                        "content" to content,
+                                        "timestamp" to FieldValue.serverTimestamp(),
+                                        "userID" to auth.currentUser?.uid,
+                                        "closed" to false
+                                    )
+                                )
                                 .addOnSuccessListener {
                                     feedbackDialog.dismiss()
+                                    Toast.makeText(
+                                        baseContext, "Thank you for your feedback!",
+                                        Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                                 .addOnFailureListener {
-                                    Toast.makeText(this, "Failed to send feedback. Check your connection", Toast.LENGTH_LONG)
+                                    Toast.makeText(
+                                        this,
+                                        "Failed to send feedback. Check your connection",
+                                        Toast.LENGTH_LONG
+                                    )
+                                        .show()
                                 }
                         }
 
@@ -102,9 +134,10 @@ class MainActivity : AppCompatActivity(){
                 R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
             )
         )
+
         setupActionBarWithNavController(navController, appBarConfiguration)
         supportActionBar?.hide()
-    //    navView.setupWithNavController(navController)
+        //    navView.setupWithNavController(navController)
 
         // TODO: refactor this
         // bottom nav
@@ -145,55 +178,75 @@ class MainActivity : AppCompatActivity(){
         btn_map.setTextColor(SOLID_WHITE)
         btn_map.compoundDrawableTintList = ColorStateList.valueOf(SOLID_WHITE)
 
-
-        walkedDistance.observe(this, Observer {
-            Log.d("Distance_walked steps", it.toString())
-            Toast.makeText(this, "steps are $it", Toast.LENGTH_LONG).show()
-        })
-
         cal.add(Calendar.MINUTE, -1000)
+        updateTopBar()
+    }
 
+    private fun updateTopBar() {
+        stamina.observe(this, Observer {
+            val stamina = it
+            join_button.isClickable = true
+            join_button.background.alpha = 255
+
+            stamina.let {
+                if (stamina <= 100) {
+                    // no balls
+                    view_energy_ball_3.visibility = View.INVISIBLE
+                    view_energy_ball_2.visibility = View.INVISIBLE
+                    view_energy_ball_1.visibility = View.INVISIBLE
+
+                    // player cannot join a battle
+                    join_button.isClickable = false
+                    join_button.background.alpha = 100
+                } else {
+                    if (stamina >= 300) {
+                        view_energy_ball_3.visibility = View.VISIBLE
+                    }
+
+                    if (stamina >= 200) {
+                        view_energy_ball_2.visibility = View.VISIBLE
+                    }
+
+                    if (stamina >= 100) {
+                        view_energy_ball_1.visibility = View.VISIBLE
+                    }
+                }
+            }
+
+            Log.d("Stamina from map", stamina.toString())
+        })
+    }
+
+    // TODO: (UI) Change to snackbar
+    private suspend fun displayMessage(message: String?) {
+        withContext(Dispatchers.Main) {
+            // If sign in fails, display a message to the user.
+            Log.d(TAG, "Error occurred")
+            Toast.makeText(
+                baseContext, message ?: "No error message",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
         // the player model should not be initialized before valid sign in
         // the authentication activity shall not has this code to avoid auth checking in if statements
 
-        if (auth.currentUser != null){
-
-            stamina.observe(this, Observer {stamina ->
-                Log.d("Stamina: ", stamina.toString())
-            })
-
-
-        } else {
-            auth.addAuthStateListener {
-                if (it.currentUser != null){
-
-                    stamina.observe(this, Observer {stamina ->
-                        Log.d("Stamina: ", stamina.toString())
-                    })
-                    Player.startStaminaUpdates()
-                }
+        // TODO: if connected to internet cache rewards locally
+        auth.addAuthStateListener {
+            it.currentUser?.let {
+                startStaminaUpdates()
             }
         }
-
-        Player.level.observe(this, Observer {
-            user_level.text = "LEVEL $it"
-        })
-
-        Player.progress.observe(this, Observer {
-            progressBar.progress = it.toInt()
-        })
-
-        updateTopBar()
-
-        // TODO: if connected to internet cache rewards locally
-
     }
 
     private fun signOut() {
         auth.signOut()
         val intent = Intent(this, LoginActivity::class.java)
         startActivity(intent)
-        this?.finish()
+        this.finish()
     }
 
     override fun onBackPressed() {
@@ -204,60 +257,41 @@ class MainActivity : AppCompatActivity(){
     }
 
 
+    // TODO: Syncing happens here
+    // Sync everything to DB before closing
     override fun onStop() {
         super.onStop()
-
-        if (auth.currentUser != null)
-            Player.stopStaminaUpdates()
-
-        if (auth.currentUser != null)
-            Player.syncModel()
-    }
-
-
-    override fun onStart() {
-        super.onStart()
-
-        if (auth.currentUser != null)
-            Player.startStaminaUpdates()
-    }
-
-    fun updateTopBar(){
-        Player.stamina.observe(this, Observer {
-            Log.d("stamina from map2", it.toString())
-
-            join_button.isClickable = true
-            join_button.background.alpha = 255
-
-            if(it >= 300){
-                //3 balls
-                view_energy_ball_1.alpha = 1f
-                view_energy_ball_2.alpha = 1f
-                view_energy_ball_3.alpha = 1f
-
-            }else if(it >= 200 ){
-                //2 balls
-                view_energy_ball_1.alpha = 1f
-                view_energy_ball_2.alpha = 1f
-                view_energy_ball_3.alpha = 0.5f
-
-            }else if(it >= 100){
-                //1 ball
-                view_energy_ball_1.alpha = 1f
-                view_energy_ball_2.alpha = 0.5f
-                view_energy_ball_3.alpha = 0.5f
-
-            }else{
-                //no balls
-                view_energy_ball_1.alpha = 0.5f
-                view_energy_ball_2.alpha = 0.5f
-                view_energy_ball_3.alpha = 0.5f
-
-                // player cannot join a battle
-                join_button.isClickable = false
-                join_button.background.alpha = 100
+        auth.currentUser?.let {
+            CoroutineScope(IO).launch {
+                try {
+                    stopStaminaUpdates()
+                    PlayerRepository.syncPlayer()
+                    ConsumablesRepository.syncConsumables()
+                    EquipmentRepository.syncEquipment()
+                } catch (e: FirebaseFirestoreException) {
+                    displayMessage(e.message)
+                } catch (e: Exception) {
+                    displayMessage(e.message)
+                }
             }
 
-        })
+        }
+    }
+
+    private fun stopStaminaUpdates() {
+        update = false
+    }
+
+    // Increases the stamina of the current player every 36 seconds
+    private fun startStaminaUpdates() {
+        update = true
+        scope.launch {
+            while (update && currentPlayer.stamina?.compareTo(MAX_STAMINA)!! < 0) {
+                delay(INTERVAL)
+                currentPlayer.stamina = currentPlayer.stamina?.inc()
+                stamina.postValue(currentPlayer.stamina)
+                Log.d(TAG, "Current stamina: ${currentPlayer.stamina}")
+            }
+        }
     }
 }

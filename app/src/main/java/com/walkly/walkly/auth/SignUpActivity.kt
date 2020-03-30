@@ -6,90 +6,90 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthException
 import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.auth.UserProfileChangeRequest
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.SetOptions
-import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
+import com.walkly.walkly.repositories.PlayerRepository
 import kotlinx.android.synthetic.main.activity_signup.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-class SignUpActivity : AppCompatActivity(), View.OnClickListener  {
+private const val DEBUG_TAG = "SignUpActivity"
 
-    // [START declare_auth]
-    private lateinit var auth: FirebaseAuth
-    // [END declare_auth]
+class SignUpActivity : AppCompatActivity(), View.OnClickListener {
+
+    private val viewModel: AuthViewModel by viewModels()
+    private val scope = CoroutineScope(IO)
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         supportActionBar?.hide()
-
         setContentView(R.layout.activity_signup)
         emailCreateAccountButton.setOnClickListener(this)
-        auth = FirebaseAuth.getInstance()
-
-
     }
 
     public override fun onStart() {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = auth.currentUser
-        updateUI(currentUser)
+        val currentUser = viewModel.getCurrentUser()
+
+        if (currentUser != null) {
+            // TODO: Show loading
+            scope.launch {
+                PlayerRepository.initPlayer()
+                withContext(Main) {
+                    updateUI(currentUser)
+                }
+            }
+        }
     }
-    // [END on_start_check_user]
 
     private fun createAccount(email: String, password: String) {
         Log.d(DEBUG_TAG, "createAccount:$email")
+
         if (!validateForm()) {
             return
         }
 
-        // [START create_user_with_email]
-        auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    // Sign in success, update UI with the signed-in user's information
-                    Log.d(DEBUG_TAG, "createUserWithEmail:success")
-
-                    val user = auth.currentUser
-
-                    val ref = FirebaseStorage.getInstance()
-                        .getReference("avatars/avatar_default.png")
-                    ref.downloadUrl.addOnSuccessListener {
-                        Log.d(DEBUG_TAG, "uri is $it")
-                        val update = UserProfileChangeRequest.Builder()
-                            .setDisplayName(fieldName.text.toString())
-                            .setPhotoUri(null)
-                            .setPhotoUri(it)
-                            .build()
-
-                        user?.updateProfile(update)
-                            ?.addOnSuccessListener {
-                                Log.i(DEBUG_TAG, "user name was updated")
-                            }
-                    }
-
-
-                    initializePlayer(user?.uid)
-
-
+        scope.launch {
+            try {
+                val name = fieldName.text.toString()
+                val user = viewModel.createAccount(email, password, name)
+                PlayerRepository.initPlayer()
+                withContext(Main) {
                     updateUI(user)
-
-                } else {
-                    // If sign in fails, display a message to the user.
-                    Log.w(DEBUG_TAG, "createUserWithEmail:failure", task.exception)
-                    Toast.makeText(baseContext, "Authentication failed.",
-                        Toast.LENGTH_SHORT).show()
-                    updateUI(null)
                 }
 
+            } catch (e: FirebaseAuthException) {
+                // If sign in fails, display a message to the user.
+                displayMessage(e.message)
+            } catch (e: FirebaseFirestoreException) {
+                displayMessage(e.message)
+            } catch (e: Exception) {
+                Log.d(DEBUG_TAG, "${e.message}")
             }
-        // [END create_user_with_email]
+
+            // [END create_user_with_email]
+        }
+    }
+
+    // TODO: (UI) Change to snackbar
+    private suspend fun displayMessage(message: String?) {
+        withContext(Main) {
+            // If sign in fails, display a message to the user.
+            Log.w(DEBUG_TAG, "Error occurred")
+            Toast.makeText(
+                baseContext, message ?: "No error message",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun validateForm(): Boolean {
@@ -129,47 +129,12 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener  {
             finish()
         }
     }
+
     override fun onClick(v: View) {
-        val i = v.id
-        when (i) {
-            R.id.emailCreateAccountButton -> createAccount(fieldEmail.text.toString(), fieldPassword.text.toString())
-        }
-    }
-    companion object {
-        const val DEBUG_TAG = "SignUpActivity"
-
-        // id of the default equipment in the database.
-        // it's hard coded form know
-        const val DEFAULT_WEAPON = "386arrzpkvO1j8Q4etKx"
-    }
-
-    // initialize document for the newly created user. to avoid the ad-hoc try-catch mess
-    private fun initializePlayer(uid: String?) {
-
-        if (uid != null) {
-            // creating document in the users collections using newly created user's id as
-            //  id of the document
-            val db = FirebaseFirestore.getInstance()
-            val userRef = db.collection("users").document(uid)
-
-            userRef.set(
-                hashMapOf(
-                    "stamina" to 300L,
-                    "points" to 0L,
-                    "level" to 1L,
-                    "progress" to 0L,
-                    "equipment" to arrayListOf<String>(),
-                    "equipped_weapon" to DEFAULT_WEAPON,
-                    "friends" to arrayListOf<String>(),
-                    // for the time being items are just arraylist referring to consumable item documents
-                    // player cannot have multiple items of the same type
-                    "items" to arrayListOf<String>()
-                ), SetOptions.merge()
-            ).addOnSuccessListener {
-                Log.d(DEBUG_TAG, "new user document was initialized successfully \n" +
-                        "uid=$uid")
+        when (v.id) {
+            R.id.emailCreateAccountButton -> {
+                createAccount(fieldEmail.text.toString(), fieldPassword.text.toString())
             }
-
         }
     }
 }

@@ -25,5 +25,5 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
 
-    <include layout="@layout/bottom_sheet_layout"></include>
+    <include layout="@layout/bottom_sheet_layout" />
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

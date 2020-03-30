@@ -27,7 +27,7 @@ class BackgroundOfflineBattleService : Service() {
     private lateinit var sensorsClient: SensorsClient
     private lateinit var delayedCode: Runnable
     private val handler = Handler()
-    private lateinit var info: OfflineBattleViewModel.OfflineServiceInfo
+    private lateinit var info: OfflineBattleActivity.OfflineServiceInfo
     private var steps = 0
     private val listener = OnDataPointListener {
         val value = it?.getValue(Field.FIELD_STEPS)?.asInt()
@@ -35,7 +35,7 @@ class BackgroundOfflineBattleService : Service() {
         if (value != null) {
             steps += value
             // player wins
-            if ((steps * info.playerPower) >= info.enemyHealth){
+            if ((steps * info.playerPower) >= info.enemyHealth) {
                 Log.d(TAG, "player won")
 
                 createNotification(WIN_RESULT)
@@ -53,13 +53,14 @@ class BackgroundOfflineBattleService : Service() {
         createNotificationChannel()
     }
 
-    private fun createNotification(result: String){
+    private fun createNotification(result: String) {
         battleEndIntent = Intent(this, OfflineBattleActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
             putExtra("result", result)
         }
-        pendingIntent = PendingIntent.getActivity(this, 0, battleEndIntent, PendingIntent.FLAG_UPDATE_CURRENT)
-        notifyBuilder = NotificationCompat.Builder(this,  CHANNEL_ID).apply {
+        pendingIntent =
+            PendingIntent.getActivity(this, 0, battleEndIntent, PendingIntent.FLAG_UPDATE_CURRENT)
+        notifyBuilder = NotificationCompat.Builder(this, CHANNEL_ID).apply {
             setSmallIcon(R.drawable.ic_launcher_foreground)
             setContentTitle(NOTIFY_TITLE)
             if (result == WIN_RESULT)
@@ -90,10 +91,11 @@ class BackgroundOfflineBattleService : Service() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         Log.d(TAG, "background service started")
 
-        info = intent?.getSerializableExtra("info") as OfflineBattleViewModel.OfflineServiceInfo
+        info = intent?.getSerializableExtra("info") as OfflineBattleActivity.OfflineServiceInfo
 
         val googleSignInAccount = GoogleSignIn.getAccountForExtension(
-            this, DistanceUtil.stepsFitnessOptions)
+            this, DistanceUtil.stepsFitnessOptions
+        )
         sensorsClient = Fitness.getSensorsClient(this, googleSignInAccount).also {
             it.add(DistanceUtil.request, listener)
                 .addOnSuccessListener {
@@ -118,7 +120,6 @@ class BackgroundOfflineBattleService : Service() {
     }
 
 
-
     override fun onDestroy() {
         sensorsClient.remove(listener)
         handler.removeCallbacks(delayedCode)
@@ -129,7 +130,7 @@ class BackgroundOfflineBattleService : Service() {
         return null
     }
 
-    companion object{
+    companion object {
         private const val TAG = "Offline_Battle_Service"
         private const val CHANNEL_ID = "battle status"
         private const val NOTIFY_TITLE = "Battle has ended"
