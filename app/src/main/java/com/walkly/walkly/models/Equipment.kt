@@ -1,20 +1,35 @@
 package com.walkly.walkly.models
 
-class Equipment(
-    val name: String = "",
-    val level: Int = 0,
-    val image: String = "",
-    val type: String = "",
-    val value: Long = 0
-    ) {
-        lateinit var id: String
+import com.google.firebase.firestore.Exclude
 
-        // Used to add ID of a user and using document.toObject method
-        fun addId(value: String): Equipment {
-            this.id = value
-            return this
+data class Equipment(
+    var name: String? = "",
+    var level: Long? = 0,
+    var type: String? = "",
+    var image: String? = "",
+    var value: Long? = 0
+) {
+
+    var id: String? = null
+
+    fun addId(value: String): Equipment {
+        this.id = value
+        return this
+    }
+
+    companion object {
+        fun getDefaultEquipment(): Equipment {
+            return Equipment(
+                name = "sword_x",
+                type = "attack",
+                value = 5,
+                level = 1,
+                image = "https://firebasestorage.googleapis.com/v0/b/walkly-81d94.appspot.com/o/equipments%2F386arrzpkvO1j8Q4etKx.png?alt=media&token=2e860246-d0cd-46f6-bb80-b70756d36887"
+            ).addId("gYQRFbka5BcjzbaocN6N")
         }
     }
+}
+
 //    private val userEquipments = mutableListOf<Equipment>()
 //    private val listOfEquipments = mutableListOf<Equipment>()
 //    private var userEquipment = this

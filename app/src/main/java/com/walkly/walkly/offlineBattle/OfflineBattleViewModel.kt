@@ -1,147 +1,114 @@
 package com.walkly.walkly.offlineBattle
 
-import android.app.Activity
 import android.util.Log
-import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.walkly.walkly.models.Consumable
+import androidx.lifecycle.*
 import com.walkly.walkly.models.Enemy
-import com.walkly.walkly.models.Equipment
-import com.walkly.walkly.models.Player
-import com.walkly.walkly.repositories.ConsumablesRepository
-import com.walkly.walkly.utilities.DistanceUtil
+import com.walkly.walkly.repositories.PlayerRepository
 import kotlinx.coroutines.*
-import java.time.temporal.TemporalAmount
+import kotlinx.coroutines.Dispatchers.IO
+
 import java.util.*
 
-class OfflineBattleViewModel (activity: AppCompatActivity, enemy: Enemy) : ViewModel(){
+private const val TAG = "OfflineBattleViewModel"
 
-    private val D_TAG = "offline-battle"
+class OfflineBattleViewModel : ViewModel() {
 
-    private val activity = activity
+    var battleEnded: Boolean = false
 
-    // used to specify how fact enemy hits
-    private val FREQuNCY = 3000L
+    // used to specify how frequently enemy hits
+    val HIT_FREQUENCY = 100L
+
     // used to convert player level to HP
     private val HP_MULTIPLAYER = 100
 
-    private val job = Job()
-    private val scope = CoroutineScope(Dispatchers.Main + job)
+    private val currentPlayer = PlayerRepository.getPlayer()
 
-    private lateinit var distanceUtil: DistanceUtil
-    val walkedDistance = MutableLiveData<Float>()
+    var baseEnemyHP = -1L
+    var currentEnemyHp = 0L
+    var enemyHpPercentage = 100
+    var enemyDamage = 0L
 
-    // BAD DESIGN: should get refactored
-
-    private val auth = FirebaseAuth.getInstance()
-
-    private var baseEnemyHP = enemy.HP_
-    private var enemyDamage = enemy.DMG_
-    private var currentEnemyHp = 0.0
-    private var enemyHpPercentage = 100L
-    private var basePlayerHP = 1L
-    private var currnetPlayerHP = 0L
-    private var playerDamage = 0L
+    var basePlayerHP = 1L
+    var currentPlayerHP = 0L
+    var playerHpPercentage = 100
+    var playerDamage = 0L
 
     // view observes these
-    val enemyImage = MutableLiveData<String>()
-    val enemyHP = MutableLiveData<Long>()
-    val playerHP = MutableLiveData<Long>()
+    // Health bar values
+    val enemyHP = MutableLiveData<Int>()
+    val playerHP = MutableLiveData<Int>()
 
-    private val _consumables = MutableLiveData<List<Consumable>>()
-    val consumables: LiveData<List<Consumable>>
-        get() = _consumables
-
-    private val _selectedConsumable = MutableLiveData<Consumable>()
-    val selectedConsumable: LiveData<Consumable>
-        get() = _selectedConsumable
+    private var scope = CoroutineScope(IO)
 
     init {
+        // Get damage player can do based on equipment
+//        playerDamage = currentPlayer.currentEquipment?.value!!
+        playerDamage = 5L
 
-        getConsumables()
-
-        // BAD DESIGN: should get refactored
-        if (auth.currentUser != null) {
-
-            // get damage player can do based on equipment
-            Player.equipment.observe(activity, Observer {
-                    playerDamage = it.value
-            })
-        }
-        // get the starting player HP
-        Player.level.observe(activity, Observer {
-            basePlayerHP = it * HP_MULTIPLAYER
-            currnetPlayerHP = basePlayerHP
-            playerHP.value = (currnetPlayerHP / basePlayerHP) * 100
-            Log.d(D_TAG, "it is = " + it)
-            Log.d(D_TAG, "base player hp = " + baseEnemyHP)
-            Log.d(D_TAG,  "current player hp = " + currnetPlayerHP)
-        })
-        // get the starting enemy HP
-            enemyHP.value = baseEnemyHP
-        // get enemy image
-            enemyImage.value = enemy.image
-        // get enemy damage
-            enemyDamage = enemy.DMG_
-
-
-        // reduce enemy HP by distance walked * equipment value
-        walkedDistance.observe(activity, Observer {
-            currentEnemyHp -= it * 10
-            enemyHpPercentage = ((currentEnemyHp * 100.0) / baseEnemyHP).toLong()
-            enemyHP.value = enemyHpPercentage
-            Log.d(D_TAG, "distance = " + it)
-        })
-
-        // reduce player HP by time * enemy damage
-
-
-
+        // Get the starting player HP
+        basePlayerHP = currentPlayer.level?.times(HP_MULTIPLAYER) ?: 1
+        currentPlayerHP = basePlayerHP
+        playerHpPercentage = ((currentPlayerHP * 100.0) / basePlayerHP).toInt()
+        playerHP.value = playerHpPercentage
     }
 
-    fun startBattle(){
-        distanceUtil = DistanceUtil(activity, walkedDistance)
+    fun initEnemy(enemy: Enemy) {
+        if (baseEnemyHP == -1L) {
+            // Get the starting enemy HP
+//        baseEnemyHP = enemy.HP
+            baseEnemyHP = 100L
+            currentEnemyHp = baseEnemyHP
+            enemyHP.value = currentEnemyHp.toInt()
 
-        scope.launch {
-            damagePlayer()
+            // Get enemy damage
+//            enemyDamage = enemy.damage
+            enemyDamage = 1L
         }
     }
+
+
+    // reduce enemy HP by distance walked * equipment value
+    fun damageEnemy(steps: Float) {
+//        currentEnemyHp -= steps * currentPlayer.currentEquipment?.value!!
+        currentEnemyHp -= steps.toLong()
+        if (currentEnemyHp <= 0) {
+            battleEnded = true
+        }
+        enemyHpPercentage = ((currentEnemyHp * 100.0) / baseEnemyHP).toInt()
+        enemyHP.value = enemyHpPercentage
+        Log.d(TAG, "Current enemy health: $currentEnemyHp")
+    }
+
 
     // WARNING: won't work while screen is off
-    suspend fun damagePlayer(){
-        var playerHppercentage = 100L
-        while (true){
-            delay(FREQuNCY)
-            Log.d(D_TAG, "current player hp = " + currnetPlayerHP)
-            currnetPlayerHP -= enemyDamage
-            playerHppercentage = (currnetPlayerHP * 100) / basePlayerHP
-//            currnetPlayerHP = ((currnetPlayerHP - enemyDamage) * 100) / basePlayerHP
-            playerHP.value = playerHppercentage
+    // reduce player HP by time * enemy damage
+    suspend fun damagePlayer() {
+        while (currentPlayerHP >= 0 && !battleEnded) {
+            delay(HIT_FREQUENCY)
+            currentPlayerHP -= enemyDamage
+            playerHpPercentage = ((currentPlayerHP * 100) / basePlayerHP).toInt()
+            playerHP.value = playerHpPercentage
+            Log.d(TAG, "Current player health = $currentPlayerHP")
         }
+
+        battleEnded = true
     }
 
-    private fun getConsumables() {
-        if (_consumables.value != null) {
-            _consumables.value = ConsumablesRepository.consumableList
-        } else {
-            ConsumablesRepository.getConsumables { list ->
-                _consumables.value = list
+    fun useConsumable(consumableType: String, consumableValue: Int) {
+        when (consumableType.toLowerCase(Locale.ROOT)) {
+            "attack" -> {
+                currentEnemyHp -= consumableValue
+                enemyHpPercentage = ((currentEnemyHp * 100.0) / baseEnemyHP).toInt()
+                enemyHP.value = enemyHpPercentage
             }
-        }
-    }
-
-    fun selectConsumable(consumable: Consumable) {
-        _selectedConsumable.value = consumable
-    }
-
-    fun removeSelectedConsumable() {
-        ConsumablesRepository.removeConsumable(selectedConsumable.value!!) { updatedList ->
-            _consumables.value = updatedList
+            "health" -> {
+                currentPlayerHP += consumableValue
+                if (currentPlayerHP > basePlayerHP) {
+                    currentPlayerHP = basePlayerHP
+                }
+                playerHpPercentage = ((currentPlayerHP * 100) / basePlayerHP).toInt()
+                playerHP.value = playerHpPercentage
+            }
         }
     }
 }

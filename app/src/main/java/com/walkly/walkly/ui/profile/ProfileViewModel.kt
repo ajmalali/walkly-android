@@ -5,13 +5,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.walkly.walkly.models.Equipment
 import com.walkly.walkly.repositories.EquipmentRepository
+import com.walkly.walkly.repositories.PlayerRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+
+private const val TAG = "ProfileViewModel"
 
 class ProfileViewModel : ViewModel() {
-
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is home Fragment"
-    }
-    val text: LiveData<String> = _text
 
     private val _equipments = MutableLiveData<List<Equipment>>()
     val equipments: LiveData<List<Equipment>>
@@ -21,23 +22,20 @@ class ProfileViewModel : ViewModel() {
     val selectedEquipment: LiveData<Equipment>
         get() = _selectedEquipment
 
+    val currentPlayer = PlayerRepository.getPlayer()
+
     init {
         getEquipments()
     }
 
     private fun getEquipments() {
-        if (_equipments.value != null) {
-            _equipments.value = EquipmentRepository.equipmentList
-        } else {
-            EquipmentRepository.getEquipment { list ->
-                _equipments.value = list
-            }
+        CoroutineScope(IO).launch {
+            _equipments.postValue(EquipmentRepository.getEquipments())
         }
     }
 
     fun selectEquipment(e: Equipment) {
-        EquipmentRepository.wearEquipment(e) { equip ->
-            _selectedEquipment.value = equip
-        }
+        currentPlayer.currentEquipment = e
+        _selectedEquipment.value = e
     }
 }

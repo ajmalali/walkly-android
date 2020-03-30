@@ -1,4 +1,4 @@
-package com.walkly.walkly.offlineBattle
+package com.walkly.walkly.ui.consumables
 
 import android.graphics.Color
 import android.view.LayoutInflater
