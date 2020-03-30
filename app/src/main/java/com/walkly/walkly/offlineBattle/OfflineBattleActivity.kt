@@ -181,10 +181,12 @@ class OfflineBattleActivity : AppCompatActivity() {
         var enemy: Enemy? = null
         bundle?.let {
             enemy = Enemy(
-                bundle.getString("enemyLvl")?.toLong()!!,
-                bundle.getString("enemyId")!!,
-                bundle.getLong("enemyHP"),
-                bundle.getLong("enemyDmg")
+                level = bundle.getLong("enemyLvl"),
+                id = bundle.getString("enemyId")!!,
+                health = bundle.getLong("enemyHP"),
+                damage = bundle.getLong("enemyDmg"),
+                name = bundle.getString("enemyName"),
+                image = bundle.getString("enemyImg")
             )
         }
 

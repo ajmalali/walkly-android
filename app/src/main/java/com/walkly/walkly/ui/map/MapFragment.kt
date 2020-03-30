@@ -14,8 +14,8 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.AppBarConfiguration
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.JsonObject
 import com.mapbox.android.core.permissions.PermissionsListener
@@ -34,7 +34,6 @@ import com.mapbox.mapboxsdk.plugins.annotation.SymbolManager
 import com.mapbox.mapboxsdk.plugins.annotation.SymbolOptions
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
-import com.walkly.walkly.models.Enemy.Companion.generateRandomEnemies
 import com.walkly.walkly.offlineBattle.OfflineBattleActivity
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.fragment_map.*
@@ -77,7 +76,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
     }
 
     override fun onMapReady(mapboxMap: MapboxMap) {
-        enemies = generateRandomEnemies(mapViewModel.currentPlayer.level ?: 1)
+        mapViewModel.enemies.observe(viewLifecycleOwner, Observer {
+            enemies = it
+        })
+
         this.mapboxMap = mapboxMap
         mapboxMap.uiSettings.isLogoEnabled = false
         mapboxMap.uiSettings.isZoomGesturesEnabled = false
@@ -153,42 +155,25 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                     mapViewModel.currentPlayer.joinBattle()
                     val intent = Intent(activity, OfflineBattleActivity::class.java)
                     val bundle = Bundle()
-                    bundle.putString("enemyId", curen.id.value)
-                    bundle.putLong("enemyHP", curen.HP.value!!)
-                    bundle.putLong("enemyDmg", curen.damage.value!!)
-                    bundle.putString("enemyLvl", curen.level.value.toString())
+                    bundle.putString("enemyName", curen.name)
+                    bundle.putString("enemyId", curen.id)
+                    bundle.putLong("enemyHP", curen.health ?: 100)
+                    bundle.putString("enemyImg", curen.image)
+                    bundle.putLong("enemyDmg", curen.damage ?: 1)
+                    bundle.putString("enemyLvl", curen.level.toString())
                     intent.putExtras(bundle)
                     startActivity(intent)
 //                    activity?.finish()
                 }
-                curen.name.observe(this, Observer {
-                    bottom_sheet_text.setText(it.toString())
-                })
-                curen.level.observe(this, Observer {
-                    bottom_sheet_lvl.setText("Level: " + it.toString())
-                })
-                curen.HP.observe(this, Observer {
-                    bottom_sheet_health.setText("HP: " + it.toString())
-                })
-
-                curen.id.observe(this, Observer {
-                    val imagename = "boss" + it
-                    bossgif.setImageResource(
-                        resources.getIdentifier(
-                            imagename,
-                            "drawable",
-                            activity?.packageName
-                        )
-                    )
-                })
-
-                curen.image.observe(this, Observer {
-//                  TODO: there's a weird bug, simply passing the image name from the databse doesn't work, current fix is concatinating the enemy's id with its ID as seen in the preceding code block
-//                  bossgif.setImageResource(resources.getIdentifier(it.toString(),"drawable",  activity?.packageName))
-
-                })
-
+                bottom_sheet_text.setText(curen.name)
+                bottom_sheet_lvl.setText("Level: "+ curen.level)
+                bottom_sheet_health.setText("HP: "+ curen.health)
+                Glide.with(activity!!)
+                        .load(curen.image)
+                        .diskCacheStrategy(DiskCacheStrategy.DATA)
+                        .into(activity!!.bossgif)
                 BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_COLLAPSED
+
             }
             // }
 

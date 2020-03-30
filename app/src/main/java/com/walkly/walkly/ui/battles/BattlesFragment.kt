@@ -98,7 +98,6 @@ class BattlesFragment : Fragment() {
         }
 
         override fun onClick(p0: View?) {
-            // Add your on click logic here
             //this.background.setBackgroundColor(Color.parseColor("#340055"))
             battlesViewModel.joinListner(this.battleID)
 
@@ -187,10 +186,10 @@ class BattlesFragment : Fragment() {
         override fun onBindViewHolder(holder: EnemyHolder, position: Int) {
             val enemy = enemies[position]
             holder.apply {
-                battleName.text = enemy.name.value.toString()
-                enemyName = enemy.name.value.toString()
-                enemyHP = enemy.HP.value!!.toInt()
-                enemyLevel = enemy.level.value!!.toInt()
+                battleName.text = enemy.name.toString()
+                enemyName = enemy.name.toString()
+                enemyHP = enemy.health?.toInt() ?: 100
+                enemyLevel = enemy.level?.toInt() ?: 1
             }
         }
     }
