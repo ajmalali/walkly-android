@@ -8,7 +8,7 @@
     android:background="#fff">
 
     <ImageView
-        android:id="@+id/img_avatar"
+        android:id="@+id/img_avatar_0"
         android:layout_width="48dp"
         android:layout_height="48dp"
         app:layout_constraintStart_toStartOf="parent"
@@ -18,10 +18,10 @@
         />
 
     <TextView
-        android:id="@+id/tv_username"
+        android:id="@+id/tv_username_0"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/img_avatar"
+        app:layout_constraintStart_toEndOf="@id/img_avatar_0"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginVertical="16dp"
         android:layout_marginLeft="16dp"
@@ -30,10 +30,10 @@
         />
 
     <TextView
-        android:id="@+id/tv_level"
+        android:id="@+id/tv_level_0"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/tv_username"
+        app:layout_constraintStart_toEndOf="@id/tv_username_0"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginVertical="16dp"
         android:layout_marginLeft="32dp"
@@ -47,7 +47,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toStartOf="@id/btn_reject"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBaseline_toBaselineOf="@id/tv_level"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_level_0"
         android:layout_marginRight="4dp"
         android:paddingVertical="4dp"
         android:paddingHorizontal="6dp"
@@ -60,7 +60,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBaseline_toBaselineOf="@id/tv_level"
+        app:layout_constraintBaseline_toBaselineOf="@id/tv_level_0"
         android:layout_marginRight="20dp"
         android:paddingVertical="4dp"
         android:paddingHorizontal="6dp"
