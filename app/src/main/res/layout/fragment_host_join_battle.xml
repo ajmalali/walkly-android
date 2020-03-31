@@ -157,7 +157,8 @@
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/battle_options_bar">
+            app:layout_constraintTop_toBottomOf="@+id/battle_options_bar"
+            tools:visibility="visible">
 
             <TextView
                 android:id="@+id/tv_pvp_host"
@@ -180,6 +181,17 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/invites_recycler_view"
+            android:layout_width="0dp"
+            android:layout_height="10dp"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tv_pvp_invites"
+            tools:listitem="@layout/list_join_battles" />
+
+        <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/battles_recycler_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
@@ -188,7 +200,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/pvp_host"
+            app:layout_constraintTop_toBottomOf="@+id/tv_online_battles"
             tools:listitem="@layout/list_join_battles" />
 
 <!--        <TextView-->
@@ -218,7 +230,40 @@
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/battle_options_bar"
-            app:layout_constraintVertical_bias="0.179" />
+            app:layout_constraintVertical_bias="0.119" />
+
+        <TextView
+            android:id="@+id/tv_pvp_invites"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="@string/invites"
+            android:textColor="?android:attr/textColorPrimaryNoDisable"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.08"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/battle_options_bar" />
+
+        <TextView
+            android:id="@+id/tv_online_battles"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="10dp"
+            android:text="@string/online_battles"
+            android:textColor="?android:attr/textColorPrimaryNoDisable"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/invites_recycler_view" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

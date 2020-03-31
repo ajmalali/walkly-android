@@ -76,6 +76,8 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="actions">Actions</string>
     <string name="pvp_text">Player vs Player</string>
+    <string name="online_battles">Online Battles</string>
+    <string name="invites">Invites</string>
 
 
 </resources>

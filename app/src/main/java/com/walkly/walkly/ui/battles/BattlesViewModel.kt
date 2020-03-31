@@ -20,10 +20,6 @@ class BattlesViewModel : ViewModel() {
     val createBattle: LiveData<OnlineBattle>
         get() = _battle
 
-    private var _selectedEnemy = MutableLiveData<Enemy>()
-    val selectedEnemy: LiveData<Enemy>
-        get() = _selectedEnemy
-
     private val _battleList = MutableLiveData<List<OnlineBattle>>()
     val onlineBattleList: LiveData<List<OnlineBattle>>
         get() = _battleList
@@ -41,6 +37,7 @@ class BattlesViewModel : ViewModel() {
 
     init {
         getOnlineBattles()
+        getEnemies()
     }
 
     fun getEnemies() {
@@ -103,21 +100,12 @@ class BattlesViewModel : ViewModel() {
             hostName = currentPlayer.name,
             enemyHealth = enemy.health
         )
-        battlesCollection.add(
-            battle
-//            hashMapOf(
-//                "battle_state" to "on-going",
-//                "battle_name" to enemy_name,
-//                "host" to "rand_id",
-//                "players" to arrayListOf(userID),
-//                "combined_player_health" to 200,
-//                "enemy_health" to 300 //TODO this is hardcoded
-//            )
-        ).addOnSuccessListener { documentReference ->
-            Log.d(TAG, "DocumentSnapshot written with ID: ${documentReference.id}")
-            battle.id = documentReference.id
-            _battle.value = battle
-        }
+        battlesCollection.add(battle)
+            .addOnSuccessListener { documentReference ->
+                Log.d(TAG, "DocumentSnapshot written with ID: ${documentReference.id}")
+                battle.id = documentReference.id
+                _battle.value = battle
+            }
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error adding document", e)
             }

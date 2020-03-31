@@ -22,9 +22,11 @@ import kotlinx.android.synthetic.main.fragment_host_join_battle.*
 class BattlesFragment : Fragment() {
 
     private lateinit var battlesRecyclerView: RecyclerView
+    private lateinit var invitesRecyclerView: RecyclerView
 
     private var battleAdapter: BattleAdapter? = null
     private var enemyAdapter: EnemyAdapter? = null
+    private var invitesAdapter: InvitesAdapter? = null
 
     private val battlesViewModel: BattlesViewModel by viewModels()
     private var isHosting: Boolean = false
@@ -37,11 +39,14 @@ class BattlesFragment : Fragment() {
     ): View? {
         val view = inflater.inflate(R.layout.fragment_host_join_battle, container, false)
         battlesRecyclerView = view.findViewById(R.id.battles_recycler_view)
+        invitesRecyclerView = view.findViewById(R.id.invites_recycler_view)
 
         // join button listener
         val joinBtn: RadioButton = view.findViewById(R.id.join_battle_button)
         joinBtn.setOnClickListener {
             hideHeader()
+            tv_pvp_invites.visibility = View.VISIBLE
+            tv_online_battles.visibility = View.VISIBLE
             pvp_host.visibility = View.GONE
             progressBar.visibility = View.VISIBLE
             battlesRecyclerView.adapter = null
@@ -52,6 +57,8 @@ class BattlesFragment : Fragment() {
         val hostBtn: RadioButton = view.findViewById(R.id.host_button)
         hostBtn.setOnClickListener {
             pvp_host.visibility = View.VISIBLE
+            tv_pvp_invites.visibility = View.INVISIBLE
+            tv_online_battles.visibility = View.INVISIBLE
             progressBar.visibility = View.VISIBLE
             battlesRecyclerView.adapter = null
             battlesViewModel.getEnemies()
@@ -198,6 +205,44 @@ class BattlesFragment : Fragment() {
             holder.apply {
                 this.enemy = enemy
                 battleName.text = enemy.name
+            }
+        }
+    }
+
+    private inner class InvitesHolder(view: View) : RecyclerView.ViewHolder(view),
+        View.OnClickListener {
+        var battle: OnlineBattle? = null
+        val invitedBy: TextView = itemView.findViewById(R.id.tv_battle_name_host)
+        var background: androidx.constraintlayout.widget.ConstraintLayout =
+            itemView.findViewById(R.id.host_bg)
+
+        init {
+            itemView.setOnClickListener(this)
+        }
+
+        override fun onClick(p0: View?) {
+            // Add your on click logic here
+            // this.background.setBackgroundColor(Color.parseColor("#340055"))
+        }
+    }
+
+    private inner class InvitesAdapter(var invites: List<OnlineBattle>) :
+        RecyclerView.Adapter<InvitesHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InvitesHolder {
+            val view = layoutInflater.inflate(R.layout.list_host_battles, parent, false)
+            return InvitesHolder(view)
+        }
+
+        override fun getItemCount(): Int {
+            return invites.size
+        }
+
+        override fun onBindViewHolder(holder: InvitesHolder, position: Int) {
+            val invite = invites[position]
+            holder.apply {
+                this.battle = invite
+                val host = "Invited by  ${invite.hostName}"
+                invitedBy.text = host
             }
         }
     }
