@@ -32,7 +32,7 @@ class LeaderboardFragment : Fragment() {
 
         leaderboardViewModel = ViewModelProviders.of(this).get(LeaderboardViewModel::class.java)
 
-        leaderboardViewModel.globalLeaderboard.observe(this, Observer { list ->
+        leaderboardViewModel.globalLeaderboard.observe(viewLifecycleOwner, Observer { list ->
             list?.let {
                 Log.d(TAG, "Global leaderboard list observed")
                 // clear the list for the adapter
@@ -42,7 +42,7 @@ class LeaderboardFragment : Fragment() {
             }
         })
 
-        leaderboardViewModel.friendsLeaderboard.observe(this, Observer { list ->
+        leaderboardViewModel.friendsLeaderboard.observe(viewLifecycleOwner, Observer { list ->
             list?.let {
                 Log.d(TAG, "Friends leaderboard list observed")
 //                adapter.submitList(null)

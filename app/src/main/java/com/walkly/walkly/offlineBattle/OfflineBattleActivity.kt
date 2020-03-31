@@ -182,12 +182,11 @@ class OfflineBattleActivity : AppCompatActivity() {
         bundle?.let {
             enemy = Enemy(
                 level = bundle.getLong("enemyLvl"),
-                id = bundle.getString("enemyId")!!,
                 health = bundle.getLong("enemyHP"),
                 damage = bundle.getLong("enemyDmg"),
                 name = bundle.getString("enemyName"),
                 image = bundle.getString("enemyImg")
-            )
+            ).addId(bundle.getString("enemyId")!!)
         }
 
         enemy?.let { viewModel.initEnemy(it) }

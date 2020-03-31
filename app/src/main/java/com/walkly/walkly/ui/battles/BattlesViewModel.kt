@@ -4,133 +4,119 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.firebase.firestore.FieldPath
-import com.google.android.gms.tasks.Task
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.QuerySnapshot
-import com.walkly.walkly.models.Battle
+import com.google.firebase.firestore.ktx.toObject
+import com.walkly.walkly.models.OnlineBattle
 import com.walkly.walkly.models.Enemy
+import com.walkly.walkly.repositories.PlayerRepository
 
 private const val TAG = "BattlesViewModel"
+
 class BattlesViewModel : ViewModel() {
 
-    private var _hostedBattleID = MutableLiveData<String>()
-    val hostedBattleID: LiveData<String>
-        get() = _hostedBattleID
+    private var _battle = MutableLiveData<OnlineBattle>()
+    val createBattle: LiveData<OnlineBattle>
+        get() = _battle
 
-    private val _battleList = MutableLiveData<List<Battle>>()
-    val battleList: LiveData<List<Battle>>
+    private var _selectedEnemy = MutableLiveData<Enemy>()
+    val selectedEnemy: LiveData<Enemy>
+        get() = _selectedEnemy
+
+    private val _battleList = MutableLiveData<List<OnlineBattle>>()
+    val onlineBattleList: LiveData<List<OnlineBattle>>
         get() = _battleList
 
     private val _enemyList = MutableLiveData<List<Enemy>>()
     val enemyList: LiveData<List<Enemy>>
         get() = _enemyList
 
-    private var tempBattleList = mutableListOf<Battle>()
+    private var tempBattleList = mutableListOf<OnlineBattle>()
     private var tempEnemyList = mutableListOf<Enemy>()
-
-
-    private val battleIDs = mutableListOf<String>()
-    private val enemyIDs = mutableListOf<String>()
 
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val userID = FirebaseAuth.getInstance().currentUser?.uid
-
+    val currentPlayer = PlayerRepository.getPlayer()
 
     init {
-        getBattles()
-        getEnemies()
+        getOnlineBattles()
     }
 
     fun getEnemies() {
-        db.collection("enemies")
-            .get()
-            .addOnSuccessListener { result ->
-                for (enemydoc in result) {
-                    val item = Enemy(enemydoc.data?.get("name") as String,
-                        (1L..3L).random(),
-                        enemydoc.id,
-                        enemydoc.data?.get("image") as String,
-                         100L * (1L..3L).random(),
-                        (1L..3L).random())
-                    tempEnemyList.add(item)
+        if (_enemyList.value == null) {
+            db.collection("enemies") // TODO: change to online enemies
+                .get()
+                .addOnSuccessListener { result ->
+                    for (doc in result) {
+                        val enemy = doc.toObject<Enemy>().addId(doc.id)
+                        tempEnemyList.add(enemy)
+                    }
+                    Log.d(TAG, "Got enemies: ${tempEnemyList.size}")
+                    _enemyList.value = tempEnemyList
                 }
-                tempEnemyList = tempEnemyList.toMutableList()
-                _enemyList.value = tempEnemyList
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "Error getting friends documents.", exception)
-            }
-    }
-
-    fun getBattles() {
-        db.collection("online_battles")
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    battleIDs.add(document.id)
-                    Log.d(TAG, battleIDs.toString())
+                .addOnFailureListener { exception ->
+                    Log.d(TAG, "Error getting enemy documents.", exception)
                 }
-                // create the list
-                createBattleList(battleIDs)
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "Error getting friends documents.", exception)
-            }
-    }
-    private fun createBattleList(battleIDs: List<String>){
-        val taskList = mutableListOf<Task<QuerySnapshot>>()
-        for (idList in battleIDs.chunked(5)) {
-            taskList.add(getBattlesFromIds(idList))
+        } else {
+            _enemyList.value = tempEnemyList
         }
-
-
-        Tasks.whenAllSuccess<Task<QuerySnapshot>>(taskList)
-            .addOnSuccessListener {
-                tempBattleList = tempBattleList.toMutableList()
-                _battleList.value = tempBattleList
-                Log.d(TAG, "battle list created: $tempBattleList")
-            }
-
     }
 
-    private fun getBattlesFromIds(idList: List<String>): Task<QuerySnapshot> {
-        return db.collection("online_battles")
-            .whereIn(FieldPath.documentId(), idList)
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    val item = Battle( document.data?.get("battle_name") as String,
-                        (document.data?.get("players") as ArrayList<String>).size,
-                        document.data?.get("host") as String )
-                    item.addId(document.id)
-                    tempBattleList.add(item)
+    // Listening to online-battles in real time
+    fun getOnlineBattles() {
+        if (_battleList.value == null) {
+            db.collection("online_battles")
+                .addSnapshotListener { value, e ->
+                    if (e != null) {
+                        Log.w(TAG, "Listen failed.", e)
+                        return@addSnapshotListener
+                    }
+
+                    if (value != null) {
+                        tempBattleList.clear()
+                        for (document in value) {
+                            val battle = document.toObject<OnlineBattle>()
+                            tempBattleList.add(battle)
+                        }
+                        _battleList.value = tempBattleList
+                    } else {
+                        _battleList.value = emptyList()
+                    }
                 }
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting friend documents.", exception)
-            }
+        } else {
+            _battleList.value = tempBattleList
+        }
     }
 
-    fun joinListner(battleID: String){
-        db.collection("online_battles").document(battleID).update("players", FieldValue.arrayUnion(userID))
+    fun joinListener(battleID: String) {
+        db.collection("online_battles").document(battleID)
+            .update("players", FieldValue.arrayUnion(userID))
     }
-    fun hostListner(enemy_name: String, enemyHP: Int) {
-        val dbRerf = db.collection("online_battles")
-        dbRerf.add(
-            hashMapOf("battle_state" to "on-going",
-                "battle_name" to enemy_name,
-                "host" to "rand_id",
-                "players" to arrayListOf(userID),
-                "combined_player_health" to 200,
-                "enemy_health" to 300 //TODO this is hardcoded
-            )
+
+    // TODO: Change to OnlineEnemy
+    fun selectEnemy(enemy: Enemy) {
+        val battlesCollection = db.collection("online_battles")
+        val battle = OnlineBattle(
+            battleName = enemy.name,
+            enemy = enemy,
+            hostName = currentPlayer.name,
+            enemyHealth = enemy.health
+        )
+        battlesCollection.add(
+            battle
+//            hashMapOf(
+//                "battle_state" to "on-going",
+//                "battle_name" to enemy_name,
+//                "host" to "rand_id",
+//                "players" to arrayListOf(userID),
+//                "combined_player_health" to 200,
+//                "enemy_health" to 300 //TODO this is hardcoded
+//            )
         ).addOnSuccessListener { documentReference ->
             Log.d(TAG, "DocumentSnapshot written with ID: ${documentReference.id}")
-            _hostedBattleID.value = documentReference.id
+            battle.id = documentReference.id
+            _battle.value = battle
         }
             .addOnFailureListener { e ->
                 Log.w(TAG, "Error adding document", e)

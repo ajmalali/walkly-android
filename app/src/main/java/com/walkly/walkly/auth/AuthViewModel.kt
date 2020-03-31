@@ -10,6 +10,7 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.storage.FirebaseStorage
 import com.walkly.walkly.models.Equipment
 import com.walkly.walkly.models.Player
+import com.walkly.walkly.repositories.EquipmentRepository
 import kotlinx.coroutines.tasks.await
 
 private const val TAG = "AuthViewModel"
@@ -67,15 +68,14 @@ class AuthViewModel : ViewModel() {
         // TODO: discuss and add more fields
 
         val ref = db.collection("users").document(user?.uid!!)
-        val defaultEquipment = Equipment.getDefaultEquipment()
+        val defaultEquipment = EquipmentRepository.getDefaultEquipment()
         ref.set(
             Player(
                 name = user.displayName,
                 email = user.email,
-                currentEquipment = Equipment.getDefaultEquipment(),
+                currentEquipment = defaultEquipment,
                 photoURL = user.photoUrl.toString()
-            ), SetOptions.merge()
-        ).await()
+            )).await()
 
         // Add equipment to sub-collection
         ref.collection("equipments")

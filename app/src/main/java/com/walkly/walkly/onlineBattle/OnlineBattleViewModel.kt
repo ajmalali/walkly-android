@@ -125,7 +125,7 @@ class OnlineBattleViewModel() : ViewModel() {
             delay(FREQUENCY)
             Log.d(TAG, "current player hp = $currentPlayerHP")
 
-            docRef.update("combined_player_health", FieldValue.increment(-enemyDamage))
+            docRef.update("combined_player_health", FieldValue.increment(-enemyDamage)).await()
 //            db.runTransaction { transaction ->
 //                val snapshot = transaction.get(docRef)
 //                val newHealthValue = snapshot.getLong("combined_player_health")!! - enemyDamage

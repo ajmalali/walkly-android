@@ -164,7 +164,6 @@ class MainActivity : AppCompatActivity() {
             btn_battles.compoundDrawableTintList = ColorStateList.valueOf(WHITE)
         }
         btn_battles.setOnClickListener {
-            navController.navigate(R.id.navigation_battles)
             // set this button to solid white color
             btn_battles.setTextColor(SOLID_WHITE)
             btn_battles.compoundDrawableTintList = ColorStateList.valueOf(SOLID_WHITE)
@@ -173,6 +172,7 @@ class MainActivity : AppCompatActivity() {
             btn_profile.compoundDrawableTintList = ColorStateList.valueOf(WHITE)
             btn_map.setTextColor(WHITE)
             btn_map.compoundDrawableTintList = ColorStateList.valueOf(WHITE)
+            navController.navigate(R.id.navigation_battles)
         }
         // because the map is the main fragment
         btn_map.setTextColor(SOLID_WHITE)
@@ -182,11 +182,12 @@ class MainActivity : AppCompatActivity() {
         updateTopBar()
     }
 
+    // TODO: FIX THIS
     private fun updateTopBar() {
         stamina.observe(this, Observer {
             val stamina = it
-            join_button.isClickable = true
-            join_button.background.alpha = 255
+//            join_button.isClickable = true
+//            join_button.background.alpha = 255
 
             stamina.let {
                 if (stamina <= 100) {
@@ -196,8 +197,8 @@ class MainActivity : AppCompatActivity() {
                     view_energy_ball_1.visibility = View.INVISIBLE
 
                     // player cannot join a battle
-                    join_button.isClickable = false
-                    join_button.background.alpha = 100
+//                    join_button.isClickable = false
+//                    join_button.background.alpha = 100
                 } else {
                     if (stamina >= 300) {
                         view_energy_ball_3.visibility = View.VISIBLE

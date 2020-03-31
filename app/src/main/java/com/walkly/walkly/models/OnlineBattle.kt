@@ -1,12 +1,17 @@
 package com.walkly.walkly.models
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 
-// TODO: use Parecelable interface to easily send to activity
+@Parcelize
 data class OnlineBattle(
-    val enemy: Enemy? = null,
-    val enemyHealth: Int = 1000,
-    val players: List<Player>
-) {
-
-
-}
+    var battleName: String? = "",
+    var battleState: String? = "In-lobby",
+    var playerCount: Int? = 1,
+    var hostName: String? = "",
+    var enemy: Enemy? = null,
+    var enemyHealth: Long? = 100,
+    var combinedPlayerHealth: Int? = 100,
+    var players: MutableList<Player> = mutableListOf(),
+    var id: String? = ""
+) : Parcelable

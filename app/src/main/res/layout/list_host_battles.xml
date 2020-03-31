@@ -25,5 +25,4 @@
         app:layout_constraintTop_toTopOf="parent"
         tools:text="Battle name" />
 
-
 </androidx.constraintlayout.widget.ConstraintLayout>
