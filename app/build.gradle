@@ -109,3 +109,6 @@ dependencies {
 
 // Firebase plugin
 apply plugin: 'com.google.gms.google-services'
+
+// Safe Args plugin
+apply plugin: "androidx.navigation.safeargs.kotlin"
