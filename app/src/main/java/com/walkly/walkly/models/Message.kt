@@ -7,7 +7,15 @@ data class Message(
     val text: String = "",
     val time: Timestamp? = null
 ) : Comparable<Message>{
-    fun getTime() : String{
+
+    lateinit var avatar: String
+
+    fun addAvatar(src: String) : Message{
+        this.avatar = src
+        return this
+    }
+
+    fun stringTime() : String{
         val cal = Calendar.getInstance(TimeZone.getDefault()).apply {
             timeInMillis = time.time
         }

@@ -9,20 +9,33 @@ object ChatRepository {
 
     private val db = FirebaseFirestore.getInstance()
     private val messages = mutableListOf<Message>()
+    private var friendAvatar: String = ""
 
     fun getChat(friendId: String, callback: (List<Message>) -> Unit) {
+        if (friendAvatar == ""){
+            fetchFriendAvatar(friendId)
+        }
         db.collection("chats")
             .whereEqualTo("from", friendId)
-            .whereEqualTo("to", friendId)
             .addSnapshotListener { snapshot, exception ->
+                messages.clear()
                 for (document in snapshot as QuerySnapshot){
                     messages.add(
-                        document.toObject<Message>()
+                        document.toObject<Message>().addAvatar(friendAvatar)
                     )
                 }
 
                 messages.sort()
                 callback(messages)
+            }
+    }
+
+    private fun fetchFriendAvatar(friendId: String) {
+        db.collection("users")
+            .document(friendId)
+            .get()
+            .addOnSuccessListener {
+                friendAvatar = it.data?.get("photoURL") as String
             }
     }
 }

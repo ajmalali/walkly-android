@@ -3,14 +3,15 @@ package com.walkly.walkly.ui.chat
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Message
 import kotlinx.android.synthetic.main.list_chat_message.view.*
 
-class ChatAdapter() : RecyclerView.Adapter<MessageViewHolder>(){
-    private lateinit var messages: List<Message>
+class ChatAdapter(var messages: List<Message>) : RecyclerView.Adapter<MessageViewHolder>(){
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageViewHolder {
         val view = LayoutInflater.from(parent.context)
@@ -24,18 +25,22 @@ class ChatAdapter() : RecyclerView.Adapter<MessageViewHolder>(){
         holder.bind(messages[position])
     }
 
-    fun setMessages(messages: List<Message>){
+    fun updateMessages(messages: List<Message>){
         this.messages = messages
-            notifyDataSetChanged()
+        notifyDataSetChanged()
     }
 }
 
-class MessageViewHolder(view: View) : RecyclerView.ViewHolder(view){
+class MessageViewHolder(val view: View) : RecyclerView.ViewHolder(view){
     private val msgText: TextView = view.tv_message
     private val time: TextView = view.tv_time
+    private val avatar: ImageView = view.img_avatar
 
     fun bind(message: Message){
         msgText.text = message.text
-        time.text = message.getTime()
+        time.text = "received at ${message.stringTime()}"
+        Glide.with(view)
+            .load(message.avatar)
+            .into(avatar)
     }
 }

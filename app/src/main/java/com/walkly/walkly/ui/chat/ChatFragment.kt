@@ -13,8 +13,8 @@ import kotlinx.android.synthetic.main.fragment_chat.*
 
 class ChatFragment : Fragment() {
 
-    private lateinit var messages: List<Message>
-    private var adapter: ChatAdapter = ChatAdapter()
+    private var messages: List<Message> = emptyList()
+    private var adapter: ChatAdapter = ChatAdapter(messages)
 
     val args: ChatFragmentArgs by navArgs()
 
@@ -28,10 +28,10 @@ class ChatFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        chat_recycler_view.adapter = adapter
         ChatRepository.getChat(args.friendId){
             this.messages = it
-            adapter.setMessages(messages)
+            adapter.updateMessages(messages)
         }
-        rv_chat.adapter = adapter
     }
 }
