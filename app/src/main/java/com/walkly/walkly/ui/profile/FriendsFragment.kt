@@ -14,6 +14,9 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.lifecycle.Observer
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -21,6 +24,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Friend
 import com.walkly.walkly.repositories.FriendsRepository
+import com.walkly.walkly.ui.chat.ChatFragmentArgs
 import kotlinx.android.synthetic.main.fragment_friends.*
 import kotlinx.android.synthetic.main.list_friend.*
 
@@ -97,8 +101,9 @@ class FriendsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        val navController = activity?.findNavController(R.id.nav_host_fragment)
         FriendsRepository.getFriends {
-            adapter = FriendsAdapter(it)
+            adapter = FriendsAdapter(it, navController as NavController)
             friends_recycler_view.adapter = adapter
         }
         et_search.setOnEditorActionListener { v, actionId, event ->
