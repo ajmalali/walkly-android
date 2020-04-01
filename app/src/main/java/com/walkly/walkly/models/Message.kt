@@ -20,10 +20,8 @@ data class Message(
     }
 
     fun stringTime() : String {
-        val cal = Calendar.getInstance(TimeZone.getDefault()).apply {
-            timeInMillis = time.time
-            Log.d(TAG, "time in mills is $timeInMillis")
-        }
+        val cal = Calendar.getInstance(TimeZone.getDefault())
+        cal.time = this.time?.toDate()
         return android.text.format.DateFormat.format("HH:MM", cal).toString()
     }
 
