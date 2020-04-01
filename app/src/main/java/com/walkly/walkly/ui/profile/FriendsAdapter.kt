@@ -4,6 +4,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.navigation.NavController
@@ -49,18 +50,17 @@ interface BindibleViewHolder {
     fun bind(friend: Friend)
 }
 
-class FriendViewHolder(view: View, navController: NavController): RecyclerView.ViewHolder(view), BindibleViewHolder {
+class FriendViewHolder(view: View, val navController: NavController): RecyclerView.ViewHolder(view), BindibleViewHolder {
     private val name: TextView = view.tv_username_1
     private val level: TextView = view.tv_level_1
     private val avatar: ImageView = view.img_avatar_1
+    private val chat: Button = view.btn_chat
 
-    init {
-        view.btn_chat.setOnClickListener {
-            navController.navigate(FriendsFragmentDirections.actionFriendsFragmentToChatFragment("zWSMK5kGo0hFF9mn0ONmCC9m0Pe2"))
-        }
-    }
 
     override fun bind(friend: Friend){
+        chat.setOnClickListener {
+            navController.navigate(FriendsFragmentDirections.actionFriendsFragmentToChatFragment(friend.id))
+        }
         name.text = friend.name
         level.text = friend.level.toString()
         try {
