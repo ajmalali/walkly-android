@@ -16,7 +16,7 @@ class ChatFragment : Fragment() {
     private var messages: List<Message> = emptyList()
     private var adapter: ChatAdapter = ChatAdapter(messages)
 
-    val args: ChatFragmentArgs by navArgs()
+    private val args: ChatFragmentArgs by navArgs()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -32,6 +32,15 @@ class ChatFragment : Fragment() {
         ChatRepository.getChat(args.friendId){
             this.messages = it
             adapter.updateMessages(messages)
+        }
+        btn_send.setOnClickListener {
+            if (et_message.text.isNotEmpty()){
+                val text = et_message.text.toString()
+                ChatRepository.sendMessage(args.friendId, text){
+                    if (it)
+                        et_message.text.clear()
+                }
+            }
         }
     }
 }

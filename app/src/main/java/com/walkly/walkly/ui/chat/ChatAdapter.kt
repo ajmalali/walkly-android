@@ -1,5 +1,7 @@
 package com.walkly.walkly.ui.chat
 
+import android.util.LayoutDirection
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -42,5 +44,10 @@ class MessageViewHolder(val view: View) : RecyclerView.ViewHolder(view){
         Glide.with(view)
             .load(message.avatar)
             .into(avatar)
+        if (message.sent){
+            view.layoutDirection = View.LAYOUT_DIRECTION_RTL
+            msgText.gravity = Gravity.END
+            time.text = "sent at ${message.stringTime()}"
+        }
     }
 }
