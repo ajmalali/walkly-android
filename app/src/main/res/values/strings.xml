@@ -78,6 +78,8 @@
     <string name="pvp_text">Player vs Player</string>
     <string name="online_battles">Online Battles</string>
     <string name="invites">Invites</string>
+    <string name="pvp">Player vs Player</string>
+    <string name="start">Start</string>
 
 
 </resources>

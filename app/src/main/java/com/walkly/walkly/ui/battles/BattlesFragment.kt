@@ -6,31 +6,31 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import com.mapbox.mapboxsdk.style.layers.Property
 import com.walkly.walkly.R
 import com.walkly.walkly.models.OnlineBattle
 import com.walkly.walkly.onlineBattle.OnlineBattleActivity
 import com.walkly.walkly.models.Enemy
-import com.walkly.walkly.ui.lobby.LobbyActivity
-import kotlinx.android.synthetic.main.bottom_sheet_layout.*
+import com.walkly.walkly.pvp.PvPActivity
+import com.walkly.walkly.ui.lobby.OnlineLobbyActivity
+import com.walkly.walkly.ui.lobby.PvPLobbyActivity
 import kotlinx.android.synthetic.main.fragment_host_join_battle.*
 
-class BattlesFragment : Fragment() {
+class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter.OnEnemyListener,
+    InvitesAdapter.OnInviteListener {
 
     private lateinit var battlesRecyclerView: RecyclerView
     private lateinit var invitesRecyclerView: RecyclerView
 
-    private var battleAdapter: BattleAdapter? = null
-    private var enemyAdapter: EnemyAdapter? = null
-    private var invitesAdapter: InvitesAdapter? = null
+    private lateinit var battleAdapter: BattleAdapter
+    private lateinit var enemyAdapter: EnemyAdapter
+    private lateinit var invitesAdapter: InvitesAdapter
 
     private val battlesViewModel: BattlesViewModel by viewModels()
-    private var isHosting: Boolean = false
-
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,8 +38,12 @@ class BattlesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         val view = inflater.inflate(R.layout.fragment_host_join_battle, container, false)
+
         battlesRecyclerView = view.findViewById(R.id.battles_recycler_view)
         invitesRecyclerView = view.findViewById(R.id.invites_recycler_view)
+
+        battleAdapter = BattleAdapter(mutableListOf(), this)
+        enemyAdapter = EnemyAdapter(mutableListOf(), this)
 
         // join button listener
         val joinBtn: RadioButton = view.findViewById(R.id.join_battle_button)
@@ -47,204 +51,97 @@ class BattlesFragment : Fragment() {
             hideHeader()
             tv_pvp_invites.visibility = View.VISIBLE
             tv_online_battles.visibility = View.VISIBLE
+            invitesRecyclerView.visibility = View.VISIBLE
+
             pvp_host.visibility = View.GONE
-            progressBar.visibility = View.VISIBLE
             battlesRecyclerView.adapter = null
+            battlesViewModel.getInvites()
             battlesViewModel.getOnlineBattles()
         }
 
         // host button listener
         val hostBtn: RadioButton = view.findViewById(R.id.host_button)
         hostBtn.setOnClickListener {
-            pvp_host.visibility = View.VISIBLE
             tv_pvp_invites.visibility = View.INVISIBLE
             tv_online_battles.visibility = View.INVISIBLE
-            progressBar.visibility = View.VISIBLE
+            invitesRecyclerView.visibility = View.GONE
+
+            pvp_host.visibility = View.VISIBLE
             battlesRecyclerView.adapter = null
             battlesViewModel.getEnemies()
         }
 
-        // initialize recycler view
+        // Observe online battles (real time)
         battlesViewModel.onlineBattleList.observe(viewLifecycleOwner, Observer { list ->
             list?.let {
                 if (joinBtn.isChecked) {
                     if (list.isEmpty()) {
-                        progressBar.visibility = View.GONE
                         // Display no battles
                     } else {
-                        battleAdapter = BattleAdapter(list)
+                        battleAdapter = BattleAdapter(list, this)
                         battlesRecyclerView.adapter = battleAdapter
-                        progressBar.visibility = View.GONE
                     }
                 }
             }
         })
 
+        // Observe enemy
         battlesViewModel.enemyList.observe(viewLifecycleOwner, Observer { list ->
             list?.let {
                 if (hostBtn.isChecked) {
                     if (list.isEmpty()) {
-                        progressBar.visibility = View.GONE
+                        // Display no enemies
                     } else {
-                        enemyAdapter = EnemyAdapter(list)
+                        enemyAdapter = EnemyAdapter(list, this)
                         battlesRecyclerView.adapter = enemyAdapter
-                        progressBar.visibility = View.GONE
                     }
                 }
             }
         })
 
-        // TODO: FIX
+        // Observe battle invites (real time)
+        battlesViewModel.invitesList.observe(viewLifecycleOwner, Observer { list ->
+            list?.let {
+                if (joinBtn.isChecked) {
+                    if (list.isEmpty()) {
+//                        tv_pvp_invites.visibility = View.GONE
+//                        invitesRecyclerView.visibility = View.GONE
+                        // Display no battles
+                    } else {
+//                        tv_pvp_invites.visibility = View.VISIBLE
+//                        invitesRecyclerView.visibility = View.VISIBLE
+                        invitesAdapter = InvitesAdapter(list, this)
+                        invitesRecyclerView.adapter = invitesAdapter
+                    }
+                }
+            }
+        })
+
         battlesViewModel.createBattle.observe(viewLifecycleOwner, Observer {
             battlesViewModel.currentPlayer.joinBattle()
-
-            val intent = Intent(activity, LobbyActivity::class.java)
-
+            val intent = Intent(activity, OnlineLobbyActivity::class.java)
             intent.putExtra("battle", it)
             startActivity(intent)
             activity?.finish()
         })
 
-        return view
-    }
+        battlesViewModel.pvpBattle.observe(viewLifecycleOwner, Observer {
+            val intent = Intent(activity, PvPActivity::class.java)
+            intent.putExtra("battle", it)
+            startActivity(intent)
+            activity?.finish()
+        })
 
-    private inner class BattleHolder(view: View) : RecyclerView.ViewHolder(view),
-        View.OnClickListener {
-        val battleName: TextView = itemView.findViewById(R.id.tv_battle_name)
-        val battleHost: TextView = itemView.findViewById(R.id.tv_battle_name_host)
-        val playerCount: TextView = itemView.findViewById(R.id.tv_players)
-        var background: androidx.constraintlayout.widget.ConstraintLayout =
-            itemView.findViewById(R.id.join_bg)
-        var battleID: String = ""
-
-        init {
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(p0: View?) {
-            //this.background.setBackgroundColor(Color.parseColor("#340055"))
-            battlesViewModel.joinListener(this.battleID)
-
-            battlesViewModel.currentPlayer.joinBattle()
-            val intent = Intent(activity, OnlineBattleActivity::class.java)
-            val bundle = Bundle()
-            bundle.putString("battleId", battleID)
-            intent.putExtras(bundle)
+        val pvpHost = view.findViewById<ConstraintLayout>(R.id.pvp_host)
+        pvpHost.setOnClickListener {
+            val battle = battlesViewModel.sendPvPInvite()
+            val intent = Intent(activity, PvPLobbyActivity::class.java)
+            intent.putExtra("battle", battle)
             startActivity(intent)
             activity?.finish()
         }
-    }
 
-    private inner class BattleAdapter(var onlineBattles: List<OnlineBattle>) :
-        RecyclerView.Adapter<BattleHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BattleHolder {
-            val view = layoutInflater.inflate(R.layout.list_join_battles, parent, false)
-            return BattleHolder(view)
-        }
-
-        override fun getItemCount(): Int {
-            return onlineBattles.size
-        }
-
-        override fun onBindViewHolder(holder: BattleHolder, position: Int) {
-            val battle = onlineBattles[position]
-            holder.apply {
-                // Default image
-                battleName.text = battle.battleName
-                battleHost.text = battle.hostName
-                val text = "${battle.playerCount}/4 Players"
-                playerCount.text = text
-                battleID = battle.id.toString()
-            }
-        }
-    }
-
-    private inner class EnemyHolder(view: View) : RecyclerView.ViewHolder(view),
-        View.OnClickListener {
-        var enemy: Enemy? = null
-        val battleName: TextView = itemView.findViewById(R.id.tv_battle_name_host)
-        var background: androidx.constraintlayout.widget.ConstraintLayout =
-            itemView.findViewById(R.id.host_bg)
-
-        init {
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(p0: View?) {
-            // Add your on click logic here
-            // this.background.setBackgroundColor(Color.parseColor("#340055"))
-            showHeader()
-            val enemyHealth = "HP: ${this.enemy?.health}"
-            tv_enemy_health.text = enemyHealth
-            val enemyName = this.enemy?.name
-            tv_enemy_name.text = enemyName
-            val level = "Level: ${this.enemy?.level}"
-            tv_enemy_level.text = level
-
-            create_button.setOnClickListener {
-                isHosting = true
-                battlesViewModel.selectEnemy(enemy!!)
-            }
-
-        }
-    }
-
-    private inner class EnemyAdapter(var enemies: List<Enemy>) :
-        RecyclerView.Adapter<EnemyHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EnemyHolder {
-            val view = layoutInflater.inflate(R.layout.list_host_battles, parent, false)
-            return EnemyHolder(view)
-        }
-
-        override fun getItemCount(): Int {
-            return enemies.size
-        }
-
-        override fun onBindViewHolder(holder: EnemyHolder, position: Int) {
-            val enemy = enemies[position]
-            holder.apply {
-                this.enemy = enemy
-                battleName.text = enemy.name
-            }
-        }
-    }
-
-    private inner class InvitesHolder(view: View) : RecyclerView.ViewHolder(view),
-        View.OnClickListener {
-        var battle: OnlineBattle? = null
-        val invitedBy: TextView = itemView.findViewById(R.id.tv_battle_name_host)
-        var background: androidx.constraintlayout.widget.ConstraintLayout =
-            itemView.findViewById(R.id.host_bg)
-
-        init {
-            itemView.setOnClickListener(this)
-        }
-
-        override fun onClick(p0: View?) {
-            // Add your on click logic here
-            // this.background.setBackgroundColor(Color.parseColor("#340055"))
-        }
-    }
-
-    private inner class InvitesAdapter(var invites: List<OnlineBattle>) :
-        RecyclerView.Adapter<InvitesHolder>() {
-        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): InvitesHolder {
-            val view = layoutInflater.inflate(R.layout.list_host_battles, parent, false)
-            return InvitesHolder(view)
-        }
-
-        override fun getItemCount(): Int {
-            return invites.size
-        }
-
-        override fun onBindViewHolder(holder: InvitesHolder, position: Int) {
-            val invite = invites[position]
-            holder.apply {
-                this.battle = invite
-                val host = "Invited by  ${invite.hostName}"
-                invitedBy.text = host
-            }
-        }
+        return view
     }
 
     private fun hideHeader() {
@@ -261,5 +158,42 @@ class BattlesFragment : Fragment() {
         tv_enemy_health.visibility = View.VISIBLE
         tv_enemy_level.visibility = View.VISIBLE
         tv_enemy_name.visibility = View.VISIBLE
+    }
+
+    // TODO: FIX
+    override fun onBattleClick(position: Int) {
+        //this.background.setBackgroundColor(Color.parseColor("#340055"))
+        val battle = battleAdapter.onlineBattles[position]
+        battlesViewModel.joinBattle(battle.id!!)
+
+        val intent = Intent(activity, OnlineBattleActivity::class.java)
+        val bundle = Bundle()
+        bundle.putString("battleId", battle.id)
+        intent.putExtras(bundle)
+        startActivity(intent)
+        activity?.finish()
+    }
+
+    override fun onEnemyClick(position: Int) {
+//         this.background.setBackgroundColor(Color.parseColor("#340055"))
+        showHeader()
+        val enemy = enemyAdapter.enemies[position]
+        val enemyHealth = "HP: ${enemy.health}"
+        tv_enemy_health.text = enemyHealth
+        val enemyName = enemy.name
+        tv_enemy_name.text = enemyName
+        val level = "Level: ${enemy.level}"
+        tv_enemy_level.text = level
+
+        create_button.setOnClickListener {
+            battlesViewModel.selectEnemy(enemy)
+        }
+
+    }
+
+    override fun onInviteClick(position: Int) {
+        val invite = invitesAdapter.invites[position]
+//        this.background.setBackgroundColor(Color.parseColor("#340055"))
+        battlesViewModel.joinPvPListener(invite.id)
     }
 }

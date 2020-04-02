@@ -20,7 +20,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
-        android:id="@+id/img_host_avatar_lobby"
+        android:id="@+id/host_avatar"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginBottom="84dp"
@@ -37,25 +37,25 @@
         android:layout_height="53dp"
         android:layout_marginStart="16dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="@id/img_host_avatar_lobby"
-        app:layout_constraintStart_toEndOf="@id/img_host_avatar_lobby"
+        app:layout_constraintBottom_toBottomOf="@id/host_avatar"
+        app:layout_constraintStart_toEndOf="@id/host_avatar"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
-        android:id="@+id/tv_host_name_lobby"
+        android:id="@+id/host_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Player 2"
         android:textAlignment="center"
         android:textColor="#fff"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/img_host_avatar_lobby"
-        app:layout_constraintStart_toStartOf="@id/img_host_avatar_lobby"
-        app:layout_constraintTop_toBottomOf="@id/img_host_avatar_lobby"
+        app:layout_constraintEnd_toEndOf="@+id/host_avatar"
+        app:layout_constraintStart_toStartOf="@id/host_avatar"
+        app:layout_constraintTop_toBottomOf="@id/host_avatar"
         tools:text="player_name" />
 
     <ImageView
-        android:id="@+id/img_player1_avatar_lobby"
+        android:id="@+id/opponent_avatar"
         android:layout_width="80dp"
         android:layout_height="80dp"
         android:layout_marginStart="56dp"
@@ -69,22 +69,22 @@
         android:id="@+id/img_player1_equipment_lobby"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        app:layout_constraintStart_toStartOf="@id/img_player1_avatar_lobby"
-        app:layout_constraintBottom_toBottomOf="@id/img_player1_avatar_lobby"
+        app:layout_constraintStart_toStartOf="@id/opponent_avatar"
+        app:layout_constraintBottom_toBottomOf="@id/opponent_avatar"
         tools:srcCompat="@tools:sample/avatars"
         />
 
     <TextView
-        android:id="@+id/tv_player1_name_lobby"
+        android:id="@+id/opponent_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Player 2"
         android:textAlignment="center"
         android:textColor="#fff"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/img_player1_avatar_lobby"
-        app:layout_constraintStart_toStartOf="@id/img_player1_avatar_lobby"
-        app:layout_constraintTop_toBottomOf="@id/img_player1_avatar_lobby"
+        app:layout_constraintEnd_toEndOf="@+id/opponent_avatar"
+        app:layout_constraintStart_toStartOf="@id/opponent_avatar"
+        app:layout_constraintTop_toBottomOf="@id/opponent_avatar"
         tools:text="player_name" />
 
     <ImageView
@@ -93,7 +93,7 @@
         android:layout_height="80dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="72dp"
-        app:layout_constraintStart_toEndOf="@+id/img_player1_avatar_lobby"
+        app:layout_constraintStart_toEndOf="@+id/opponent_avatar"
         app:layout_constraintTop_toTopOf="@id/rect_player_lobby"
         app:srcCompat="@drawable/invfriend"
         tools:srcCompat="@tools:sample/avatars" />

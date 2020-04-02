@@ -2,7 +2,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.walkly.walkly">
-
     <!-- location permission -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
@@ -15,12 +14,15 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
+        <activity android:name=".pvp.PvPActivity"></activity>
+        <activity android:name=".ui.lobby.PvPLobbyActivity" />
+
         <service
             android:name=".offlineBattle.BackgroundOfflineBattleService"
             android:enabled="true"
             android:exported="false" />
 
-        <activity android:name=".ui.lobby.LobbyActivity" />
+        <activity android:name=".ui.lobby.OnlineLobbyActivity" />
         <activity android:name=".onlineBattle.OnlineBattleActivity" />
         <activity android:name=".MainActivity" />
         <activity
