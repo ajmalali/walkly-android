@@ -7,12 +7,10 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.toObject
-import com.walkly.walkly.models.OnlineBattle
-import com.walkly.walkly.models.Enemy
-import com.walkly.walkly.models.Invite
-import com.walkly.walkly.models.PvP
+import com.walkly.walkly.models.*
 import com.walkly.walkly.repositories.PlayerRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -22,10 +20,6 @@ import kotlinx.coroutines.tasks.await
 private const val TAG = "BattlesViewModel"
 
 class BattlesViewModel : ViewModel() {
-
-    private var _battle = MutableLiveData<OnlineBattle>()
-    val createBattle: LiveData<OnlineBattle>
-        get() = _battle
 
     private var _pvpBattle = MutableLiveData<PvP>()
     val pvpBattle: LiveData<PvP>
@@ -51,6 +45,9 @@ class BattlesViewModel : ViewModel() {
     private val userID = FirebaseAuth.getInstance().currentUser?.uid
     val currentPlayer = PlayerRepository.getPlayer()
 
+    private lateinit var invitesRegistration: ListenerRegistration
+    private lateinit var battlesRegistration: ListenerRegistration
+
     init {
         getOnlineBattles()
         getEnemies()
@@ -59,7 +56,7 @@ class BattlesViewModel : ViewModel() {
 
     fun getInvites() {
         if (_invitesList.value == null) {
-            db.collection("invites")
+            invitesRegistration = db.collection("invites")
                 .addSnapshotListener { value, e ->
                     if (e != null) {
                         Log.w(TAG, "Listen failed.", e)
@@ -106,7 +103,7 @@ class BattlesViewModel : ViewModel() {
     // Listening to online-battles in real time
     fun getOnlineBattles() {
         if (_battleList.value == null) {
-            db.collection("online_battles")
+            battlesRegistration = db.collection("online_battles")
                 .addSnapshotListener { value, e ->
                     if (e != null) {
                         Log.w(TAG, "Listen failed.", e)
@@ -180,23 +177,38 @@ class BattlesViewModel : ViewModel() {
     }
 
     // TODO: Change to OnlineEnemy
-    fun selectEnemy(enemy: Enemy) {
-        val battlesCollection = db.collection("online_battles")
+    suspend fun createOnlineBattle(enemy: Enemy): OnlineBattle {
+
+        val battlePlayers = mutableListOf<BattlePlayer>()
+        battlePlayers.add(
+            BattlePlayer(
+                id = currentPlayer.id!!,
+                name = currentPlayer.name!!,
+                avatarURL = currentPlayer.photoURL!!,
+                equipmentURL = currentPlayer.currentEquipment?.image!!
+            )
+        )
+
         val battle = OnlineBattle(
             battleName = enemy.name,
             enemy = enemy,
             hostName = currentPlayer.name,
-            enemyHealth = enemy.health
+            enemyHealth = enemy.health,
+            players = battlePlayers
         )
-        battlesCollection.add(battle)
-            .addOnSuccessListener { documentReference ->
-                Log.d(TAG, "DocumentSnapshot written with ID: ${documentReference.id}")
-                battle.id = documentReference.id
-                _battle.value = battle
-            }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "Error adding document", e)
-            }
+
+        currentPlayer.joinBattle()
+
+        val battlesCollection = db.collection("online_battles")
+        battlesCollection.add(battle).await()
+
+        return battle
+
+    }
+
+    fun removeListeners() {
+        invitesRegistration.remove()
+        battlesRegistration.remove()
     }
 
 }

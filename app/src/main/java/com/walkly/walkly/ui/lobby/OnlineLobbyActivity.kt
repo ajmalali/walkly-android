@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.activity.viewModels
 import com.walkly.walkly.R
+import com.walkly.walkly.models.OnlineBattle
 import com.walkly.walkly.onlineBattle.OnlineBattleActivity
 import kotlinx.android.synthetic.main.activity_online_lobby.*
 
@@ -15,14 +16,13 @@ class OnlineLobbyActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_online_lobby)
 
-        val battleID = intent.getStringExtra("battleId")
-
+        val battle = intent.getParcelableExtra<OnlineBattle>("battle")
         setupHeader()
 
         start_button.setOnClickListener {
             val intent = Intent(this, OnlineBattleActivity::class.java)
             val bundle = Bundle()
-            bundle.putString("battleId", battleID)
+//            bundle.putString("battleId", battleID)
             intent.putExtras(bundle)
             startActivity(intent)
             this.finish()

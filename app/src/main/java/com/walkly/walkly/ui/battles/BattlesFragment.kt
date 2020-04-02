@@ -1,7 +1,9 @@
 package com.walkly.walkly.ui.battles
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,13 +14,19 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.walkly.walkly.R
-import com.walkly.walkly.models.OnlineBattle
 import com.walkly.walkly.onlineBattle.OnlineBattleActivity
-import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.pvp.PvPActivity
 import com.walkly.walkly.ui.lobby.OnlineLobbyActivity
 import com.walkly.walkly.ui.lobby.PvPLobbyActivity
 import kotlinx.android.synthetic.main.fragment_host_join_battle.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+
+private const val TAG = "BattlesFragment"
 
 class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter.OnEnemyListener,
     InvitesAdapter.OnInviteListener {
@@ -29,6 +37,8 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
     private lateinit var battleAdapter: BattleAdapter
     private lateinit var enemyAdapter: EnemyAdapter
     private lateinit var invitesAdapter: InvitesAdapter
+
+    private lateinit var creatingBattleDialog: AlertDialog
 
     private val battlesViewModel: BattlesViewModel by viewModels()
 
@@ -44,6 +54,7 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
 
         battleAdapter = BattleAdapter(mutableListOf(), this)
         enemyAdapter = EnemyAdapter(mutableListOf(), this)
+        invitesAdapter = InvitesAdapter(mutableListOf(), this)
 
         // join button listener
         val joinBtn: RadioButton = view.findViewById(R.id.join_battle_button)
@@ -104,25 +115,13 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
             list?.let {
                 if (joinBtn.isChecked) {
                     if (list.isEmpty()) {
-//                        tv_pvp_invites.visibility = View.GONE
-//                        invitesRecyclerView.visibility = View.GONE
-                        // Display no battles
+                        // Display no invites
                     } else {
-//                        tv_pvp_invites.visibility = View.VISIBLE
-//                        invitesRecyclerView.visibility = View.VISIBLE
                         invitesAdapter = InvitesAdapter(list, this)
                         invitesRecyclerView.adapter = invitesAdapter
                     }
                 }
             }
-        })
-
-        battlesViewModel.createBattle.observe(viewLifecycleOwner, Observer {
-            battlesViewModel.currentPlayer.joinBattle()
-            val intent = Intent(activity, OnlineLobbyActivity::class.java)
-            intent.putExtra("battle", it)
-            startActivity(intent)
-            activity?.finish()
         })
 
         battlesViewModel.pvpBattle.observe(viewLifecycleOwner, Observer {
@@ -141,7 +140,21 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
             activity?.finish()
         }
 
+        // Creating battle dialog
+        creatingBattleDialog = AlertDialog.Builder(context)
+            .setView(R.layout.dialog_loading_battle)
+            .create()
+
+        creatingBattleDialog.setCancelable(false)
+        creatingBattleDialog.setCanceledOnTouchOutside(false)
+
         return view
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        Log.d(TAG, "Removing listeners")
+        battlesViewModel.removeListeners()
     }
 
     private fun hideHeader() {
@@ -186,7 +199,17 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
         tv_enemy_level.text = level
 
         create_button.setOnClickListener {
-            battlesViewModel.selectEnemy(enemy)
+            CoroutineScope(IO).launch {
+                withContext(Main) { creatingBattleDialog.show() }
+                val battle = battlesViewModel.createOnlineBattle(enemy)
+                withContext(Main) {
+                    val intent = Intent(activity, OnlineLobbyActivity::class.java)
+                    intent.putExtra("battle", battle)
+                    creatingBattleDialog.dismiss()
+                    startActivity(intent)
+                    activity?.finish()
+                }
+            }
         }
 
     }

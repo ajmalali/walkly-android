@@ -80,6 +80,7 @@
     <string name="invites">Invites</string>
     <string name="pvp">Player vs Player</string>
     <string name="start">Start</string>
+    <string name="creating_battle">Creating battle...</string>
 
 
 </resources>
