@@ -22,7 +22,6 @@ import kotlinx.android.synthetic.main.fragment_host_join_battle.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -38,7 +37,8 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
     private lateinit var enemyAdapter: EnemyAdapter
     private lateinit var invitesAdapter: InvitesAdapter
 
-    private lateinit var creatingBattleDialog: AlertDialog
+    private lateinit var loadingDialog: AlertDialog
+    private lateinit var loadingInflater: View
 
     private val battlesViewModel: BattlesViewModel by viewModels()
 
@@ -141,12 +141,13 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
         }
 
         // Creating battle dialog
-        creatingBattleDialog = AlertDialog.Builder(context)
-            .setView(R.layout.dialog_loading_battle)
+        loadingInflater = layoutInflater.inflate(R.layout.dialog_loading_battle, container, false)
+        loadingDialog = AlertDialog.Builder(context)
+            .setView(loadingInflater)
             .create()
 
-        creatingBattleDialog.setCancelable(false)
-        creatingBattleDialog.setCanceledOnTouchOutside(false)
+        loadingDialog.setCancelable(false)
+        loadingDialog.setCanceledOnTouchOutside(false)
 
         return view
     }
@@ -176,15 +177,30 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
     // TODO: FIX
     override fun onBattleClick(position: Int) {
         //this.background.setBackgroundColor(Color.parseColor("#340055"))
-        val battle = battleAdapter.onlineBattles[position]
-        battlesViewModel.joinBattle(battle.id!!)
+        var battle = battleAdapter.onlineBattles[position]
+        CoroutineScope(IO).launch {
+            withContext(Main) {
+                loadingInflater.findViewById<TextView>(R.id.loading_text).text =
+                    getString(R.string.joining_battle)
+                loadingDialog.show()
+            }
 
-        val intent = Intent(activity, OnlineBattleActivity::class.java)
-        val bundle = Bundle()
-        bundle.putString("battleId", battle.id)
-        intent.putExtras(bundle)
-        startActivity(intent)
-        activity?.finish()
+            battle = battlesViewModel.joinBattle(battle)
+
+            withContext(Main) {
+                val intent: Intent
+                if (battle.battleState == "In-lobby") {
+                    intent = Intent(activity, OnlineLobbyActivity::class.java)
+                } else {
+                    intent = Intent(activity, OnlineBattleActivity::class.java)
+                }
+
+                intent.putExtra("battle", battle)
+                loadingDialog.dismiss()
+                startActivity(intent)
+                activity?.finish()
+            }
+        }
     }
 
     override fun onEnemyClick(position: Int) {
@@ -200,12 +216,18 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
 
         create_button.setOnClickListener {
             CoroutineScope(IO).launch {
-                withContext(Main) { creatingBattleDialog.show() }
+                withContext(Main) {
+                    loadingInflater.findViewById<TextView>(R.id.loading_text).text =
+                        getString(R.string.creating_online_battle)
+                    loadingDialog.show()
+                }
+
                 val battle = battlesViewModel.createOnlineBattle(enemy)
+
                 withContext(Main) {
                     val intent = Intent(activity, OnlineLobbyActivity::class.java)
                     intent.putExtra("battle", battle)
-                    creatingBattleDialog.dismiss()
+                    loadingDialog.dismiss()
                     startActivity(intent)
                     activity?.finish()
                 }

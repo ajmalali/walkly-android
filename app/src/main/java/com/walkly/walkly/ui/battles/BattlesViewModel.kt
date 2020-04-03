@@ -44,6 +44,12 @@ class BattlesViewModel : ViewModel() {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val userID = FirebaseAuth.getInstance().currentUser?.uid
     val currentPlayer = PlayerRepository.getPlayer()
+    val currentBattlePlayer = BattlePlayer(
+        id = currentPlayer.id!!,
+        name = currentPlayer.name!!,
+        avatarURL = currentPlayer.photoURL!!,
+        equipmentURL = currentPlayer.currentEquipment?.image!!
+    )
 
     private lateinit var invitesRegistration: ListenerRegistration
     private lateinit var battlesRegistration: ListenerRegistration
@@ -104,6 +110,7 @@ class BattlesViewModel : ViewModel() {
     fun getOnlineBattles() {
         if (_battleList.value == null) {
             battlesRegistration = db.collection("online_battles")
+                .whereEqualTo("type", "public")
                 .addSnapshotListener { value, e ->
                     if (e != null) {
                         Log.w(TAG, "Listen failed.", e)
@@ -126,12 +133,39 @@ class BattlesViewModel : ViewModel() {
         }
     }
 
-    // TODO: FIX
-    fun joinBattle(battleID: String) {
+    // TODO: Change to OnlineEnemy
+    suspend fun createOnlineBattle(enemy: Enemy): OnlineBattle {
+        val battlePlayers = mutableListOf<BattlePlayer>()
+        battlePlayers.add(currentBattlePlayer)
+
+        val battle = OnlineBattle(
+            battleName = enemy.name,
+            enemy = enemy,
+            hostName = currentPlayer.name,
+            enemyHealth = enemy.health,
+            players = battlePlayers
+        )
+
         currentPlayer.joinBattle()
 
-//        db.collection("online_battles").document(battleID)
-//            .update("players", FieldValue.arrayUnion(userID))
+        val battlesRef = db.collection("online_battles").document()
+        battle.id = battlesRef.id
+        battlesRef.set(battle).await()
+
+        return battle
+    }
+
+    // Join the selected battle
+    suspend fun joinBattle(battle: OnlineBattle): OnlineBattle {
+        currentPlayer.joinBattle()
+        battle.playerCount = battle.playerCount?.inc()
+        battle.players.add(currentBattlePlayer)
+
+        db.collection("online_battles")
+            .document(battle.id!!)
+            .set(battle, SetOptions.merge()).await()
+
+        return battle
     }
 
     fun sendPvPInvite(): PvP {
@@ -174,37 +208,6 @@ class BattlesViewModel : ViewModel() {
 
         // TODO: Delete invite
 //        db.collection("invites")
-    }
-
-    // TODO: Change to OnlineEnemy
-    suspend fun createOnlineBattle(enemy: Enemy): OnlineBattle {
-
-        val battlePlayers = mutableListOf<BattlePlayer>()
-        battlePlayers.add(
-            BattlePlayer(
-                id = currentPlayer.id!!,
-                name = currentPlayer.name!!,
-                avatarURL = currentPlayer.photoURL!!,
-                equipmentURL = currentPlayer.currentEquipment?.image!!
-            )
-        )
-
-        val battle = OnlineBattle(
-            battleName = enemy.name,
-            enemy = enemy,
-            hostName = currentPlayer.name,
-            enemyHealth = enemy.health,
-            players = battlePlayers
-        )
-
-        currentPlayer.joinBattle()
-
-        val battlesCollection = db.collection("online_battles")
-        val ref = battlesCollection.add(battle).await()
-        battle.id = ref.id
-
-        return battle
-
     }
 
     fun removeListeners() {

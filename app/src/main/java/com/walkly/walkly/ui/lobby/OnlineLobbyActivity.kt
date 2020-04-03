@@ -120,7 +120,7 @@ class OnlineLobbyActivity : AppCompatActivity() {
                 players[1],
                 tv_player1_name_lobby,
                 img_player1_avatar_lobby,
-                img_player1_equipment_lobby
+                img_player3_equipment_lobby
             )
         }
 
