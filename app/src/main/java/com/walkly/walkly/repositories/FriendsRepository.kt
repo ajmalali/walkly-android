@@ -18,8 +18,12 @@ object FriendsRepository {
         userDoc.addSnapshotListener { snapshot, exception ->
             friends.clear()
             friendRquests.clear()
-            friends.addAll(snapshot?.data?.get("friends") as List<String>)
-            friendRquests.addAll(snapshot?.data?.get("friend-requests") as List<String>)
+            try {
+                friends.addAll(snapshot?.data?.get("friends") as List<String>)
+                friendRquests.addAll(snapshot?.data?.get("friend-requests") as List<String>)
+            } catch (tce: TypeCastException){
+                return@addSnapshotListener
+            }
         }
     }
 
