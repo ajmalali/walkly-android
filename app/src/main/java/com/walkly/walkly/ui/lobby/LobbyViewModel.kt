@@ -7,17 +7,43 @@ import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.ktx.toObject
+import com.walkly.walkly.models.BattlePlayer
+import com.walkly.walkly.models.OnlineBattle
 
 private const val TAG = "LobbyViewModel"
 
 class LobbyViewModel : ViewModel() {
 
-    private val _playerList = MutableLiveData<List<String>>()
-    val playerList: LiveData<List<String>>
+    private val _playerList = MutableLiveData<List<BattlePlayer>>()
+    val playerList: LiveData<List<BattlePlayer>>
         get() = _playerList
 
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
-    private val userID = FirebaseAuth.getInstance().currentUser?.uid
+    val userID = FirebaseAuth.getInstance().currentUser?.uid
+
+    private lateinit var playersRegistration: ListenerRegistration
+
+    fun setupPlayersListener(id: String) {
+        var tempPlayerList: MutableList<BattlePlayer>
+        playersRegistration = db.collection("online_battles")
+            .document(id)
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e)
+                    return@addSnapshotListener
+                }
+
+                if (snapshot != null && snapshot.exists()) {
+                    val battle = snapshot.toObject<OnlineBattle>()!!
+                    tempPlayerList = battle.players
+                    _playerList.value = tempPlayerList
+                } else {
+                    Log.d(TAG, "Current data: null")
+                }
+            }
+    }
 
     fun invFriend(battleID: String) {
         Log.d(TAG, battleID)
@@ -39,5 +65,9 @@ class LobbyViewModel : ViewModel() {
                 }
             }
         }
+    }
+
+    fun removeListeners() {
+        playersRegistration.remove()
     }
 }

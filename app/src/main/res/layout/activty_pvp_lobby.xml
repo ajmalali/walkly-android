@@ -19,7 +19,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
-        android:id="@+id/host_name"
+        android:id="@+id/current_player_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Player 1"
@@ -47,7 +47,7 @@
         android:id="@+id/opponent_avatar"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        app:layout_constraintBottom_toTopOf="@+id/host_name"
+        app:layout_constraintBottom_toTopOf="@+id/current_player_name"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/host_avatar"
         app:layout_constraintTop_toTopOf="@+id/host_avatar"

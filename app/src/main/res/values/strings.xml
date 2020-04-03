@@ -81,6 +81,9 @@
     <string name="pvp">Player vs Player</string>
     <string name="start">Start</string>
     <string name="creating_battle">Creating battle...</string>
+    <string name="waiting">Waiting...</string>
+    <string name="change_to_public">Change to public</string>
+    <string name="waiting_for_host_lobby">Waiting for host to start the battle...</string>
 
 
 </resources>

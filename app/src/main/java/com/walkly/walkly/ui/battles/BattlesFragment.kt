@@ -211,7 +211,6 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
                 }
             }
         }
-
     }
 
     override fun onInviteClick(position: Int) {

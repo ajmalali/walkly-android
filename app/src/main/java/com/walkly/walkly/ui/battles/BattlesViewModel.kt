@@ -200,7 +200,8 @@ class BattlesViewModel : ViewModel() {
         currentPlayer.joinBattle()
 
         val battlesCollection = db.collection("online_battles")
-        battlesCollection.add(battle).await()
+        val ref = battlesCollection.add(battle).await()
+        battle.id = ref.id
 
         return battle
 
