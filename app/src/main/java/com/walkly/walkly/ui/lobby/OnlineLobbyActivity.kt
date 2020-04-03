@@ -1,26 +1,46 @@
 package com.walkly.walkly.ui.lobby
 
+import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.walkly.walkly.R
 import com.walkly.walkly.models.BattlePlayer
 import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.models.OnlineBattle
 import com.walkly.walkly.onlineBattle.OnlineBattleActivity
+import com.walkly.walkly.ui.profile.EquipmentAdapter
+import com.walkly.walkly.ui.profile.WearEquipmentViewModel
 import kotlinx.android.synthetic.main.activity_online_lobby.*
+import kotlinx.android.synthetic.main.dialog_wear_equipment.view.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val TAG = "OnlineLobbyActivity"
 
-class OnlineLobbyActivity : AppCompatActivity() {
+class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUseListener {
+
+    private lateinit var wearEquipmentDialog: AlertDialog
+    private lateinit var wearEquipmentBuilder: AlertDialog.Builder
+    private lateinit var adapter: EquipmentAdapter
 
     private val viewModel: LobbyViewModel by viewModels()
+    private val equipmentViewModel: WearEquipmentViewModel by viewModels()
     private var playerCount: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -33,7 +53,7 @@ class OnlineLobbyActivity : AppCompatActivity() {
             setupEnemy(battle.enemy!!)
             updatePlayers(battle.players)
             viewModel.setupPlayersListener(battle.id!!)
-            if (battle.players[0].id == viewModel.userID) {
+            if (battle.playerCount == 1) {
                 displayBattleControls()
             } else {
                 displayWaiting()
@@ -52,6 +72,34 @@ class OnlineLobbyActivity : AppCompatActivity() {
             }
         })
 
+        // Wear Equipment Dialog
+        val dialogView = layoutInflater.inflate(R.layout.dialog_wear_equipment, null, false)
+        wearEquipmentBuilder = AlertDialog.Builder(this)
+            .setView(dialogView)
+        wearEquipmentDialog = wearEquipmentBuilder.create()
+        //To make the background for the dialog Transparent
+        wearEquipmentDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        adapter =
+            EquipmentAdapter(mutableListOf(), this)
+        val rv = dialogView.findViewById(R.id.equipment_recycler_view) as RecyclerView
+        rv.layoutManager = GridLayoutManager(this, 2, GridLayoutManager.HORIZONTAL, false)
+        rv.adapter = adapter
+
+        dialogView.progressBar.visibility = View.VISIBLE
+        equipmentViewModel.equipments.observe(this, Observer { list ->
+            dialogView.progressBar.visibility = View.GONE
+            adapter.equipmentList = list
+            if (list.size < 5) {
+                rv.layoutManager =
+                    GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
+            } else {
+                rv.layoutManager =
+                    GridLayoutManager(this, 2, GridLayoutManager.HORIZONTAL, false)
+            }
+            adapter.notifyDataSetChanged()
+        })
+
         start_button.setOnClickListener {
             val intent = Intent(this, OnlineBattleActivity::class.java)
             val bundle = Bundle()
@@ -61,12 +109,8 @@ class OnlineLobbyActivity : AppCompatActivity() {
         }
 
         btn_change_equipment_lobby.setOnClickListener {
-            
+            wearEquipmentDialog.show()
         }
-
-//        opponent_avatar.setOnClickListener {
-//            viewModel.invFriend(intent.getStringExtra("battleId"))
-//        }
     }
 
     private fun displayBattleControls() {
@@ -162,5 +206,14 @@ class OnlineLobbyActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.removeListeners()
+    }
+
+    override fun onEquipmentClick(position: Int) {
+        val equipment = adapter.equipmentList[position]
+        equipmentViewModel.selectEquipment(equipment)
+        CoroutineScope(IO).launch {
+            viewModel.changeEquipment(equipment)
+            withContext(Main) { wearEquipmentDialog.dismiss() }
+        }
     }
 }

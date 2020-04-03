@@ -44,7 +44,7 @@ class BattlesViewModel : ViewModel() {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val userID = FirebaseAuth.getInstance().currentUser?.uid
     val currentPlayer = PlayerRepository.getPlayer()
-    val currentBattlePlayer = BattlePlayer(
+    private val currentBattlePlayer = BattlePlayer(
         id = currentPlayer.id!!,
         name = currentPlayer.name!!,
         avatarURL = currentPlayer.photoURL!!,

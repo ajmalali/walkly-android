@@ -34,7 +34,7 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
     private lateinit var wearEquipmentBuilder: AlertDialog.Builder
     private lateinit var adapter: EquipmentAdapter
 
-    private val profileViewModel: ProfileViewModel by viewModels()
+    private val equipmentViewModel: WearEquipmentViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,11 +72,11 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
         adapter =
             EquipmentAdapter(mutableListOf(), this)
         val rv = dialogView.findViewById(R.id.equipment_recycler_view) as RecyclerView
-//        rv.layoutManager = GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false)
+        rv.layoutManager = GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false)
         rv.adapter = adapter
 
         dialogView.progressBar.visibility = View.VISIBLE
-        profileViewModel.equipments.observe(viewLifecycleOwner, Observer { list ->
+        equipmentViewModel.equipments.observe(viewLifecycleOwner, Observer { list ->
             dialogView.progressBar.visibility = View.GONE
             if (list.isEmpty()) {
                 Log.e(TAG, "EMPTYYY")
@@ -84,13 +84,21 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
                 Log.d(TAG, "$list")
                 adapter.equipmentList = list
                 if (list.size < 5) {
-                    rv.layoutManager =   LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
-//                        GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
+                    rv.layoutManager =
+                        GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
                 } else {
                     rv.layoutManager =
                         GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false)
                 }
                 adapter.notifyDataSetChanged()
+            }
+        })
+
+        equipmentViewModel.selectedEquipment.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                Glide.with(this)
+                    .load(it.image)
+                    .into(img_equipment)
             }
         })
 
@@ -120,14 +128,14 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
 
         // TODO make it faster
         Glide.with(this)
-            .load(profileViewModel.currentPlayer.photoURL)
+            .load(equipmentViewModel.currentPlayer.photoURL)
             .into(img_avatar)
 
 
         // TODO: Refactor
         try {
             Glide.with(this)
-                .load(profileViewModel.currentPlayer.currentEquipment?.image)
+                .load(equipmentViewModel.currentPlayer.currentEquipment?.image)
                 .into(img_equipment)
         } catch (npe: NullPointerException) {
             // do nothing
@@ -154,7 +162,7 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
 
     override fun onEquipmentClick(position: Int) {
         val equipment = adapter.equipmentList[position]
-        profileViewModel.selectEquipment(equipment)
+        equipmentViewModel.selectEquipment(equipment)
         wearEquipmentDialog.dismiss()
     }
 }

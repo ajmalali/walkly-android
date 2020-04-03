@@ -10,7 +10,9 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.toObject
 import com.walkly.walkly.models.BattlePlayer
+import com.walkly.walkly.models.Equipment
 import com.walkly.walkly.models.OnlineBattle
+import kotlinx.coroutines.tasks.await
 
 private const val TAG = "LobbyViewModel"
 
@@ -22,13 +24,15 @@ class LobbyViewModel : ViewModel() {
 
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     val userID = FirebaseAuth.getInstance().currentUser?.uid
+    private var battleID: String = ""
 
     private lateinit var playersRegistration: ListenerRegistration
 
     fun setupPlayersListener(id: String) {
+        battleID = id
         var tempPlayerList: MutableList<BattlePlayer>
         playersRegistration = db.collection("online_battles")
-            .document(id)
+            .document(battleID)
             .addSnapshotListener { snapshot, e ->
                 if (e != null) {
                     Log.w(TAG, "Listen failed.", e)
@@ -65,6 +69,18 @@ class LobbyViewModel : ViewModel() {
                 }
             }
         }
+    }
+
+    suspend fun changeEquipment(equipment: Equipment) {
+        val players = _playerList.value!!
+        for (player in players) {
+            if (player.id == userID) {
+                player.equipmentURL = equipment.image!!
+            }
+        }
+
+        db.collection("online_battles").document(battleID)
+            .update("players", players).await()
     }
 
     fun removeListeners() {

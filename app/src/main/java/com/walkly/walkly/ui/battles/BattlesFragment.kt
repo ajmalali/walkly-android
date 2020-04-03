@@ -13,6 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.walkly.walkly.R
 import com.walkly.walkly.onlineBattle.OnlineBattleActivity
 import com.walkly.walkly.pvp.PvPActivity
@@ -213,6 +214,10 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
         tv_enemy_name.text = enemyName
         val level = "Level: ${enemy.level}"
         tv_enemy_level.text = level
+
+        Glide.with(this)
+            .load(enemy.image)
+            .into(enemy_image)
 
         create_button.setOnClickListener {
             CoroutineScope(IO).launch {
