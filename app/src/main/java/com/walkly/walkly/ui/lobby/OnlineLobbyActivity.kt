@@ -48,7 +48,7 @@ class OnlineLobbyActivity : AppCompatActivity() {
                 if (playerCount > 1) {
                     start_button.isClickable = true
                 }
-                updatePlayers(list)
+                updatePlayers(list as MutableList<BattlePlayer>)
             }
         })
 
@@ -58,6 +58,10 @@ class OnlineLobbyActivity : AppCompatActivity() {
             intent.putExtras(bundle)
             startActivity(intent)
             this.finish()
+        }
+
+        btn_change_equipment_lobby.setOnClickListener {
+            
         }
 
 //        opponent_avatar.setOnClickListener {
@@ -96,7 +100,16 @@ class OnlineLobbyActivity : AppCompatActivity() {
             .into(equipmentImage)
     }
 
-    private fun updatePlayers(players: List<BattlePlayer>) {
+    private fun updatePlayers(players: MutableList<BattlePlayer>) {
+        // Set current player to position 0
+        for (i in players.indices) {
+            if (players[i].id == viewModel.userID) {
+                val temp = players[0]
+                players[0] = players[i]
+                players[i] = temp
+            }
+        }
+
         if (playerCount == 4) {
             setupPlayer(
                 players[3],
@@ -106,7 +119,7 @@ class OnlineLobbyActivity : AppCompatActivity() {
             )
         }
 
-        if (playerCount == 3) {
+        if (playerCount >= 3) {
             setupPlayer(
                 players[2],
                 tv_player2_name_lobby,
@@ -115,16 +128,16 @@ class OnlineLobbyActivity : AppCompatActivity() {
             )
         }
 
-        if (playerCount == 2) {
+        if (playerCount >= 2) {
             setupPlayer(
                 players[1],
                 tv_player1_name_lobby,
                 img_player1_avatar_lobby,
-                img_player3_equipment_lobby
+                img_player1_equipment_lobby
             )
         }
 
-        if (playerCount == 1) {
+        if (playerCount >= 1) {
             setupPlayer(
                 players[0],
                 current_player_name,

@@ -86,6 +86,7 @@
     <string name="waiting_for_host_lobby">Waiting for host to start the battle...</string>
     <string name="creating_online_battle">Creating online battle...</string>
     <string name="joining_battle">Joining battle...</string>
+    <string name="change">Change</string>
 
 
 </resources>

@@ -69,8 +69,7 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
         tv_welcome.text = text
 
         // Wear Equipment Dialog
-        val inflater = layoutInflater
-        val dialogView = inflater.inflate(R.layout.dialog_wear_equipment, null) as View
+        val dialogView = layoutInflater.inflate(R.layout.dialog_wear_equipment, null, false)
         wearEquipmentBuilder = AlertDialog.Builder(this.context)
             .setView(dialogView)
 

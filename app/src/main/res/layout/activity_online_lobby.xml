@@ -10,12 +10,13 @@
     <View
         android:id="@+id/rect_player_lobby"
         android:layout_width="match_parent"
-        android:layout_height="370dp"
+        android:layout_height="350dp"
         android:layout_marginBottom="24dp"
         android:background="@drawable/gradient"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.25"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rect_enemy"
         app:layout_constraintVertical_bias="0.0" />
@@ -24,7 +25,7 @@
         android:id="@+id/current_player_avatar"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginBottom="65dp"
+        android:layout_marginBottom="50dp"
         app:layout_constraintBottom_toBottomOf="@+id/rect_player_lobby"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
@@ -34,12 +35,11 @@
 
     <ImageView
         android:id="@+id/current_player_equipment_lobby"
-        android:layout_width="50dp"
-        android:layout_height="53dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toBottomOf="@id/current_player_avatar"
-        app:layout_constraintStart_toEndOf="@id/current_player_avatar"
+        android:layout_width="65dp"
+        android:layout_height="74dp"
+        android:layout_marginStart="32dp"
+        app:layout_constraintStart_toEndOf="@+id/current_player_avatar"
+        app:layout_constraintTop_toTopOf="@+id/current_player_avatar"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
@@ -91,7 +91,7 @@
         android:id="@+id/img_player2_avatar_lobby"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginTop="65dp"
+        android:layout_marginTop="50dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/rect_player_lobby"
@@ -166,6 +166,22 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/start_button"
+        tools:visibility="visible" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_change_equipment_lobby"
+        android:layout_width="69dp"
+        android:layout_height="26dp"
+        android:layout_marginTop="6dp"
+        android:paddingHorizontal="6dp"
+        android:paddingVertical="4dp"
+        android:text="@string/change"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/current_player_equipment_lobby"
+        app:layout_constraintStart_toStartOf="@+id/current_player_equipment_lobby"
+        app:layout_constraintTop_toBottomOf="@+id/current_player_equipment_lobby"
         tools:visibility="visible" />
 
     <androidx.appcompat.widget.AppCompatButton
