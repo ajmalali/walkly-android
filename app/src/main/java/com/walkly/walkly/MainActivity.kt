@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.iid.FirebaseInstanceId
 import com.walkly.walkly.auth.LoginActivity
 import com.walkly.walkly.models.Feedback
 import com.walkly.walkly.repositories.ConsumablesRepository
@@ -46,8 +47,6 @@ class MainActivity : AppCompatActivity() {
     // nav bar colors
     private val SOLID_WHITE = Color.parseColor("#FFFFFF")
     private val WHITE = Color.parseColor("#8AFFFFFF")
-
-    private val cal = Calendar.getInstance()
 
     private val db = FirebaseFirestore.getInstance()
     private val currentPlayer = PlayerRepository.getPlayer()
@@ -178,9 +177,15 @@ class MainActivity : AppCompatActivity() {
         btn_map.setTextColor(SOLID_WHITE)
         btn_map.compoundDrawableTintList = ColorStateList.valueOf(SOLID_WHITE)
 
-        cal.add(Calendar.MINUTE, -1000)
         updateTopBar()
         stamina.value = currentPlayer.stamina
+
+        when {
+            intent.extras?.getString("target-fragment") == "friend-list" -> {
+                navController.navigate(R.id.friendsFragment)
+            }
+        }
+
     }
 
     private fun updateTopBar() {

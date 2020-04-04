@@ -7,11 +7,13 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Friend
+import com.walkly.walkly.repositories.FriendsRepository
 import kotlinx.android.synthetic.main.list_friend.*
 import kotlinx.android.synthetic.main.list_friend.view.*
 import kotlinx.android.synthetic.main.list_friend_pending.view.*
@@ -74,12 +76,32 @@ class FriendViewHolder(view: View, val navController: NavController): RecyclerVi
 
 }
 
-class PendingFriendViewHolder(view: View) : RecyclerView.ViewHolder(view), BindibleViewHolder{
+class PendingFriendViewHolder(val view: View) : RecyclerView.ViewHolder(view), BindibleViewHolder{
     private val name: TextView = view.tv_username_0
     private val level: TextView = view.tv_level_0
     private val avatar: ImageView = view.img_avatar_0
+    private val accept: Button = view.btn_accept
+    private val reject: Button = view.btn_reject
 
     override fun bind(friend: Friend){
+        accept.setOnClickListener {
+            FriendsRepository.acceptFriend(friend.id){
+                if (it) {
+                    // TODO: change the view holder to FriendViewHolder
+                    Toast.makeText(view.context, "You are now friend with ${friend.name}", Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+        }
+        reject.setOnClickListener {
+            FriendsRepository.rejectFriend(friend.id){
+                if (it) {
+                    // TODO: remove friend from adapter list
+                    Toast.makeText(view.context, "Do not be a sociopath", Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+        }
         name.text = friend.name
         level.text = friend.level.toString()
         try {
@@ -92,12 +114,22 @@ class PendingFriendViewHolder(view: View) : RecyclerView.ViewHolder(view), Bindi
     }
 }
 
-class UserViewHolder(view: View) : RecyclerView.ViewHolder(view), BindibleViewHolder{
+class UserViewHolder(val view: View) : RecyclerView.ViewHolder(view), BindibleViewHolder{
     private val name: TextView = view.tv_username_2
     private val level: TextView = view.tv_level_2
     private val avatar: ImageView = view.img_avatar_2
+    private val addFriend: Button = view.btn_add
 
     override fun bind(friend: Friend){
+        addFriend.setOnClickListener {
+            FriendsRepository.addFriend(friend.id){
+                if (it) {
+                    // TODO: change the view holder to FriendViewHolder
+                    Toast.makeText(view.context, "Friend was added successfully\nwait for their acceptance", Toast.LENGTH_LONG)
+                        .show()
+                }
+            }
+        }
         name.text = friend.name
         level.text = friend.level.toString()
         try {
