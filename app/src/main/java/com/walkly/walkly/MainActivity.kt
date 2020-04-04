@@ -48,8 +48,6 @@ class MainActivity : AppCompatActivity() {
     private val SOLID_WHITE = Color.parseColor("#FFFFFF")
     private val WHITE = Color.parseColor("#8AFFFFFF")
 
-    private val cal = Calendar.getInstance()
-
     private val db = FirebaseFirestore.getInstance()
     private val currentPlayer = PlayerRepository.getPlayer()
     private val stamina = MutableLiveData<Long>()
@@ -184,8 +182,13 @@ class MainActivity : AppCompatActivity() {
         btn_map.setTextColor(SOLID_WHITE)
         btn_map.compoundDrawableTintList = ColorStateList.valueOf(SOLID_WHITE)
 
-        cal.add(Calendar.MINUTE, -1000)
         updateTopBar()
+
+        when {
+            intent.extras?.getString("target-fragment") == "friend-list" -> {
+                navController.navigate(R.id.friendsFragment)
+            }
+        }
     }
 
     private fun updateTopBar() {
