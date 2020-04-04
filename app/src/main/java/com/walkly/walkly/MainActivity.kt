@@ -180,13 +180,12 @@ class MainActivity : AppCompatActivity() {
 
         cal.add(Calendar.MINUTE, -1000)
         updateTopBar()
+        stamina.value = currentPlayer.stamina
     }
 
     private fun updateTopBar() {
         stamina.observe(this, Observer {
             val stamina = it
-            join_button.isClickable = true
-            join_button.background.alpha = 255
 
             stamina.let {
                 if (stamina <= 100) {
@@ -196,9 +195,11 @@ class MainActivity : AppCompatActivity() {
                     view_energy_ball_1.visibility = View.INVISIBLE
 
                     // player cannot join a battle
-                    join_button.isClickable = false
+                    join_button.isEnabled = false
                     join_button.background.alpha = 100
                 } else {
+                    join_button.isEnabled = true
+                    join_button.background.alpha = 255
                     if (stamina >= 300) {
                         view_energy_ball_3.visibility = View.VISIBLE
                     }
