@@ -14,5 +14,5 @@ data class OnlineBattle(
     var combinedPlayersHealth: Int? = 100,
     var players: MutableList<BattlePlayer> = mutableListOf(),
     var id: String? = "",
-    var type: String? = "public"
+    var type: String? = "private"
 ) : Parcelable

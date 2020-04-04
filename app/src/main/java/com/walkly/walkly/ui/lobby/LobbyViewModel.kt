@@ -71,6 +71,11 @@ class LobbyViewModel : ViewModel() {
         }
     }
 
+   suspend fun changeBattlePublicity(status: String) {
+      db.collection("online_battles").document(battleID)
+            .update("type", status).await()
+    }
+
     suspend fun changeEquipment(equipment: Equipment) {
         val players = _playerList.value!!
         for (player in players) {

@@ -13,9 +13,9 @@ import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.google.firebase.firestore.FirebaseFirestoreException
 import com.walkly.walkly.R
 import com.walkly.walkly.models.BattlePlayer
 import com.walkly.walkly.models.Enemy
@@ -111,18 +111,37 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
         btn_change_equipment_lobby.setOnClickListener {
             wearEquipmentDialog.show()
         }
+
+        btn_invite_friends_lobby.setOnClickListener {
+
+        }
+
+        publicize_switch.setOnCheckedChangeListener { _, isChecked ->
+            CoroutineScope(IO).launch {
+                try {
+                    if (isChecked) {
+                        viewModel.changeBattlePublicity("public")
+                    } else {
+                        viewModel.changeBattlePublicity("private")
+                    }
+                } catch (e: FirebaseFirestoreException) {
+                    Log.d(TAG, "Error occurred: ${e.message}")
+                }
+            }
+        }
+
     }
 
     private fun displayBattleControls() {
         start_button.visibility = View.VISIBLE
-        publicize_button.visibility = View.VISIBLE
+        btn_invite_friends_lobby.visibility = View.VISIBLE
         loading_bar.visibility = View.GONE
         tv_waiting_lobby.visibility = View.GONE
     }
 
     private fun displayWaiting() {
         start_button.visibility = View.GONE
-        publicize_button.visibility = View.GONE
+        btn_invite_friends_lobby.visibility = View.GONE
         loading_bar.visibility = View.VISIBLE
         tv_waiting_lobby.visibility = View.VISIBLE
     }
