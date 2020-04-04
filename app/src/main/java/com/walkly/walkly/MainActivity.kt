@@ -63,11 +63,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        FirebaseInstanceId.getInstance().instanceId
-            .addOnSuccessListener {
-                Log.i("Device Token", it.token)
-            }
-
         menu.setOnClickListener {
             drawer_layout.open()
         }

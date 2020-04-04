@@ -20,6 +20,15 @@ class AuthViewModel : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
+    private lateinit var deviceToken: String
+
+    init {
+        FirebaseInstanceId.getInstance().instanceId
+            .addOnSuccessListener {
+                deviceToken = it.token
+                Log.i("device token", it.token)
+            }
+    }
 
     fun getCurrentUser(): FirebaseUser? {
         return auth.currentUser
@@ -32,14 +41,16 @@ class AuthViewModel : ViewModel() {
         user = result.user
         Log.d(TAG, "signInWithEmail:success")
 
-        var deviceToken: String = ""
-        FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener {
-            deviceToken = it.token
-        }
+        // TODO: this should not be in production code
+        // it was used just to allow notification for old accounts
         val ref = db.collection("users").document(user?.uid!!)
         ref.set(
             Player(
-                deviceToken = deviceToken
+                deviceToken = deviceToken,
+                name = user.displayName,
+                email = user.email,
+                currentEquipment = Equipment.getDefaultEquipment(),
+                photoURL = user.photoUrl.toString()
             ), SetOptions.merge()
         ).await()
 
@@ -82,6 +93,7 @@ class AuthViewModel : ViewModel() {
         val defaultEquipment = Equipment.getDefaultEquipment()
         ref.set(
             Player(
+                deviceToken = deviceToken,
                 name = user.displayName,
                 email = user.email,
                 currentEquipment = Equipment.getDefaultEquipment(),
