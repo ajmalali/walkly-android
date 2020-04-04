@@ -83,7 +83,7 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
         adapter =
             EquipmentAdapter(mutableListOf(), this)
         val rv = dialogView.findViewById(R.id.equipment_recycler_view) as RecyclerView
-        rv.layoutManager = GridLayoutManager(this, 2, GridLayoutManager.HORIZONTAL, false)
+        rv.layoutManager = GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false)
         rv.adapter = adapter
 
         dialogView.progressBar.visibility = View.VISIBLE
@@ -92,10 +92,10 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
             adapter.equipmentList = list
             if (list.size < 5) {
                 rv.layoutManager =
-                    GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
+                    GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false)
             } else {
                 rv.layoutManager =
-                    GridLayoutManager(this, 2, GridLayoutManager.HORIZONTAL, false)
+                    GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false)
             }
             adapter.notifyDataSetChanged()
         })
