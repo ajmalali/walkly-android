@@ -178,19 +178,19 @@ class MainActivity : AppCompatActivity() {
         btn_map.compoundDrawableTintList = ColorStateList.valueOf(SOLID_WHITE)
 
         updateTopBar()
+        stamina.value = currentPlayer.stamina
 
         when {
             intent.extras?.getString("target-fragment") == "friend-list" -> {
                 navController.navigate(R.id.friendsFragment)
             }
         }
+
     }
 
     private fun updateTopBar() {
         stamina.observe(this, Observer {
             val stamina = it
-            join_button.isClickable = true
-            join_button.background.alpha = 255
 
             stamina.let {
                 if (stamina <= 100) {
@@ -200,9 +200,11 @@ class MainActivity : AppCompatActivity() {
                     view_energy_ball_1.visibility = View.INVISIBLE
 
                     // player cannot join a battle
-                    join_button.isClickable = false
+                    join_button.isEnabled = false
                     join_button.background.alpha = 100
                 } else {
+                    join_button.isEnabled = true
+                    join_button.background.alpha = 255
                     if (stamina >= 300) {
                         view_energy_ball_3.visibility = View.VISIBLE
                     }
