@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.storage.FirebaseStorage
 import com.walkly.walkly.models.Equipment
 import com.walkly.walkly.models.Player
@@ -30,6 +31,17 @@ class AuthViewModel : ViewModel() {
         val result = auth.signInWithEmailAndPassword(email, password).await()
         user = result.user
         Log.d(TAG, "signInWithEmail:success")
+
+        var deviceToken: String = ""
+        FirebaseInstanceId.getInstance().instanceId.addOnSuccessListener {
+            deviceToken = it.token
+        }
+        val ref = db.collection("users").document(user?.uid!!)
+        ref.set(
+            Player(
+                deviceToken = deviceToken
+            ), SetOptions.merge()
+        ).await()
 
         return user
         // [END sign_in_with_email]

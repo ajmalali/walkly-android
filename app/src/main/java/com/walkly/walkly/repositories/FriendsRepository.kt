@@ -20,7 +20,7 @@ object FriendsRepository {
             friendRquests.clear()
             try {
                 friends.addAll(snapshot?.data?.get("friends") as List<String>)
-                friendRquests.addAll(snapshot?.data?.get("friend-requests") as List<String>)
+                friendRquests.addAll(snapshot?.data?.get("friendRequests") as List<String>)
             } catch (tce: TypeCastException){
                 return@addSnapshotListener
             }
@@ -73,7 +73,7 @@ object FriendsRepository {
             db.collection("users")
                 .document(id)
                 .update(
-                    "friend-request", FieldValue.arrayUnion(uid)
+                    "friendRequests", FieldValue.arrayUnion(uid)
                 )
                 .addOnSuccessListener {
                     callback(true)
@@ -84,7 +84,7 @@ object FriendsRepository {
     fun acceptFriend(id: String, callback: (Boolean) -> Unit){
         userDoc.update(
             "friends", FieldValue.arrayUnion(id),
-            "friend-requests", FieldValue.arrayRemove(id)
+            "friendRequests", FieldValue.arrayRemove(id)
         ).addOnSuccessListener {
             callback(true)
         }
@@ -92,7 +92,7 @@ object FriendsRepository {
 
     fun rejectFriend(id: String, callback: (Boolean) -> Unit){
         userDoc.update(
-            "friend-requests", FieldValue.arrayRemove(id)
+            "friendRequests", FieldValue.arrayRemove(id)
         ).addOnSuccessListener {
             db.collection("users")
                 .document(id)

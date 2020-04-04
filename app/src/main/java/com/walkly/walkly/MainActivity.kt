@@ -22,6 +22,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.iid.FirebaseInstanceId
 import com.walkly.walkly.auth.LoginActivity
 import com.walkly.walkly.models.Feedback
 import com.walkly.walkly.repositories.ConsumablesRepository
@@ -63,6 +64,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        FirebaseInstanceId.getInstance().instanceId
+            .addOnSuccessListener {
+                Log.i("Device Token", it.token)
+            }
 
         menu.setOnClickListener {
             drawer_layout.open()
