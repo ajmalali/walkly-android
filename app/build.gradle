@@ -92,6 +92,9 @@ dependencies {
     // Firebase Storage
     implementation 'com.google.firebase:firebase-storage:19.1.1'
 
+    // Firebase Cloud Messaging
+    implementation 'com.google.firebase:firebase-messaging:20.1.4'
+
     // Recycler view
     implementation 'androidx.recyclerview:recyclerview:1.1.0'
 

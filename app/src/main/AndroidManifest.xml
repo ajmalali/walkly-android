@@ -20,6 +20,14 @@
             android:enabled="true"
             android:exported="false" />
 
+        <service android:name=".services.FCMReceiver"
+            android:enabled="true"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT"/>
+            </intent-filter>
+        </service>
+
         <activity android:name=".ui.lobby.LobbyActivity" />
         <activity android:name=".onlineBattle.OnlineBattleActivity" />
         <activity android:name=".MainActivity" />
