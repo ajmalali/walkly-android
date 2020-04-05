@@ -152,6 +152,24 @@ class BattlesViewModel : ViewModel() {
         battle.id = battlesRef.id
         battlesRef.set(battle).await()
 
+        val numShards = 4
+
+        // Create counter collection and add a document to it
+        battlesRef.collection("enemy_damage_counter")
+            .document("enemy_damage_doc")
+            .set(EnemyDamageCounter(numShards)).await()
+
+        val counterRef = battlesRef.collection("enemy_damage_counter")
+            .document("enemy_damage_doc")
+
+        db.runBatch { batch ->
+            for (i in 0 until numShards) {
+                val shardDocument = counterRef.collection("shards")
+                    .document(i.toString())
+                batch.set(shardDocument, Shard(0))
+            }
+        }.await()
+
         return battle
     }
 

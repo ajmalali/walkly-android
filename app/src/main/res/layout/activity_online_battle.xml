@@ -14,8 +14,7 @@
         android:background="@drawable/gradient_left_to_right"
         app:layout_constraintHeight_percent="0.25"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!--  players  -->
 
@@ -23,28 +22,28 @@
         android:id="@+id/img_player1_avatar"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginLeft="16dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="28dp"
         app:layout_constraintEnd_toStartOf="@id/img_player2_avatar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/rect_player"
-        app:srcCompat="@drawable/bitmoji1"
+        app:srcCompat="@drawable/invfriend"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
         android:id="@+id/img_player1_equipment"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        app:layout_constraintStart_toStartOf="@id/img_player1_avatar"
         app:layout_constraintBottom_toBottomOf="@id/img_player1_avatar"
-        tools:srcCompat="@tools:sample/avatars"
-        />
+        app:layout_constraintStart_toStartOf="@id/img_player1_avatar"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/tv_player1_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Player 1"
+        android:textAlignment="center"
         android:textColor="#fff"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@id/img_player1_avatar"
@@ -55,27 +54,26 @@
         android:id="@+id/img_player2_avatar"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginTop="28dp"
         app:layout_constraintEnd_toStartOf="@id/img_player3_avatar"
         app:layout_constraintStart_toEndOf="@id/img_player1_avatar"
-        app:layout_constraintTop_toTopOf="@id/rect_player"
-        app:srcCompat="@drawable/bitmoji1"
+        app:layout_constraintTop_toTopOf="@+id/img_player1_avatar"
+        app:srcCompat="@drawable/invfriend"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
         android:id="@+id/img_player2_equipment"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        app:layout_constraintStart_toStartOf="@id/img_player2_avatar"
         app:layout_constraintBottom_toBottomOf="@id/img_player2_avatar"
-        tools:srcCompat="@tools:sample/avatars"
-        />
+        app:layout_constraintStart_toStartOf="@id/img_player2_avatar"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/tv_player2_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Player 2"
+        android:text="@string/waiting"
+        android:textAlignment="center"
         android:textColor="#fff"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@id/img_player2_avatar"
@@ -86,26 +84,25 @@
         android:id="@+id/img_player3_avatar"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        app:layout_constraintStart_toEndOf="@id/img_player2_avatar"
         app:layout_constraintEnd_toStartOf="@id/img_player4_avatar"
-        app:layout_constraintTop_toTopOf="@id/rect_player"
-        android:layout_marginTop="28dp"
-        tools:srcCompat="@tools:sample/avatars"
-        />
+        app:layout_constraintStart_toEndOf="@id/img_player2_avatar"
+        app:layout_constraintTop_toTopOf="@+id/img_player2_avatar"
+        app:srcCompat="@drawable/invfriend"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
         android:id="@+id/img_player3_equipment"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        app:layout_constraintStart_toStartOf="@id/img_player3_avatar"
         app:layout_constraintBottom_toBottomOf="@id/img_player3_avatar"
-        tools:srcCompat="@tools:sample/avatars"
-        />
+        app:layout_constraintStart_toStartOf="@id/img_player3_avatar"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/tv_player3_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAlignment="center"
         android:textColor="#fff"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@id/img_player3_avatar"
@@ -116,27 +113,26 @@
         android:id="@+id/img_player4_avatar"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        app:layout_constraintStart_toEndOf="@id/img_player3_avatar"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/rect_player"
-        android:layout_marginTop="28dp"
-        android:layout_marginRight="16dp"
-        tools:srcCompat="@tools:sample/avatars"
-        />
+        app:layout_constraintStart_toEndOf="@id/img_player3_avatar"
+        app:layout_constraintTop_toTopOf="@+id/img_player3_avatar"
+        app:srcCompat="@drawable/invfriend"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
         android:id="@+id/img_player4_equipment"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        app:layout_constraintStart_toStartOf="@id/img_player4_avatar"
         app:layout_constraintBottom_toBottomOf="@id/img_player4_avatar"
-        tools:srcCompat="@tools:sample/avatars"
-        />
+        app:layout_constraintStart_toStartOf="@id/img_player4_avatar"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/tv_player4_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textAlignment="center"
         android:textColor="#fff"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="@id/img_player4_avatar"
@@ -152,15 +148,14 @@
         android:background="@drawable/gradient_purlpe_left_to_right"
         app:layout_constraintHeight_percent="0.25"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rect_player"
-        />
+        app:layout_constraintTop_toBottomOf="@id/rect_player" />
 
     <ImageView
         android:id="@+id/img_enemy_avatar"
         android:layout_width="150dp"
         android:layout_height="150dp"
         android:layout_marginTop="16dp"
-        android:layout_marginRight="16dp"
+        android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="@id/rect_enemy"
         app:srcCompat="@drawable/boss2"
@@ -169,14 +164,13 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rect_player"
-        app:layout_constraintBottom_toTopOf="@id/rect_enemy"
-        android:textSize="70sp"
+        android:text="@string/vs"
         android:textColor="#fff"
-        android:text="VS"
-        />
+        android:textSize="70sp"
+        app:layout_constraintBottom_toTopOf="@id/rect_enemy"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/rect_player" />
 
     <!--  battle info  -->
 
@@ -184,77 +178,75 @@
         android:id="@+id/tv_enemy_hp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/bar_enemy_hp"
-        app:layout_constraintTop_toBottomOf="@id/rect_enemy"
         android:layout_marginTop="60dp"
+        android:text="@string/enemy_hp"
         android:textColor="@color/buttonPrimary"
         android:textStyle="bold"
-        android:text="Enemy HP"
-        />
+        app:layout_constraintStart_toStartOf="@id/bar_enemy_hp"
+        app:layout_constraintTop_toBottomOf="@id/rect_enemy" />
 
     <ProgressBar
         android:id="@+id/bar_enemy_hp"
-        android:layout_width="272dp"
-        android:layout_height="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_enemy_hp"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:progressDrawable="@drawable/progress_bar_gradient_purple"
-        tools:progress="75"
+        android:layout_width="0dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:max="100"
-        />
+        android:progressDrawable="@drawable/progress_bar_gradient_purple"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_enemy_hp"
+        tools:progress="75" />
 
     <TextView
         android:id="@+id/tv_player_hp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/bar_enemy_hp"
-        app:layout_constraintTop_toBottomOf="@id/bar_enemy_hp"
         android:layout_marginTop="12dp"
+        android:text="@string/players_hp"
         android:textColor="@color/buttonPrimary"
         android:textStyle="bold"
-        android:text="Players HP"
-        />
+        app:layout_constraintStart_toStartOf="@id/bar_enemy_hp"
+        app:layout_constraintTop_toBottomOf="@id/bar_enemy_hp" />
 
     <ProgressBar
         android:id="@+id/bar_player_hp"
-        android:layout_width="272dp"
-        android:layout_height="16dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_player_hp"
         style="@style/Widget.AppCompat.ProgressBar.Horizontal"
-        android:progressDrawable="@drawable/progress_bar_gradient_orange"
-        tools:progress="50"
+        android:layout_width="0dp"
+        android:layout_height="16dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="32dp"
         android:max="100"
-        />
+        android:progressDrawable="@drawable/progress_bar_gradient_orange"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_player_hp"
+        tools:progress="50" />
 
     <TextView
         android:id="@+id/tv_steps_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/bar_player_hp"
         android:layout_marginTop="32dp"
-        android:textStyle="bold"
+        android:text="@string/number_of_steps"
         android:textColor="#FF6577"
-        android:text="Number of Steps"
-        />
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/bar_player_hp" />
 
     <TextView
         android:id="@+id/tv_no_of_steps"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_steps_label"
         android:layout_marginTop="8dp"
-        android:textStyle="bold"
-        android:textColor="#FF9067"
         android:text="500 / 1000"
-        />
+        android:textColor="#FF9067"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_steps_label" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/use_item"
@@ -263,8 +255,8 @@
         android:layout_marginBottom="64dp"
         android:paddingHorizontal="32dp"
         android:paddingVertical="8dp"
-        android:text="Use Item"
-        android:textSize="14sp"
+        android:text="@string/use_item"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

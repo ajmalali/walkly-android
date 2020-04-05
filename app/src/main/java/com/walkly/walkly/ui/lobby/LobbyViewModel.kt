@@ -22,9 +22,15 @@ class LobbyViewModel : ViewModel() {
     val playerList: LiveData<List<BattlePlayer>>
         get() = _playerList
 
+    private val _battleState = MutableLiveData<String>()
+    val battleState: LiveData<String>
+        get() = _battleState
+
+
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     val userID = FirebaseAuth.getInstance().currentUser?.uid
     private var battleID: String = ""
+    var battle: OnlineBattle? = null
 
     private lateinit var playersRegistration: ListenerRegistration
 
@@ -40,9 +46,10 @@ class LobbyViewModel : ViewModel() {
                 }
 
                 if (snapshot != null && snapshot.exists()) {
-                    val battle = snapshot.toObject<OnlineBattle>()!!
-                    tempPlayerList = battle.players
+                    battle = snapshot.toObject<OnlineBattle>()!!
+                    tempPlayerList = battle?.players!!
                     _playerList.value = tempPlayerList
+                    _battleState.value = battle?.battleState
                 } else {
                     Log.d(TAG, "Current data: null")
                 }
@@ -71,8 +78,13 @@ class LobbyViewModel : ViewModel() {
         }
     }
 
-   suspend fun changeBattlePublicity(status: String) {
-      db.collection("online_battles").document(battleID)
+    suspend fun changeBattleState(state: String) {
+        db.collection("online_battles").document(battleID)
+            .update("battleState", state).await()
+    }
+
+    suspend fun changeBattlePublicity(status: String) {
+        db.collection("online_battles").document(battleID)
             .update("type", status).await()
     }
 

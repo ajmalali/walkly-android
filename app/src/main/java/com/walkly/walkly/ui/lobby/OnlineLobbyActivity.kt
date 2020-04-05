@@ -53,6 +53,7 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
             setupEnemy(battle.enemy!!)
             updatePlayers(battle.players)
             viewModel.setupPlayersListener(battle.id!!)
+            playerCount = battle.playerCount!!
             if (battle.playerCount == 1) {
                 displayBattleControls()
             } else {
@@ -60,13 +61,16 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
             }
         }
 
-        start_button.isClickable = false
+        start_button.isEnabled = false
+        start_button.background.alpha = 100
 
         viewModel.playerList.observe(this, Observer { list ->
             list?.let {
+                Log.d(TAG, "List: $list")
                 playerCount = list.size
                 if (playerCount > 1) {
-                    start_button.isClickable = true
+                    start_button.isEnabled = true
+                    start_button.background.alpha = 255
                 }
                 updatePlayers(list as MutableList<BattlePlayer>)
             }
@@ -100,12 +104,24 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
             adapter.notifyDataSetChanged()
         })
 
+        viewModel.battleState.observe(this, Observer {
+            if (it == "In-game") {
+                val intent = Intent(this, OnlineBattleActivity::class.java)
+                intent.putExtra("battle", viewModel.battle)
+                startActivity(intent)
+                this.finish()
+            }
+        })
+
         start_button.setOnClickListener {
-            val intent = Intent(this, OnlineBattleActivity::class.java)
-            val bundle = Bundle()
-            intent.putExtras(bundle)
-            startActivity(intent)
-            this.finish()
+            CoroutineScope(IO).launch {
+                try {
+                    viewModel.changeBattleState("In-game")
+                    // TODO: Display "Game starting in 3.."
+                } catch (e: FirebaseFirestoreException) {
+                    Log.d(TAG, "Error occurred: ${e.message}")
+                }
+            }
         }
 
         btn_change_equipment_lobby.setOnClickListener {
@@ -135,6 +151,7 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
     private fun displayBattleControls() {
         start_button.visibility = View.VISIBLE
         btn_invite_friends_lobby.visibility = View.VISIBLE
+        publicize_switch.visibility = View.VISIBLE
         loading_bar.visibility = View.GONE
         tv_waiting_lobby.visibility = View.GONE
     }
@@ -142,6 +159,7 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
     private fun displayWaiting() {
         start_button.visibility = View.GONE
         btn_invite_friends_lobby.visibility = View.GONE
+        publicize_switch.visibility = View.GONE
         loading_bar.visibility = View.VISIBLE
         tv_waiting_lobby.visibility = View.VISIBLE
     }

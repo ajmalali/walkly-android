@@ -88,6 +88,11 @@
     <string name="joining_battle">Joining battle…</string>
     <string name="change">Change</string>
     <string name="invite_friends">Invite friends</string>
+    <string name="vs">VS</string>
+    <string name="enemy_hp">Enemy HP</string>
+    <string name="players_hp">Players HP</string>
+    <string name="number_of_steps">Number of Steps</string>
+    <string name="use_item">Use Item</string>
 
 
 </resources>

@@ -10,8 +10,8 @@ data class OnlineBattle(
     var playerCount: Int? = 1,
     var hostName: String? = "",
     var enemy: Enemy? = null,
-    var enemyHealth: Long? = 100,
-    var combinedPlayersHealth: Int? = 100,
+    var enemyHealth: Long? = enemy?.health,
+    var combinedPlayersHealth: Int? = 100, // TODO: How to calculate health
     var players: MutableList<BattlePlayer> = mutableListOf(),
     var id: String? = "",
     var type: String? = "private"
