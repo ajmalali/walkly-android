@@ -86,9 +86,11 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
         // Observe online battles (real time)
         battlesViewModel.onlineBattleList.observe(viewLifecycleOwner, Observer { list ->
             list?.let {
+                Log.d(TAG, "In online battles: $list")
                 if (joinBtn.isChecked) {
                     if (list.isEmpty()) {
                         // Display no battles
+                        battlesRecyclerView.adapter = null
                     } else {
                         battleAdapter = BattleAdapter(list, this)
                         battlesRecyclerView.adapter = battleAdapter

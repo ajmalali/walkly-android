@@ -8,10 +8,9 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import com.walkly.walkly.R
-import com.walkly.walkly.models.PvP
+import com.walkly.walkly.models.PVPBattle
 import com.walkly.walkly.pvp.PvPActivity
 import com.walkly.walkly.repositories.PlayerRepository
-import com.walkly.walkly.ui.battles.BattlesFragment
 
 private const val TAG = "PvPLobbyActivity"
 
@@ -21,13 +20,13 @@ class PvPLobbyActivity : AppCompatActivity() {
     private val userID = FirebaseAuth.getInstance().currentUser?.uid
     val currentPlayer = PlayerRepository.getPlayer()
 
-    lateinit var battle: PvP
+    lateinit var battle: PVPBattle
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activty_pvp_lobby)
 
-    battle = intent.getParcelableExtra("battle") as PvP
+    battle = intent.getParcelableExtra("battle") as PVPBattle
 
         initListeners()
     }
@@ -42,7 +41,7 @@ class PvPLobbyActivity : AppCompatActivity() {
 
                 if (snapshot != null && snapshot.exists()) {
                     if (!snapshot.getString("opponentName").isNullOrEmpty()) {
-                        battle = snapshot.toObject<PvP>()!!
+                        battle = snapshot.toObject<PVPBattle>()!!
                         val intent = Intent(this, PvPActivity::class.java)
                         intent.putExtra("battle", battle)
                         startActivity(intent)

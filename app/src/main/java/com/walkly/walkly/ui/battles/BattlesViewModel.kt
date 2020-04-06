@@ -5,7 +5,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.SetOptions
@@ -21,8 +20,8 @@ private const val TAG = "BattlesViewModel"
 
 class BattlesViewModel : ViewModel() {
 
-    private var _pvpBattle = MutableLiveData<PvP>()
-    val pvpBattle: LiveData<PvP>
+    private var _pvpBattle = MutableLiveData<PVPBattle>()
+    val pvpBattle: LiveData<PVPBattle>
         get() = _pvpBattle
 
     private val _battleList = MutableLiveData<List<OnlineBattle>>()
@@ -192,25 +191,26 @@ class BattlesViewModel : ViewModel() {
         return battle
     }
 
-    fun sendPvPInvite(): PvP {
-        val document = db.collection("pvp_battles").document()
-        val battle = PvP(
-            id = document.id,
-            hostName = currentPlayer.name,
-            hostEquipmentImage = currentPlayer.currentEquipment?.image,
-            hostImage = currentPlayer.photoURL
-        )
-        document.set(battle)
-
-        db.collection("invites").add(
-            hashMapOf(
-                "type" to "pvp",
-                "id" to document.id,
-                "host" to currentPlayer.name
-            )
-        )
-
-        return battle
+    fun sendPvPInvite(): PVPBattle {
+//        val document = db.collection("pvp_battles").document()
+//        val battle = PVPBattle(
+//            id = document.id,
+//            hostName = currentPlayer.name,
+//            hostEquipmentImage = currentPlayer.currentEquipment?.image,
+//            hostImage = currentPlayer.photoURL
+//        )
+//        document.set(battle)
+//
+//        db.collection("invites").add(
+//            hashMapOf(
+//                "type" to "pvp",
+//                "id" to document.id,
+//                "host" to currentPlayer.name
+//            )
+//        )
+//
+        return PVPBattle()
+//        return battle
     }
 
     fun joinPvPListener(id: String) {
@@ -226,7 +226,7 @@ class BattlesViewModel : ViewModel() {
             ).await()
 
             db.collection("pvp_battles").document(id).get().addOnSuccessListener {
-                _pvpBattle.value = it.toObject<PvP>()
+                _pvpBattle.value = it.toObject<PVPBattle>()
             }
         }
 
