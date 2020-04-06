@@ -88,26 +88,18 @@ class OnlineBattleViewModel() : ViewModel() {
                     tempPlayerList = battle?.players!!
                     _playerList.value = tempPlayerList
 
-                    // Update player position
+                    // Calculate player position and combined base health
+                    var health: Long = 0
                     for (i in tempPlayerList.indices) {
+                        health += tempPlayerList[i].level * HP_MULTIPLAYER
                         if (tempPlayerList[i].id == currentPlayer.id) {
                             playerPosition = i
-                            break
                         }
                     }
 
-                    currentPlayersHP = battle?.combinedPlayersHealth!!.toLong()
-
                     // Update players health
-                    val newBaseHP = (battle?.playerCount?.times(HP_MULTIPLAYER))!!.toLong()
-                    if (newBaseHP > basePlayersHP) {
-                        // New player joined
-                        currentPlayersHP += HP_MULTIPLAYER
-                    } else if (newBaseHP < basePlayersHP) {
-                        // Player left
-//                        currentPlayersHP -= HP_MULTIPLAYER
-                    }
-                    basePlayersHP = newBaseHP
+                    currentPlayersHP = battle?.combinedPlayersHealth!!.toLong()
+                    basePlayersHP = health
                     playersHpPercentage = ((currentPlayersHP * 100.0) / basePlayersHP).toInt()
                     _combinedHP.value = playersHpPercentage
                 } else {

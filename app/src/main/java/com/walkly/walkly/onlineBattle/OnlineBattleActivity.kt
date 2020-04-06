@@ -46,6 +46,7 @@ class OnlineBattleActivity : AppCompatActivity() {
     private val job = Job()
     private val scope = CoroutineScope(Dispatchers.Main + job)
     private var playerCount: Int = 1
+    private var damageFlag = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,11 +70,12 @@ class OnlineBattleActivity : AppCompatActivity() {
             list?.let {
                 playerCount = list.size
                 updatePlayers(list as MutableList<BattlePlayer>)
+                startPlayerDamage(list)
             }
         })
 
         viewModel.combinedHP.observe(this, Observer {
-            Log.d("HERE", "$it")
+            Log.d(TAG, "Combined player health: $it")
             bar_player_hp.progress = it.toInt()
             if (it <= 0) {
                 loseDialog.show()
@@ -90,6 +92,7 @@ class OnlineBattleActivity : AppCompatActivity() {
         })
 
         walkedDistance.observe(this, Observer {
+            Log.d(TAG, "Steps: $it")
             it?.let {
                 scope.launch {
                     viewModel.damageEnemy(it.toLong())
@@ -99,7 +102,6 @@ class OnlineBattleActivity : AppCompatActivity() {
 
         viewModel.setupBattleListener()
         viewModel.setupEnemyHealthListener()
-        startPlayerDamage(battle?.players!!)
     }
 
     private fun setupEnemy(enemy: Enemy) {
@@ -169,8 +171,8 @@ class OnlineBattleActivity : AppCompatActivity() {
     // Only the player at position 0 can call damagePlayer.
     // This will work even if the host leaves the battle mid-way.
     private fun startPlayerDamage(players: MutableList<BattlePlayer>) {
-        Log.d(TAG, "List of players: $players")
-        if (players[0].id == viewModel.userID) {
+        if (players[0].id == viewModel.userID && damageFlag) {
+            damageFlag = false
             CoroutineScope(IO).launch {
                 Log.d(TAG, "Starting player damage")
                 viewModel.damagePlayer()

@@ -132,6 +132,10 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
             activity?.finish()
         })
 
+        battlesViewModel.getInvites()
+        battlesViewModel.getOnlineBattles()
+        battlesViewModel.getEnemies()
+
         val pvpHost = view.findViewById<ConstraintLayout>(R.id.pvp_host)
         pvpHost.setOnClickListener {
             val battle = battlesViewModel.sendPvPInvite()

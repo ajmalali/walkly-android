@@ -8,5 +8,6 @@ data class BattlePlayer(
     var id: String = "",
     var name: String = "",
     var avatarURL: String = "",
-    var equipmentURL: String = ""
+    var equipmentURL: String = "",
+    val level: Long = 1
 ) : Parcelable

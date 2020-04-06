@@ -48,16 +48,19 @@ class BattlesViewModel : ViewModel() {
         id = currentPlayer.id!!,
         name = currentPlayer.name!!,
         avatarURL = currentPlayer.photoURL!!,
-        equipmentURL = currentPlayer.currentEquipment?.image!!
+        equipmentURL = currentPlayer.currentEquipment?.image!!,
+        level = currentPlayer.level!!
     )
+
+    private val HP_MULTIPLAYER = 100
 
     private lateinit var invitesRegistration: ListenerRegistration
     private lateinit var battlesRegistration: ListenerRegistration
 
     init {
-        getOnlineBattles()
-        getEnemies()
-        getInvites()
+//        getOnlineBattles()
+//        getEnemies()
+//        getInvites()
     }
 
     fun getInvites() {
@@ -143,7 +146,8 @@ class BattlesViewModel : ViewModel() {
             enemy = enemy,
             hostName = currentPlayer.name,
             enemyHealth = enemy.health,
-            players = battlePlayers
+            players = battlePlayers,
+            combinedPlayersHealth = (currentPlayer.level?.times(HP_MULTIPLAYER))?.toInt()
         )
 
         currentPlayer.joinBattle()
@@ -178,6 +182,8 @@ class BattlesViewModel : ViewModel() {
         currentPlayer.joinBattle()
         battle.playerCount = battle.playerCount?.inc()
         battle.players.add(currentBattlePlayer)
+        battle.combinedPlayersHealth =
+            battle.combinedPlayersHealth?.plus((currentPlayer.level?.times(HP_MULTIPLAYER))?.toInt()!!)
 
         db.collection("online_battles")
             .document(battle.id!!)
