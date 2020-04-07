@@ -6,10 +6,10 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.walkly.walkly.R
-import com.walkly.walkly.models.Invite
+import com.walkly.walkly.models.BattleInvite
 
 class InvitesAdapter(
-    var invites: List<Invite>,
+    var invites: List<BattleInvite>,
     private val onInviteListener: OnInviteListener
 ) : RecyclerView.Adapter<InvitesAdapter.InviteHolder>() {
 
@@ -27,9 +27,9 @@ class InvitesAdapter(
         val invite = invites[position]
         holder.apply {
             // Default image
-            val text = "Invite by ${invite.host}"
+            val text = "Invite by ${invite.fromName}"
             hostName.text = text
-            battleID = invite.id
+            battleID = invite.battleID
         }
     }
 

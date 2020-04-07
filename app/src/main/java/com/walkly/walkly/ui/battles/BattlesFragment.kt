@@ -249,6 +249,6 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
     override fun onInviteClick(position: Int) {
         val invite = invitesAdapter.invites[position]
 //        this.background.setBackgroundColor(Color.parseColor("#340055"))
-        battlesViewModel.joinPvPListener(invite.id)
+        battlesViewModel.joinPvPListener(invite.battleID)
     }
 }

@@ -32,13 +32,13 @@ class BattlesViewModel : ViewModel() {
     val enemyList: LiveData<List<Enemy>>
         get() = _enemyList
 
-    private val _invitesList = MutableLiveData<List<Invite>>()
-    val invitesList: LiveData<List<Invite>>
+    private val _invitesList = MutableLiveData<List<BattleInvite>>()
+    val invitesList: LiveData<List<BattleInvite>>
         get() = _invitesList
 
     private var tempBattleList = mutableListOf<OnlineBattle>()
     private var tempEnemyList = mutableListOf<Enemy>()
-    private var tempInviteList = mutableListOf<Invite>()
+    private var tempInviteList = mutableListOf<BattleInvite>()
 
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val userID = FirebaseAuth.getInstance().currentUser?.uid
@@ -74,7 +74,7 @@ class BattlesViewModel : ViewModel() {
                     if (value != null) {
                         tempInviteList.clear()
                         for (document in value) {
-                            val invite = document.toObject<Invite>()
+                            val invite = document.toObject<BattleInvite>()
                             tempInviteList.add(invite)
                         }
                         Log.d(TAG, "Got em $tempInviteList")
