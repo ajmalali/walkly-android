@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string-array name="main">
+        <item>Greetings! welcome to Walkly, mankind\'s last line of defense against the powers of laziness!</item>
+        <item>What? you want to know where the calorie-tracking is? Goodness me!</item>
+        <item>I don\'t think you understand the gravity of the situation at hand. What you\'ve gotten yourself into is bigger than the effect your brunch had on your love handles</item>
+        <item>You are to become a SAVIOUR OF HUMANITY. Well, sort of, anyway</item>
+    </string-array>
+
+    <string-array name="profile">
+        <item>this is the first line</item>
+        <item>this is the second line i winder what happens when this gets long how will the text behave i wonder i wionder</item>
+        <item>third lien i guess</item>
+    </string-array>
+    
+</resources>
