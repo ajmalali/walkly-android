@@ -25,7 +25,9 @@ class TutorialUtil (val layout: ViewGroup, val activity: Activity) {
     private var count = 0
     private var flag_ = false
 
+
     init {
+
         layoutInf = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         tutorial_view = layoutInf.inflate(tutorial_layout, null, false)
         textboxlayout = tutorial_view.findViewById(R.id.tutorial_text_container) as ConstraintLayout
@@ -60,13 +62,22 @@ class TutorialUtil (val layout: ViewGroup, val activity: Activity) {
 
     private fun loadData(flag: Int): Boolean {
         val defaultValue = activity.resources.getBoolean(flag)
-        val saved_flag = sharedPref.getBoolean(activity.getString(flag), defaultValue)
+        val saved_flag = sharedPref.getBoolean(flag.toString(), defaultValue)
+
         return saved_flag
     }
 
     private fun saveData(flag: Int){
         with (sharedPref.edit()) {
-            putBoolean(activity.getString(R.bool.main_bool), true)
+            putBoolean(flag.toString(), true)
+            commit()
+        }
+    }
+//    for testing
+//    clears shared preferences
+    private fun resetTutorials(){
+        with (sharedPref.edit()) {
+            this.clear()
             commit()
         }
     }
