@@ -3,6 +3,7 @@ package com.walkly.walkly
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
@@ -64,7 +65,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var feedbackDialog: AlertDialog
     private val auth = FirebaseAuth.getInstance()
     private lateinit var tutorial: TutorialUtil
-    private var flag_profile = true
 
 
     @RequiresApi(Build.VERSION_CODES.M)
@@ -73,7 +73,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         tutorial = TutorialUtil(drawer_layout, this)
-        tutorial.startTutorial("main", false)
+        tutorial.startTutorial("main", R.bool.main_bool)
 
         menu.setOnClickListener {
             drawer_layout.open()
@@ -154,7 +154,7 @@ class MainActivity : AppCompatActivity() {
         // bottom nav
         btn_profile.setOnClickListener {
             navController.navigate(R.id.navigation_profile)
-            tutorial.startTutorial("profile", flag_profile)
+            tutorial.startTutorial("profile", R.bool.profile_bool)
             // set this button to solid white color
             btn_profile.setTextColor(SOLID_WHITE)
             btn_profile.compoundDrawableTintList = ColorStateList.valueOf(SOLID_WHITE)
