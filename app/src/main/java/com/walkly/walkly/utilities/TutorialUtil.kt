@@ -27,7 +27,6 @@ class TutorialUtil (val layout: ViewGroup, val activity: Activity) {
 
 
     init {
-
         layoutInf = activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
         tutorial_view = layoutInf.inflate(tutorial_layout, null, false)
         textboxlayout = tutorial_view.findViewById(R.id.tutorial_text_container) as ConstraintLayout
