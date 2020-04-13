@@ -44,7 +44,7 @@
 
     <ImageView
         android:id="@+id/opponent_equipment_pvp_lobby"
-        android:layout_width="wrap_content"
+        android:layout_width="65dp"
         android:layout_height="74dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -64,7 +64,7 @@
 
     <ImageView
         android:id="@+id/current_player_equipment_lobby"
-        android:layout_width="wrap_content"
+        android:layout_width="65dp"
         android:layout_height="74dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -120,7 +120,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rect_player_lobby"
         app:layout_constraintVertical_bias="0.5"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 
     <View
         android:id="@+id/rect_enemy"
@@ -156,10 +156,10 @@
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="24dp"
         android:indeterminateTint="#FF3B62"
         android:progressTint="#FFFFFF"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
@@ -176,7 +176,7 @@
         android:textAlignment="center"
         android:textColor="@android:color/black"
         android:textSize="18sp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loading_bar" />

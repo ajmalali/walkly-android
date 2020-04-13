@@ -119,6 +119,7 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
                 if (joinBtn.isChecked) {
                     if (list.isEmpty()) {
                         // Display no invites
+                        invitesRecyclerView.adapter = null
                     } else {
                         invitesAdapter = InvitesAdapter(list, this)
                         invitesRecyclerView.adapter = invitesAdapter

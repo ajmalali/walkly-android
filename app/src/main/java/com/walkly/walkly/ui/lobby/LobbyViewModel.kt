@@ -12,6 +12,7 @@ import com.google.firebase.firestore.ktx.toObject
 import com.walkly.walkly.models.BattlePlayer
 import com.walkly.walkly.models.Equipment
 import com.walkly.walkly.models.OnlineBattle
+import com.walkly.walkly.repositories.PlayerRepository
 import kotlinx.coroutines.tasks.await
 
 private const val TAG = "LobbyViewModel"
@@ -26,6 +27,8 @@ class LobbyViewModel : ViewModel() {
     val battleState: LiveData<String>
         get() = _battleState
 
+
+    val currentPlayer = PlayerRepository.getPlayer()
 
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     val userID = FirebaseAuth.getInstance().currentUser?.uid
@@ -93,6 +96,7 @@ class LobbyViewModel : ViewModel() {
         for (player in players) {
             if (player.id == userID) {
                 player.equipmentURL = equipment.image!!
+                currentPlayer.currentEquipment = equipment
             }
         }
 
