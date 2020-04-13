@@ -12,9 +12,6 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.toObject
 import com.walkly.walkly.models.*
 import com.walkly.walkly.repositories.PlayerRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 
 private const val TAG = "BattlesViewModel"
@@ -219,6 +216,28 @@ class BattlesViewModel : ViewModel() {
                 type = "pvp"
             )
         ).await()
+
+        // Initialize shard documents for both players
+        val numShards = 4
+        val hostDamageRef = db.collection("pvp_battles").document(battle.id)
+            .collection("host_damage_counter")
+            .document("host_damage_doc")
+
+        val opponentDamageRef = db.collection("pvp_battles").document(battle.id)
+            .collection("opponent_damage_counter")
+            .document("opponent_damage_doc")
+
+        db.runBatch { batch ->
+            for (i in 0 until numShards) {
+                val hostShardDoc = hostDamageRef.collection("shards")
+                    .document(i.toString())
+                val opponentShardDoc = opponentDamageRef.collection("shards")
+                    .document(i.toString())
+
+                batch.set(hostShardDoc, Shard(0))
+                batch.set(opponentShardDoc, Shard(0))
+            }
+        }.await()
 
         return battle
     }
