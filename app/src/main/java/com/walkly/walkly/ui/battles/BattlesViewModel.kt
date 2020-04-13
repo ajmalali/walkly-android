@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.SetOptions
@@ -55,12 +56,6 @@ class BattlesViewModel : ViewModel() {
 
     private lateinit var invitesRegistration: ListenerRegistration
     private lateinit var battlesRegistration: ListenerRegistration
-
-    init {
-//        getOnlineBattles()
-//        getEnemies()
-//        getInvites()
-    }
 
     fun getInvites() {
         if (_invitesList.value == null) {
@@ -158,12 +153,10 @@ class BattlesViewModel : ViewModel() {
         val numShards = 4
 
         // Create counter collection and add a document to it
-        battlesRef.collection("enemy_damage_counter")
-            .document("enemy_damage_doc")
-            .set(EnemyDamageCounter(numShards)).await()
-
         val counterRef = battlesRef.collection("enemy_damage_counter")
             .document("enemy_damage_doc")
+
+        counterRef.set(EnemyDamageCounter(numShards)).await()
 
         db.runBatch { batch ->
             for (i in 0 until numShards) {
@@ -188,50 +181,60 @@ class BattlesViewModel : ViewModel() {
             .document(battle.id!!)
             .set(battle, SetOptions.merge()).await()
 
+        val numShards = 4
+
+        val counterRef = db.collection("online_battles").document(battle.id!!)
+            .collection("enemy_damage_counter")
+            .document("enemy_damage_doc")
+
+        counterRef.update("numShards", FieldValue.increment(numShards.toLong())).await()
+
+        db.runBatch { batch ->
+            val startIndex = (battle.players.size - 1) * 4
+            for (i in startIndex until startIndex + numShards) {
+                val shardDocument = counterRef.collection("shards")
+                    .document(i.toString())
+                batch.set(shardDocument, Shard(0))
+            }
+        }.await()
+
         return battle
     }
 
-    fun sendPvPInvite(): PVPBattle {
-//        val document = db.collection("pvp_battles").document()
-//        val battle = PVPBattle(
-//            id = document.id,
-//            hostName = currentPlayer.name,
-//            hostEquipmentImage = currentPlayer.currentEquipment?.image,
-//            hostImage = currentPlayer.photoURL
-//        )
-//        document.set(battle)
-//
-//        db.collection("invites").add(
-//            hashMapOf(
-//                "type" to "pvp",
-//                "id" to document.id,
-//                "host" to currentPlayer.name
-//            )
-//        )
-//
-        return PVPBattle()
-//        return battle
+    suspend fun createPVPBattle(): PVPBattle {
+        // Create battle
+        val document = db.collection("pvp_battles").document()
+        val battle = PVPBattle(
+            id = document.id,
+            host = currentBattlePlayer
+        )
+
+        document.set(battle).await()
+
+        // Add a global invite for now
+        db.collection("invites").add(
+            BattleInvite(
+                battleID = battle.id,
+                hostName = currentPlayer.name!!,
+                type = "pvp"
+            )
+        ).await()
+
+        return battle
     }
 
-    fun joinPvPListener(id: String) {
+    suspend fun joinPVPBattle(id: String): PVPBattle? {
         currentPlayer.joinBattle()
-        CoroutineScope(IO).launch {
-            db.collection("pvp_battles").document(id).set(
-                hashMapOf(
-                    "opponentName" to currentPlayer.name,
-                    "opponentImage" to currentPlayer.photoURL,
-                    "opponentEquipmentImage" to currentPlayer.currentEquipment?.image
-                )
-                , SetOptions.merge()
-            ).await()
 
-            db.collection("pvp_battles").document(id).get().addOnSuccessListener {
-                _pvpBattle.value = it.toObject<PVPBattle>()
-            }
-        }
+        val battle = db.collection("pvp_battles").document(id).get()
+            .await().toObject<PVPBattle>()
 
-        // TODO: Delete invite
-//        db.collection("invites")
+        battle?.opponent = currentBattlePlayer
+
+        db.collection("pvp_battles").document(id).set(battle!!).await()
+        db.collection("invites").document(id).delete().await()
+
+        return battle
     }
 
     fun removeListeners() {

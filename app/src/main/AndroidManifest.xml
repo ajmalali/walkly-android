@@ -15,7 +15,7 @@
         android:theme="@style/AppTheme"
         tools:ignore="GoogleAppIndexingWarning">
         <activity android:name=".pvp.PvPActivity"></activity>
-        <activity android:name=".ui.lobby.PvPLobbyActivity" />
+        <activity android:name=".ui.lobby.PVPLobbyActivity" />
 
         <service
             android:name=".offlineBattle.BackgroundOfflineBattleService"

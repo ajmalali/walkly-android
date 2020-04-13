@@ -7,5 +7,6 @@ import kotlinx.android.parcel.Parcelize
 data class PVPBattle(
     var id: String = "",
     var host: BattlePlayer? = null,
-    var opponent: BattlePlayer? = null
+    var opponent: BattlePlayer? = null,
+    var status: String = "In-lobby"
 ) : Parcelable

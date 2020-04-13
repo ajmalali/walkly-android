@@ -16,6 +16,7 @@ import com.walkly.walkly.models.Shard
 import com.walkly.walkly.repositories.PlayerRepository
 import kotlinx.coroutines.*
 import java.util.*
+import kotlin.math.floor
 
 private const val TAG = "OnlineBattleViewModel"
 
@@ -142,12 +143,14 @@ class OnlineBattleViewModel() : ViewModel() {
 
     // Sets the steps value in the shard of the player position.
     fun damageEnemy(steps: Long) {
+        val index = playerPosition * 4
+        val shardId = (index..(index + 4)).random().toString()
         db.collection("online_battles")
             .document(battleID)
             .collection("enemy_damage_counter")
             .document("enemy_damage_doc")
             .collection("shards")
-            .document(playerPosition.toString())
+            .document(shardId)
             .update("steps", FieldValue.increment(steps))
     }
 

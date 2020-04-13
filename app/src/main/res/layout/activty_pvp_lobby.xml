@@ -2,76 +2,80 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:id="@+id/fragment_lobby"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
     <View
         android:id="@+id/rect_player_lobby"
         android:layout_width="match_parent"
         android:layout_height="390dp"
-        android:layout_marginTop="180dp"
         android:background="@drawable/gradient"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.25"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/rect_enemy"
+        app:layout_constraintVertical_bias="0.0" />
 
     <TextView
         android:id="@+id/current_player_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Player 1"
+        android:text="@string/waiting"
         android:textAlignment="center"
         android:textColor="#fff"
         android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="@+id/host_avatar"
-        app:layout_constraintStart_toStartOf="@id/host_avatar"
-        app:layout_constraintTop_toBottomOf="@id/host_avatar" />
-
-    <TextView
-        android:id="@+id/host_name2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="Waiting for someone to join..."
-        android:textAlignment="center"
-        android:textColor="#fff"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/waiting_bar" />
+        app:layout_constraintEnd_toEndOf="@+id/current_player_avatar"
+        app:layout_constraintStart_toStartOf="@id/current_player_avatar"
+        app:layout_constraintTop_toBottomOf="@id/current_player_avatar" />
 
     <ImageView
         android:id="@+id/opponent_avatar"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        app:layout_constraintBottom_toTopOf="@+id/current_player_name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/host_avatar"
-        app:layout_constraintTop_toTopOf="@+id/host_avatar"
+        android:layout_marginStart="16dp"
+        android:layout_marginBottom="55dp"
+        app:layout_constraintBottom_toBottomOf="@+id/rect_player_lobby"
+        app:layout_constraintStart_toEndOf="@+id/opponent_equipment_pvp_lobby"
         app:srcCompat="@drawable/invfriend"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
-        android:id="@+id/host_avatar"
+        android:id="@+id/opponent_equipment_pvp_lobby"
+        android:layout_width="wrap_content"
+        android:layout_height="74dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/opponent_avatar"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/current_player_avatar"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        app:layout_constraintBottom_toBottomOf="@+id/rect_player_lobby"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.28"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="55dp"
+        android:layout_marginEnd="16dp"
+        app:layout_constraintEnd_toStartOf="@+id/current_player_equipment_lobby"
         app:layout_constraintTop_toTopOf="@+id/rect_player_lobby"
-        app:layout_constraintVertical_bias="0.354"
         app:srcCompat="@drawable/bitmoji1"
+        tools:srcCompat="@tools:sample/avatars" />
+
+    <ImageView
+        android:id="@+id/current_player_equipment_lobby"
+        android:layout_width="wrap_content"
+        android:layout_height="74dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/current_player_avatar"
         tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/opponent_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Player 2"
+        android:text="@string/waiting"
         android:textAlignment="center"
         android:textColor="#fff"
         android:textStyle="bold"
@@ -81,26 +85,49 @@
 
 
     <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_change_equipment_lobby"
+        android:layout_width="69dp"
+        android:layout_height="26dp"
+        android:layout_marginTop="6dp"
+        android:paddingHorizontal="6dp"
+        android:paddingVertical="4dp"
+        android:text="@string/change"
+        android:textAlignment="center"
+        android:textSize="12sp"
+        android:textStyle="bold"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="@+id/current_player_equipment_lobby"
+        app:layout_constraintStart_toStartOf="@+id/current_player_equipment_lobby"
+        app:layout_constraintTop_toBottomOf="@+id/current_player_equipment_lobby"
+        tools:visibility="visible" />
+
+    <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/start_button"
-        android:layout_width="144dp"
-        android:layout_height="32dp"
+        android:layout_width="150dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:clickable="false"
         android:enabled="false"
         android:paddingHorizontal="6dp"
         android:paddingVertical="4dp"
         android:text="@string/start"
         android:textAlignment="center"
+        android:textSize="18sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rect_player_lobby"
-        app:layout_constraintVertical_bias="0.48" />
+        app:layout_constraintVertical_bias="0.5"
+        tools:visibility="visible" />
 
     <View
         android:id="@+id/rect_enemy"
         android:layout_width="match_parent"
         android:layout_height="192dp"
         android:background="@drawable/gradient_purple"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.25"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -114,30 +141,44 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="16dp"
+        android:text="@string/pvp"
         android:textColor="@color/white"
         android:textSize="24sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/rect_player_lobby"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.51"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="@string/pvp" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ProgressBar
-        android:id="@+id/waiting_bar"
+        android:id="@+id/loading_bar"
         style="?android:attr/progressBarStyle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:indeterminate="false"
-        app:layout_constraintBottom_toBottomOf="@+id/rect_player_lobby"
+        android:indeterminateTint="#FF3B62"
+        android:progressTint="#FFFFFF"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rect_enemy"
-        app:layout_constraintVertical_bias="0.778" />
+        app:layout_constraintTop_toBottomOf="@+id/rect_player_lobby"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <TextView
+        android:id="@+id/tv_waiting_lobby"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/waiting_for_host_lobby"
+        android:textAlignment="center"
+        android:textColor="@android:color/black"
+        android:textSize="18sp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loading_bar" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -18,7 +18,7 @@ import com.walkly.walkly.R
 import com.walkly.walkly.onlineBattle.OnlineBattleActivity
 import com.walkly.walkly.pvp.PvPActivity
 import com.walkly.walkly.ui.lobby.OnlineLobbyActivity
-import com.walkly.walkly.ui.lobby.PvPLobbyActivity
+import com.walkly.walkly.ui.lobby.PVPLobbyActivity
 import kotlinx.android.synthetic.main.fragment_host_join_battle.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -138,13 +138,22 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
         battlesViewModel.getOnlineBattles()
         battlesViewModel.getEnemies()
 
-        val pvpHost = view.findViewById<ConstraintLayout>(R.id.pvp_host)
-        pvpHost.setOnClickListener {
-            val battle = battlesViewModel.sendPvPInvite()
-            val intent = Intent(activity, PvPLobbyActivity::class.java)
-            intent.putExtra("battle", battle)
-            startActivity(intent)
-            activity?.finish()
+        val hostPVPButton = view.findViewById<ConstraintLayout>(R.id.pvp_host)
+        hostPVPButton.setOnClickListener {
+            CoroutineScope(IO).launch {
+                withContext(Main) {
+                    loadingInflater.findViewById<TextView>(R.id.loading_text).text =
+                        getString(R.string.creating_pvp_loading)
+                    loadingDialog.show()
+                }
+
+                val battle = battlesViewModel.createPVPBattle()
+                val intent = Intent(activity, PVPLobbyActivity::class.java)
+                intent.putExtra("battle", battle)
+                loadingDialog.dismiss()
+                startActivity(intent)
+                activity?.finish()
+            }
         }
 
         // Creating battle dialog
@@ -195,11 +204,10 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
             battle = battlesViewModel.joinBattle(battle)
 
             withContext(Main) {
-                val intent: Intent
-                if (battle.battleState == "In-lobby") {
-                    intent = Intent(activity, OnlineLobbyActivity::class.java)
+                val intent: Intent = if (battle.battleState == "In-lobby") {
+                    Intent(activity, OnlineLobbyActivity::class.java)
                 } else {
-                    intent = Intent(activity, OnlineBattleActivity::class.java)
+                    Intent(activity, OnlineBattleActivity::class.java)
                 }
 
                 intent.putExtra("battle", battle)
@@ -249,6 +257,22 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
     override fun onInviteClick(position: Int) {
         val invite = invitesAdapter.invites[position]
 //        this.background.setBackgroundColor(Color.parseColor("#340055"))
-        battlesViewModel.joinPvPListener(invite.battleID)
+        CoroutineScope(IO).launch {
+            withContext(Main) {
+                loadingInflater.findViewById<TextView>(R.id.loading_text).text =
+                    getString(R.string.joining_battle)
+                loadingDialog.show()
+            }
+
+            val battle = battlesViewModel.joinPVPBattle(invite.battleID)
+
+            withContext(Main) {
+                val intent = Intent(activity, PVPLobbyActivity::class.java)
+                intent.putExtra("battle", battle)
+                loadingDialog.dismiss()
+                startActivity(intent)
+                activity?.finish()
+            }
+        }
     }
 }

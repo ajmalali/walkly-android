@@ -27,7 +27,7 @@ class InvitesAdapter(
         val invite = invites[position]
         holder.apply {
             // Default image
-            val text = "Invite by ${invite.fromName}"
+            val text = "Invite by ${invite.hostName}"
             hostName.text = text
             battleID = invite.battleID
         }

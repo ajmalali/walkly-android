@@ -157,7 +157,8 @@
         android:id="@+id/btn_invite_friends_lobby"
         android:layout_width="150dp"
         android:layout_height="35dp"
-        android:layout_marginTop="18dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
         android:paddingHorizontal="6dp"
         android:paddingVertical="4dp"
         android:text="@string/invite_friends"
@@ -165,9 +166,10 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:visibility="visible"
-        app:layout_constraintEnd_toEndOf="@+id/start_button"
-        app:layout_constraintStart_toStartOf="@+id/start_button"
-        app:layout_constraintTop_toBottomOf="@+id/start_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/rect_player_lobby"
         tools:visibility="visible" />
 
     <androidx.appcompat.widget.AppCompatButton
@@ -191,10 +193,7 @@
         android:id="@+id/start_button"
         android:layout_width="150dp"
         android:layout_height="35dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="24dp"
+        android:layout_marginBottom="18dp"
         android:paddingHorizontal="6dp"
         android:paddingVertical="4dp"
         android:text="@string/start"
@@ -202,12 +201,9 @@
         android:textSize="18sp"
         android:textStyle="bold"
         android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.50"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rect_player_lobby"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintBottom_toTopOf="@+id/btn_invite_friends_lobby"
+        app:layout_constraintEnd_toEndOf="@+id/btn_invite_friends_lobby"
+        app:layout_constraintStart_toStartOf="@+id/btn_invite_friends_lobby"
         tools:visibility="visible" />
 
     <View

@@ -93,6 +93,8 @@
     <string name="players_hp">Players HP</string>
     <string name="number_of_steps">Number of Steps</string>
     <string name="use_item">Use Item</string>
+    <string name="creating_pvp_loading">Creating PVP battle...</string>
+    <string name="pvp_waiting">Waiting for the opponent to join...</string>
 
 
 </resources>
