@@ -61,6 +61,7 @@ class OnlineBattleViewModel() : ViewModel() {
         get() = _playerList
 
     private var playerPosition = 0
+    private var shardID = 0
 
     private lateinit var battleRegistration: ListenerRegistration
     private lateinit var enemyHealthRegistration: ListenerRegistration
@@ -143,14 +144,14 @@ class OnlineBattleViewModel() : ViewModel() {
 
     // Sets the steps value in the shard of the player position.
     fun damageEnemy(steps: Long) {
-        val index = playerPosition * 4
-        val shardId = (index..(index + 4)).random().toString()
+        val offset = playerPosition * 4
+        val docID = ((shardID++ % 4) + offset).toString()
         db.collection("online_battles")
             .document(battleID)
             .collection("enemy_damage_counter")
             .document("enemy_damage_doc")
             .collection("shards")
-            .document(shardId)
+            .document(docID)
             .update("steps", FieldValue.increment(steps))
     }
 
