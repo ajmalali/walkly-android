@@ -16,7 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.walkly.walkly.R
 import com.walkly.walkly.onlineBattle.OnlineBattleActivity
-import com.walkly.walkly.pvp.PvPActivity
+import com.walkly.walkly.pvp.PVPActivity
 import com.walkly.walkly.ui.lobby.OnlineLobbyActivity
 import com.walkly.walkly.ui.lobby.PVPLobbyActivity
 import kotlinx.android.synthetic.main.fragment_host_join_battle.*
@@ -129,7 +129,7 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
         })
 
         battlesViewModel.pvpBattle.observe(viewLifecycleOwner, Observer {
-            val intent = Intent(activity, PvPActivity::class.java)
+            val intent = Intent(activity, PVPActivity::class.java)
             intent.putExtra("battle", it)
             startActivity(intent)
             activity?.finish()

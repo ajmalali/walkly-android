@@ -16,10 +16,9 @@ import com.bumptech.glide.Glide
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.walkly.walkly.R
 import com.walkly.walkly.models.PVPBattle
-import com.walkly.walkly.pvp.PvPActivity
+import com.walkly.walkly.pvp.PVPActivity
 import com.walkly.walkly.ui.profile.EquipmentAdapter
 import com.walkly.walkly.ui.profile.WearEquipmentViewModel
-import kotlinx.android.synthetic.main.activity_online_lobby.*
 import kotlinx.android.synthetic.main.activty_pvp_lobby.*
 import kotlinx.android.synthetic.main.activty_pvp_lobby.btn_change_equipment_lobby
 import kotlinx.android.synthetic.main.activty_pvp_lobby.current_player_avatar
@@ -68,7 +67,7 @@ class PVPLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUseLis
             setupPlayers(updatedBattle)
 
             if (updatedBattle.status == "In-game") {
-                val intent = Intent(this, PvPActivity::class.java)
+                val intent = Intent(this, PVPActivity::class.java)
                 intent.putExtra("battle", updatedBattle)
                 startActivity(intent)
                 this.finish()
