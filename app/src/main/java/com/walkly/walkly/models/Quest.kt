@@ -24,7 +24,7 @@ data class Quest(
                 longitude = location.longitude
             }
             distance =  qLocation.distanceTo(cLocation).toInt()
-            closeEnough = distance <= 10
+            closeEnough = distance <= 50
         }
     }
 }

@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.auth.UserProfileChangeRequest
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.storage.FirebaseStorage
 import com.walkly.walkly.models.Equipment
 import com.walkly.walkly.models.Player
@@ -20,6 +21,15 @@ class AuthViewModel : ViewModel() {
     private val auth = FirebaseAuth.getInstance()
     private val db = FirebaseFirestore.getInstance()
     private val storage = FirebaseStorage.getInstance()
+    private lateinit var deviceToken: String
+
+    init {
+        FirebaseInstanceId.getInstance().instanceId
+            .addOnSuccessListener {
+                deviceToken = it.token
+                Log.i("device token", it.token)
+            }
+    }
 
     fun getCurrentUser(): FirebaseUser? {
         return auth.currentUser
@@ -31,6 +41,19 @@ class AuthViewModel : ViewModel() {
         val result = auth.signInWithEmailAndPassword(email, password).await()
         user = result.user
         Log.d(TAG, "signInWithEmail:success")
+
+        // TODO: this should not be in production code
+        // it was used just to allow notification for old accounts
+        val ref = db.collection("users").document(user?.uid!!)
+        ref.set(
+            Player(
+                deviceToken = deviceToken,
+                name = user.displayName,
+                email = user.email,
+                currentEquipment = Equipment.getDefaultEquipment(),
+                photoURL = user.photoUrl.toString()
+            ), SetOptions.merge()
+        ).await()
 
         return user
         // [END sign_in_with_email]
@@ -71,6 +94,7 @@ class AuthViewModel : ViewModel() {
         val defaultEquipment = EquipmentRepository.getDefaultEquipment()
         ref.set(
             Player(
+                deviceToken = deviceToken,
                 name = user.displayName,
                 email = user.email,
                 currentEquipment = defaultEquipment,

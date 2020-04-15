@@ -8,7 +8,7 @@
     tools:openDrawer="start">
 
 
-    <androidx.constraintlayout.widget.ConstraintLayout xmlns:mapbox="http://schemas.android.com/apk/res-auto"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#ccc">
@@ -81,7 +81,7 @@
             android:layout_width="match_parent"
             android:layout_height="80dp"
             android:background="@drawable/gradient"
-            mapbox:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
                 android:id="@+id/user_level"
@@ -91,9 +91,9 @@
                 android:text="LEVEL 1"
                 android:textColor="#FFFFFF"
                 android:textStyle="bold"
-                mapbox:layout_constraintEnd_toStartOf="@id/progressBar"
-                mapbox:layout_constraintStart_toStartOf="parent"
-                mapbox:layout_constraintTop_toTopOf="@id/progressBar" />
+                app:layout_constraintEnd_toStartOf="@id/progressBar"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/progressBar" />
 
             <ProgressBar
                 android:id="@+id/progressBar"
@@ -108,10 +108,10 @@
                 android:progressDrawable="@drawable/levelbar"
                 app:layout_constraintEnd_toStartOf="@id/menu"
                 app:layout_constraintStart_toEndOf="@id/user_level"
-                mapbox:layout_constraintBottom_toBottomOf="parent"
-                mapbox:layout_constraintHorizontal_bias="0.379"
-                mapbox:layout_constraintTop_toTopOf="parent"
-                mapbox:layout_constraintVertical_bias="0.235" />
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintHorizontal_bias="0.379"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.235" />
 
             <TextView
                 android:id="@+id/tv_energy"
@@ -129,6 +129,7 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:background="@drawable/staminacircle"
+                android:visibility="invisible"
                 app:layout_constraintStart_toStartOf="@id/progressBar"
                 app:layout_constraintTop_toTopOf="@id/tv_energy" />
 
@@ -138,6 +139,7 @@
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
                 android:background="@drawable/staminacircle"
+                android:visibility="invisible"
                 app:layout_constraintStart_toEndOf="@id/view_energy_ball_1"
                 app:layout_constraintTop_toTopOf="@id/tv_energy" />
 
@@ -147,6 +149,7 @@
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
                 android:background="@drawable/staminacircle"
+                android:visibility="invisible"
                 app:layout_constraintStart_toEndOf="@id/view_energy_ball_2"
                 app:layout_constraintTop_toTopOf="@id/tv_energy" />
 

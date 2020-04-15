@@ -32,7 +32,7 @@ class QuestBottomSheetDialog(val quest: Quest, val callback: (Quest) -> Unit ) :
                     }
                 }
             } else {
-                Toast.makeText(context,"You need to be withing 10 meters to complete the quest", Toast.LENGTH_LONG)
+                Toast.makeText(context,"You need to be withing 50 meters to complete the quest", Toast.LENGTH_LONG)
                     .show()
             }
         }

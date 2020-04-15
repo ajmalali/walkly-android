@@ -1,15 +1,19 @@
 package com.walkly.walkly
 
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -22,15 +26,20 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
+import com.google.firebase.iid.FirebaseInstanceId
 import com.walkly.walkly.auth.LoginActivity
 import com.walkly.walkly.models.Feedback
 import com.walkly.walkly.repositories.ConsumablesRepository
 import com.walkly.walkly.repositories.EquipmentRepository
 import com.walkly.walkly.repositories.PlayerRepository
+import com.walkly.walkly.utilities.TutorialUtil
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.bottom_sheet_layout.*
+import kotlinx.android.synthetic.main.tutorial_box.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import java.util.*
+import kotlin.collections.HashMap
 
 // max of 3 stamina points
 private const val MAX_STAMINA = 300
@@ -46,8 +55,6 @@ class MainActivity : AppCompatActivity() {
     private val SOLID_WHITE = Color.parseColor("#FFFFFF")
     private val WHITE = Color.parseColor("#8AFFFFFF")
 
-    private val cal = Calendar.getInstance()
-
     private val db = FirebaseFirestore.getInstance()
     private val currentPlayer = PlayerRepository.getPlayer()
     private val stamina = MutableLiveData<Long>()
@@ -57,11 +64,16 @@ class MainActivity : AppCompatActivity() {
     private val scope = CoroutineScope(Dispatchers.Default + job)
     private lateinit var feedbackDialog: AlertDialog
     private val auth = FirebaseAuth.getInstance()
+    private lateinit var tutorial: TutorialUtil
+
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        tutorial = TutorialUtil(drawer_layout, this)
+        tutorial.startTutorial("main", R.bool.main_bool)
 
         menu.setOnClickListener {
             drawer_layout.open()
@@ -142,6 +154,7 @@ class MainActivity : AppCompatActivity() {
         // bottom nav
         btn_profile.setOnClickListener {
             navController.navigate(R.id.navigation_profile)
+            tutorial.startTutorial("profile", R.bool.profile_bool)
             // set this button to solid white color
             btn_profile.setTextColor(SOLID_WHITE)
             btn_profile.compoundDrawableTintList = ColorStateList.valueOf(SOLID_WHITE)
@@ -163,6 +176,7 @@ class MainActivity : AppCompatActivity() {
             btn_battles.compoundDrawableTintList = ColorStateList.valueOf(WHITE)
         }
         btn_battles.setOnClickListener {
+            navController.navigate(R.id.navigation_battles)
             // set this button to solid white color
             btn_battles.setTextColor(SOLID_WHITE)
             btn_battles.compoundDrawableTintList = ColorStateList.valueOf(SOLID_WHITE)
@@ -171,22 +185,26 @@ class MainActivity : AppCompatActivity() {
             btn_profile.compoundDrawableTintList = ColorStateList.valueOf(WHITE)
             btn_map.setTextColor(WHITE)
             btn_map.compoundDrawableTintList = ColorStateList.valueOf(WHITE)
-            navController.navigate(R.id.navigation_battles)
         }
         // because the map is the main fragment
         btn_map.setTextColor(SOLID_WHITE)
         btn_map.compoundDrawableTintList = ColorStateList.valueOf(SOLID_WHITE)
 
-        cal.add(Calendar.MINUTE, -1000)
         updateTopBar()
+        stamina.value = currentPlayer.stamina
+
+        when {
+            intent.extras?.getString("target-fragment") == "friend-list" -> {
+                navController.navigate(R.id.friendsFragment)
+            }
+        }
+
     }
 
     // TODO: FIX THIS
     private fun updateTopBar() {
         stamina.observe(this, Observer {
             val stamina = it
-//            join_button.isClickable = true
-//            join_button.background.alpha = 255
 
             stamina.let {
                 if (stamina <= 100) {
@@ -196,9 +214,11 @@ class MainActivity : AppCompatActivity() {
                     view_energy_ball_1.visibility = View.INVISIBLE
 
                     // player cannot join a battle
-//                    join_button.isClickable = false
-//                    join_button.background.alpha = 100
+                    join_button.isEnabled = false
+                    join_button.background.alpha = 100
                 } else {
+                    join_button.isEnabled = true
+                    join_button.background.alpha = 255
                     if (stamina >= 300) {
                         view_energy_ball_3.visibility = View.VISIBLE
                     }
