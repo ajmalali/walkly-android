@@ -50,7 +50,7 @@ class AuthViewModel : ViewModel() {
                 deviceToken = deviceToken,
                 name = user.displayName,
                 email = user.email,
-                currentEquipment = Equipment.getDefaultEquipment(),
+                currentEquipment = EquipmentRepository.getDefaultEquipment(),
                 photoURL = user.photoUrl.toString()
             ), SetOptions.merge()
         ).await()
