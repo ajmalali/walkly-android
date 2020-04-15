@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 private const val TAG = "ProfileViewModel"
 
-class ProfileViewModel : ViewModel() {
+class WearEquipmentViewModel : ViewModel() {
 
     private val _equipments = MutableLiveData<List<Equipment>>()
     val equipments: LiveData<List<Equipment>>

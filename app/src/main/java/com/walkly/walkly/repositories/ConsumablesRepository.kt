@@ -32,9 +32,9 @@ object ConsumablesRepository {
         }
 
         // For testing only
-//        if (consumableList.isEmpty()) {
-//            initConsumableList()
-//        }
+        if (consumableList.isEmpty()) {
+            initConsumableList()
+        }
 
         return consumableList
     }

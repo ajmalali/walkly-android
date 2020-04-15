@@ -168,10 +168,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                 bottom_sheet_text.setText(curen.name)
                 bottom_sheet_lvl.setText("Level: "+ curen.level)
                 bottom_sheet_health.setText("HP: "+ curen.health)
-                Glide.with(activity!!)
+                Glide.with(requireActivity())
                         .load(curen.image)
                         .diskCacheStrategy(DiskCacheStrategy.DATA)
-                        .into(activity!!.bossgif)
+                        .into(requireActivity().bossgif)
                 BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_COLLAPSED
 
             }

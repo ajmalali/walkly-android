@@ -38,7 +38,7 @@ class MapViewModel : ViewModel() {
 
     private fun fetchEnemies(playerLevel: Long?){
         CoroutineScope(IO).launch {
-            _enemies.postValue(EnemyRepository.generateRandomEnemies(playerLevel))
+            _enemies.postValue(EnemyRepository.generateRandomEnemies(playerLevel!!))
         }
     }
 }

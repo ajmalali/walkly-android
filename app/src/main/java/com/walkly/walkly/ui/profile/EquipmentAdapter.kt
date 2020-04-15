@@ -7,8 +7,10 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Equipment
+import kotlinx.android.synthetic.main.fragment_profile.*
 
 class EquipmentAdapter(
     var equipmentList: List<Equipment>,
@@ -28,7 +30,9 @@ class EquipmentAdapter(
 
     override fun onBindViewHolder(holder: EquipmentViewHolder, position: Int) {
         val item = equipmentList[position]
-        holder.equipmentImage.setImageResource(R.drawable.equipment1)
+        Glide.with(holder.itemView.context)
+            .load(item.image)
+            .into(holder.equipmentImage)
         holder.equipmentName.text = item.name
         holder.equipmentType.text = item.type
         val color = when (item.type) {

@@ -4,165 +4,186 @@ import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.google.firebase.firestore.DocumentReference
+import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import com.walkly.walkly.models.Consumable
-import com.walkly.walkly.repositories.ConsumablesRepository
+import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.firestore.ktx.toObjects
+import com.walkly.walkly.models.BattlePlayer
+import com.walkly.walkly.models.OnlineBattle
+import com.walkly.walkly.models.Shard
+import com.walkly.walkly.repositories.PlayerRepository
 import kotlinx.coroutines.*
-import kotlinx.coroutines.Dispatchers.Main
-import kotlinx.coroutines.tasks.await
+import java.util.*
+import kotlin.math.floor
 
 private const val TAG = "OnlineBattleViewModel"
 
 class OnlineBattleViewModel() : ViewModel() {
 
-    private val FREQUENCY = 3000L
+    var battleEnded: Boolean = false
+    var battleID: String = ""
+
+    // used to specify how frequently enemy hits (3 seconds)
+    val HIT_FREQUENCY = 3000L
+
     // used to convert player level to HP
     private val HP_MULTIPLAYER = 100
 
+    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
+    val userID = FirebaseAuth.getInstance().currentUser?.uid
+    val currentPlayer = PlayerRepository.getPlayer()
+    var battle: OnlineBattle? = null
 
-    // BAD DESIGN: should get refactored
+    var baseEnemyHP = -1L
+    private var currentEnemyHp = 0L
+    private var enemyHpPercentage = 100
+    var enemyDamage = 0L
 
-    private val db = FirebaseFirestore.getInstance()
+    private var basePlayersHP = 1L
+    private var currentPlayersHP = 0L
+    private var playersHpPercentage = 100
+    private var playerDamage = 0L
 
-    var battleID: String = ""
-    var baseEnemyHP = 0L
-    var enemyDamage = 3L // TODO: HARDCODED!
-    var currentEnemyHp = 0L
-    var basePlayerHP = 0L
-    var currentPlayerHP = 0L
-    var enemyHpPercentage = 100L
-//    var playerDamage = 0L
+    // Observables
+    // Health bar values
+    private val _enemyHP = MutableLiveData<Int>()
+    val enemyHP: LiveData<Int>
+        get() = _enemyHP
 
-    lateinit var docRef: DocumentReference
-    lateinit var registration: ListenerRegistration
+    private val _combinedHP = MutableLiveData<Int>()
+    val combinedHP: LiveData<Int>
+        get() = _combinedHP
 
-    // view observes these
-    val enemyImage = MutableLiveData<String>()
-    val enemyHP = MutableLiveData<Long>()
-    val combinedHP = MutableLiveData<Long>()
+    private val _playerList = MutableLiveData<List<BattlePlayer>>()
+    val playerList: LiveData<List<BattlePlayer>>
+        get() = _playerList
 
-    private val _consumables = MutableLiveData<List<Consumable>>()
-    val consumables: LiveData<List<Consumable>>
-        get() = _consumables
+    private var playerPosition = 0
+    private var shardID = 0
 
-    private val _selectedConsumable = MutableLiveData<Consumable>()
-    val selectedConsumable: LiveData<Consumable>
-        get() = _selectedConsumable
+    private lateinit var battleRegistration: ListenerRegistration
+    private lateinit var enemyHealthRegistration: ListenerRegistration
 
     init {
-//        getConsumables()
-        combinedHP.value = 100L
-        enemyHP.value = 100L
-        // TODO: HARDCODED VALUES! MUST BE REFACTORED
-//        basePlayerHP = 10.0 * HP_MULTIPLAYER
-//        currentPlayerHP = basePlayerHP
-//        combinedHP.value = floor((currentPlayerHP / basePlayerHP) * 100).toLong()
-//
-//        baseEnemyHP = 5000L.toDouble()
-//        currentEnemyHp = baseEnemyHP
-//        enemyHP.value = baseEnemyHP.toLong()
+        _combinedHP.value = 100
+        _enemyHP.value = 100
+
+        playerDamage = currentPlayer.currentEquipment?.value!!
     }
 
-    suspend fun setUpListeners() {
-        docRef = db.collection("online_battles").document(battleID)
-        val result = docRef.get().await()
-        baseEnemyHP = result.getLong("enemy_health")!!
-        basePlayerHP = result.getLong("combined_player_health")!!
+    fun setupBattleListener() {
+        var tempPlayerList: MutableList<BattlePlayer>
+        battleRegistration = db.collection("online_battles")
+            .document(battleID)
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e)
+                    return@addSnapshotListener
+                }
 
-        if (baseEnemyHP < 100) {
-            docRef.update("enemy_health", 200).await()
-            baseEnemyHP = 200
-        }
+                if (snapshot != null && snapshot.exists()) {
+                    battle = snapshot.toObject<OnlineBattle>()
 
-        if (basePlayerHP < 100) {
-            docRef.update("combined_player_health", 200).await()
-            basePlayerHP = 200
-        }
+                    // Update players
+                    tempPlayerList = battle?.players!!
+                    _playerList.value = tempPlayerList
 
-        withContext(Main) {
-            currentEnemyHp = baseEnemyHP
-            currentPlayerHP = basePlayerHP
-        }
+                    // Calculate player position and combined base health
+                    var health: Long = 0
+                    for (i in tempPlayerList.indices) {
+                        health += tempPlayerList[i].level * HP_MULTIPLAYER
+                        if (tempPlayerList[i].id == currentPlayer.id) {
+                            playerPosition = i
+                        }
+                    }
 
-        registration = docRef.addSnapshotListener { snapshot, e ->
-            if (e != null) {
-                Log.w(TAG, "Listen failed.", e)
-                return@addSnapshotListener
-            }
-
-            if (snapshot != null && snapshot.exists()) {
-                currentEnemyHp = snapshot.getLong("enemy_health")!!
-                enemyHP.value = ((currentEnemyHp * 100.0) / baseEnemyHP).toLong()
-
-                currentPlayerHP = snapshot.getLong("combined_player_health")!!
-                combinedHP.value = ((currentPlayerHP * 100.0) / basePlayerHP).toLong()
-                Log.d(TAG, "Current data: ${snapshot.data}")
-            } else {
-                Log.d(TAG, "Current data: null")
-            }
-        }
-    }
-
-    fun damageEnemy(steps: Float) {
-        db.runTransaction { transaction ->
-            val snapshot = transaction.get(docRef)
-            val newHealthValue = snapshot.getLong("enemy_health")!! - steps
-            transaction.update(docRef, "enemy_health", newHealthValue)
-            // Success
-            null
-        }.addOnSuccessListener { Log.d(TAG, "Enemy Damaged") }
-            .addOnFailureListener { e ->
-                Log.w(TAG, "Transaction failure. (Enemy)", e)
+                    // Update players health
+                    currentPlayersHP = battle?.combinedPlayersHealth!!.toLong()
+                    basePlayersHP = health
+                    playersHpPercentage = ((currentPlayersHP * 100.0) / basePlayersHP).toInt()
+                    _combinedHP.value = playersHpPercentage
+                } else {
+                    Log.d(TAG, "Current data: null")
+                }
             }
     }
 
-    // WARNING: won't work while screen is off
+    fun setupEnemyHealthListener() {
+        enemyHealthRegistration = db.collection("online_battles")
+            .document(battleID)
+            .collection("enemy_damage_counter")
+            .document("enemy_damage_doc")
+            .collection("shards")
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e)
+                    return@addSnapshotListener
+                }
+
+                // Get total number of steps
+                var steps = 0
+                if (snapshot != null) {
+//                    val list = snapshot.toObjects<Shard>()
+//                    list.forEach { steps += it.steps }
+                    for (document in snapshot) {
+                        val shard = document.toObject<Shard>()
+                        steps += shard.steps
+                    }
+
+                    // Update enemy health
+                    currentEnemyHp = baseEnemyHP - steps
+                    enemyHpPercentage = ((currentEnemyHp * 100.0) / baseEnemyHP).toInt()
+                    _enemyHP.value = enemyHpPercentage
+                } else {
+                    Log.d(TAG, "Current data: null")
+                }
+            }
+    }
+
+    // Sets the steps value in the shard of the player position.
+    fun damageEnemy(steps: Long) {
+        val offset = playerPosition * 4
+        val docID = ((shardID++ % 4) + offset).toString()
+        db.collection("online_battles")
+            .document(battleID)
+            .collection("enemy_damage_counter")
+            .document("enemy_damage_doc")
+            .collection("shards")
+            .document(docID)
+            .update("steps", FieldValue.increment(steps))
+    }
+
+
     suspend fun damagePlayer() {
-        while (currentPlayerHP >= 0) {
-            delay(FREQUENCY)
-            Log.d(TAG, "current player hp = $currentPlayerHP")
+        while (currentPlayersHP >= 0) {
+            delay(HIT_FREQUENCY)
+            Log.d(TAG, "current players hp = $currentPlayersHP")
 
-            docRef.update("combined_player_health", FieldValue.increment(-enemyDamage))
-//            db.runTransaction { transaction ->
-//                val snapshot = transaction.get(docRef)
-//                val newHealthValue = snapshot.getLong("combined_player_health")!! - enemyDamage
-//                transaction.update(docRef, "combined_player_health", newHealthValue)
-//                // Success
-//                null
-//            }.addOnSuccessListener { Log.d(TAG, "Player damaged") }
-//                .addOnFailureListener { e ->
-//                    Log.w(TAG, "Transaction failure.", e)
-//                }
+            db.collection("online_battles").document(battleID)
+                .update("combinedPlayersHealth", FieldValue.increment(-enemyDamage))
         }
 
     }
 
-//    private fun getConsumables() {
-//        if (_consumables.value != null) {
-//            _consumables.value = ConsumablesRepository.consumableList
-//        } else {
-//            ConsumablesRepository.getConsumables { list ->
-//                _consumables.value = list
-//            }
-//        }
-//    }
-//
-//    fun selectConsumable(consumable: Consumable) {
-//        _selectedConsumable.value = consumable
-//    }
-//
-//    fun removeSelectedConsumable() {
-//        ConsumablesRepository.removeConsumable(selectedConsumable.value!!) { updatedList ->
-//            _consumables.value = updatedList
-//        }
-//    }
+    fun useConsumable(consumableType: String, consumableValue: Int) {
+        when (consumableType.toLowerCase(Locale.ROOT)) {
+            "attack" -> {
+                damageEnemy(consumableValue.toLong())
+            }
+            "health" -> {
+                db.collection("online_battles").document(battleID)
+                    .update("combinedPlayersHealth", FieldValue.increment(consumableValue.toLong()))
+            }
+        }
+    }
 
     fun stopGame() {
-        registration.remove()
-        currentPlayerHP = -1
+        // Delete battle
+        battleRegistration.remove()
+        enemyHealthRegistration.remove()
+        currentPlayersHP = -1
         currentEnemyHp = -1
     }
 

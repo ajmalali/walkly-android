@@ -75,6 +75,26 @@
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="actions">Actions</string>
+    <string name="pvp_text">Player vs Player</string>
+    <string name="online_battles">Online Battles</string>
+    <string name="invites">Invites</string>
+    <string name="pvp">Player vs Player</string>
+    <string name="start">Start</string>
+    <string name="creating_battle">Creating battle…</string>
+    <string name="waiting">Waiting…</string>
+    <string name="change_to_public">Public</string>
+    <string name="waiting_for_host_lobby">Waiting for host to start the battle…</string>
+    <string name="creating_online_battle">Creating online battle…</string>
+    <string name="joining_battle">Joining battle…</string>
+    <string name="change">Change</string>
+    <string name="invite_friends">Invite friends</string>
+    <string name="vs">VS</string>
+    <string name="enemy_hp">Enemy HP</string>
+    <string name="players_hp">Players HP</string>
+    <string name="number_of_steps">Number of Steps</string>
+    <string name="use_item">Use Item</string>
+    <string name="creating_pvp_loading">Creating PVP battle...</string>
+    <string name="pvp_waiting">Waiting for the opponent to join...</string>
 
 
 </resources>

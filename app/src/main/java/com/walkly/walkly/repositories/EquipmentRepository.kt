@@ -43,4 +43,14 @@ object EquipmentRepository {
                 .document(equipment.id!!).set(equipment).await()
         }
     }
+
+    fun getDefaultEquipment(): Equipment {
+        return Equipment(
+            name = "sword_x",
+            type = "attack",
+            value = 5,
+            level = 1,
+            image = "https://firebasestorage.googleapis.com/v0/b/walkly-81d94.appspot.com/o/equipments%2F386arrzpkvO1j8Q4etKx.png?alt=media&token=2e860246-d0cd-46f6-bb80-b70756d36887"
+        ).addId("gYQRFbka5BcjzbaocN6N")
+    }
 }

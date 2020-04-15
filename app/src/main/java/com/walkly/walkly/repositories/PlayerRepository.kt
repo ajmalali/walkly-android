@@ -62,35 +62,6 @@ object PlayerRepository {
         }
     }
 
-    // TODO: calculate progress form points
-    // to save computation time calculate it and store it every time points change
-    fun updatePoints(enemyLevel: Int) {
-        scope.launch {
-            try {
-                val level: Long
-                val progress: Long
-                val sumPoints = (currentPlayer.points ?: 0) + enemyLevel * ENEMY_LEVEL_POINTS
-
-                level = floor(sumPoints / 150.0 + 1).toLong()
-                progress = sumPoints - (level - 1) * 150
-
-                userDocument.update(
-                    hashMapOf(
-                        "level" to level,
-                        "progress" to progress,
-                        "points" to sumPoints
-                    ) as Map<String, Any>
-                ).await()
-            } catch (e: FirebaseFirestoreException) {
-                Log.d(TAG, "Error in updating points")
-            }
-        }
-    }
-
-    fun wearEquipment(equipment: Equipment) {
-        currentPlayer.currentEquipment = equipment
-    }
-
     // Syncs the current player with DB or store locally when no internet
     // TODO: Store locally when no internet
     // TODO: Update sub-collections also

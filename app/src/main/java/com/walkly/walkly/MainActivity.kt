@@ -201,6 +201,7 @@ class MainActivity : AppCompatActivity() {
 
     }
 
+    // TODO: FIX THIS
     private fun updateTopBar() {
         stamina.observe(this, Observer {
             val stamina = it

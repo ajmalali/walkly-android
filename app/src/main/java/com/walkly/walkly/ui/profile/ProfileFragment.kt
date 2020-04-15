@@ -1,11 +1,9 @@
 package com.walkly.walkly.ui.profile
 
-import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,19 +14,15 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.storage.FirebaseStorage
 import com.walkly.walkly.R
 import com.walkly.walkly.auth.LoginActivity
-import com.walkly.walkly.models.Consumable
-import com.walkly.walkly.models.Equipment
 import kotlinx.android.synthetic.main.dialog_wear_equipment.view.*
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.lang.NullPointerException
-
 
 private const val TAG = "ProfileFragment"
 
@@ -40,8 +34,7 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
     private lateinit var wearEquipmentBuilder: AlertDialog.Builder
     private lateinit var adapter: EquipmentAdapter
 
-    private val profileViewModel: ProfileViewModel by viewModels()
-    private var equipmentList = mutableListOf<Equipment>()
+    private val equipmentViewModel: WearEquipmentViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -69,15 +62,21 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
         tv_welcome.text = text
 
         // Wear Equipment Dialog
-        val inflater = layoutInflater
-        val dialogView = inflater.inflate(R.layout.dialog_wear_equipment, null) as View
+        val dialogView = layoutInflater.inflate(R.layout.dialog_wear_equipment, null, false)
         wearEquipmentBuilder = AlertDialog.Builder(this.context)
             .setView(dialogView)
+        wearEquipmentDialog = wearEquipmentBuilder.create()
+        //To make the background for the dialog Transparent
+        wearEquipmentDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
+        adapter =
+            EquipmentAdapter(mutableListOf(), this)
         val rv = dialogView.findViewById(R.id.equipment_recycler_view) as RecyclerView
         rv.layoutManager = GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false)
+        rv.adapter = adapter
 
-        profileViewModel.equipments.observe(viewLifecycleOwner, Observer { list ->
+        dialogView.progressBar.visibility = View.VISIBLE
+        equipmentViewModel.equipments.observe(viewLifecycleOwner, Observer { list ->
             dialogView.progressBar.visibility = View.GONE
             if (list.isEmpty()) {
                 Log.e(TAG, "EMPTYYY")
@@ -95,9 +94,13 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
             }
         })
 
-        adapter = EquipmentAdapter(equipmentList, this)
-        rv.adapter = adapter
-        wearEquipmentDialog = wearEquipmentBuilder.create()
+        equipmentViewModel.selectedEquipment.observe(viewLifecycleOwner, Observer {
+            it?.let {
+                Glide.with(this)
+                    .load(it.image)
+                    .into(img_equipment)
+            }
+        })
 
         // click listeners
         menu_item_quests.setOnClickListener {
@@ -117,8 +120,6 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
         }
         btn_change_equipment.setOnClickListener {
             wearEquipmentDialog.show()
-            //To make the background for the dialog Transparent
-            wearEquipmentDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         }
         menu_item_achievements.setOnClickListener {
             view.findNavController().navigate(R.id.action_navigation_profile_to_achievementFragment)
@@ -127,16 +128,16 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
 
         // TODO make it faster
         Glide.with(this)
-            .load(profileViewModel.currentPlayer.photoURL)
+            .load(equipmentViewModel.currentPlayer.photoURL)
             .into(img_avatar)
 
 
         // TODO: Refactor
         try {
             Glide.with(this)
-                .load(profileViewModel.currentPlayer.currentEquipment?.image)
+                .load(equipmentViewModel.currentPlayer.currentEquipment?.image)
                 .into(img_equipment)
-        } catch (npe: NullPointerException){
+        } catch (npe: NullPointerException) {
             // do nothing
         }
 
@@ -161,7 +162,7 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
 
     override fun onEquipmentClick(position: Int) {
         val equipment = adapter.equipmentList[position]
-        profileViewModel.selectEquipment(equipment)
+        equipmentViewModel.selectEquipment(equipment)
         wearEquipmentDialog.dismiss()
     }
 }
