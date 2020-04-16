@@ -13,9 +13,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/login"
-        android:textColor="@color/grey_100"
-        android:textStyle="bold"
+        android:textColor="@color/white"
         android:textSize="32sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -41,7 +41,7 @@
             android:layout_weight="1"
             android:text="@string/email"
             android:textAlignment="textStart"
-            android:textColor="@color/grey_300"
+            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <EditText
@@ -65,7 +65,7 @@
             android:layout_weight="1"
             android:text="@string/password"
             android:textAlignment="textStart"
-            android:textColor="@color/grey_300"
+            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <EditText
@@ -108,6 +108,7 @@
         android:orientation="horizontal"
         android:gravity="center"
         >
+
         <TextView
             android:id="@+id/noAcc"
             android:layout_width="wrap_content"
@@ -115,7 +116,7 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:text="@string/noAcc"
-            android:textColor="@color/grey_300"
+            android:textColor="@color/grey_100"
             android:textSize="20sp" />
         <TextView
             android:id="@+id/signUp"
