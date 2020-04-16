@@ -13,7 +13,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="32dp"
             android:text="Choose Your Equipment"
-            android:textColor="@color/buttonPrimary"
+            android:textColor="@color/white"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintEnd_toEndOf="parent"

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="#ddd">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <!--  header  -->
 
@@ -12,24 +12,23 @@
         android:id="@+id/gradient_rect"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:background="@drawable/gradient"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:gravity="center"
         android:layout_marginTop="50dp"
+        android:background="@color/buttonPrimary"
+        android:gravity="center"
         android:padding="4dp"
+        android:text="Friends"
+        android:textColor="#fff"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="#fff"
-        android:background="@color/buttonPrimary"
-        android:text="Friends"
-        />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <EditText
         android:id="@+id/et_search"
@@ -37,12 +36,12 @@
         android:layout_height="40dp"
         android:background="@drawable/style_search_bar"
         android:hint="Search"
+        android:imeOptions="actionSearch"
         android:inputType="textShortMessage"
         android:paddingLeft="8dp"
         android:textColorHint="@color/buttonPrimary"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/gradient_rect"
-        android:imeOptions="actionSearch"/>
+        app:layout_constraintTop_toBottomOf="@id/gradient_rect" />
     <!--  list  -->
 
     <androidx.recyclerview.widget.RecyclerView
@@ -50,13 +49,12 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/et_search"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/et_search"
 
-        tools:listitem="@layout/list_friend"
-        />
+        tools:listitem="@layout/list_friend" />
 
     <TextView
         android:id="@+id/error_no_user_found"

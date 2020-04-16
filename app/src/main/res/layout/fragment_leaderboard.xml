@@ -10,33 +10,32 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/grey_300"
+        android:background="@color/white"
         tools:context=".ui.leaderboard.LeaderboardFragment">
 
-    <!-- Header -->
+        <!-- Header -->
 
         <View
             android:id="@+id/gradient_rect"
             android:layout_width="match_parent"
             android:layout_height="150dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             android:background="@drawable/gradient"
-            />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:gravity="center"
             android:layout_marginTop="50dp"
+            android:background="@color/buttonPrimary"
+            android:gravity="center"
             android:padding="4dp"
+            android:text="Leaderboard"
+            android:textColor="#fff"
             android:textSize="24sp"
             android:textStyle="bold"
-            android:textColor="#fff"
-            android:background="@color/buttonPrimary"
-            android:text="Leaderboard"
-            />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <!-- header container -->
 
@@ -101,7 +100,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/leaderboard_buttons_bar"
             app:layout_constraintVertical_bias="0.0"
-            tools:listitem="@layout/list_leaderboard"/>
+            tools:listitem="@layout/list_leaderboard" />
 
         <ProgressBar
             android:id="@+id/progressBar"
