@@ -62,6 +62,7 @@
     <string name="no_user_found">Sorry, no user with that user name exists</string>
     <string name="no_online_battle_found">Sorry, no online battles are being \n played right now</string>
     <string name="no_friends">You don\'t have any friends</string>
+    <string name="no_achievemnt">You don\'t have any achievements</string>
     <string name="host_battle">Host</string>
     <string name="join_battle">Join</string>
     <string name="settings">Settings</string>
