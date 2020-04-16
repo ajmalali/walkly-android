@@ -24,6 +24,7 @@ import com.walkly.walkly.onlineBattle.OnlineBattleActivity
 import com.walkly.walkly.ui.profile.EquipmentAdapter
 import com.walkly.walkly.ui.profile.WearEquipmentViewModel
 import kotlinx.android.synthetic.main.activity_online_lobby.*
+import kotlinx.android.synthetic.main.dialog_feedback.*
 import kotlinx.android.synthetic.main.dialog_wear_equipment.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
@@ -151,6 +152,7 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
     private fun displayBattleControls() {
         start_button.visibility = View.VISIBLE
         btn_invite_friends_lobby.visibility = View.VISIBLE
+        btn_cancel2.visibility = View.VISIBLE
         publicize_switch.visibility = View.VISIBLE
         loading_bar.visibility = View.GONE
         tv_waiting_lobby.visibility = View.GONE
@@ -159,6 +161,7 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
     private fun displayWaiting() {
         start_button.visibility = View.GONE
         btn_invite_friends_lobby.visibility = View.GONE
+        btn_cancel2.visibility = View.GONE
         publicize_switch.visibility = View.GONE
         loading_bar.visibility = View.VISIBLE
         tv_waiting_lobby.visibility = View.VISIBLE
