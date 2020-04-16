@@ -21,8 +21,7 @@ import com.walkly.walkly.models.BattlePlayer
 import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.models.OnlineBattle
 import com.walkly.walkly.onlineBattle.OnlineBattleActivity
-import com.walkly.walkly.ui.profile.EquipmentAdapter
-import com.walkly.walkly.ui.profile.WearEquipmentViewModel
+import com.walkly.walkly.ui.profile.*
 import kotlinx.android.synthetic.main.activity_online_lobby.*
 import kotlinx.android.synthetic.main.dialog_wear_equipment.view.*
 import kotlinx.coroutines.CoroutineScope
@@ -33,14 +32,19 @@ import kotlinx.coroutines.withContext
 
 private const val TAG = "OnlineLobbyActivity"
 
-class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUseListener {
+class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUseListener, InviteFriendsAdapter.OnFriendInviteListener {
 
     private lateinit var wearEquipmentDialog: AlertDialog
     private lateinit var wearEquipmentBuilder: AlertDialog.Builder
     private lateinit var adapter: EquipmentAdapter
 
+    private lateinit var inviteFriendsDialog: AlertDialog
+    private lateinit var inviteFriendsBuilder: AlertDialog.Builder
+    private lateinit var inviteFriendsAdapter: InviteFriendsAdapter
+
     private val viewModel: LobbyViewModel by viewModels()
     private val equipmentViewModel: WearEquipmentViewModel by viewModels()
+    private val inviteFriendsViewModel: FriendsViewModel by viewModels()
     private var playerCount: Int = 1
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -104,6 +108,34 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
             adapter.notifyDataSetChanged()
         })
 
+        // Invite Friends Dialog
+        val dialogV = layoutInflater.inflate(R.layout.dialog_invite_friend, null, false)
+        inviteFriendsBuilder = AlertDialog.Builder(this)
+            .setView(dialogV)
+        inviteFriendsDialog = inviteFriendsBuilder.create()
+        //To make the background for the dialog Transparent
+        inviteFriendsDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        inviteFriendsAdapter =
+            InviteFriendsAdapter(mutableListOf(), this)
+        val r = dialogV.findViewById(R.id.invite_friends_recycler_view) as RecyclerView
+        r.layoutManager = GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false)
+        r.adapter = inviteFriendsAdapter
+
+        dialogV.progressBar.visibility = View.VISIBLE
+        inviteFriendsViewModel.friendsList.observe(this, Observer { list ->
+            dialogV.progressBar.visibility = View.GONE
+            inviteFriendsAdapter.friends = list
+            if (list.size < 5) {
+                r.layoutManager =
+                    GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false)
+            } else {
+                r.layoutManager =
+                    GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false)
+            }
+            inviteFriendsAdapter.notifyDataSetChanged()
+        })
+
         viewModel.battleState.observe(this, Observer {
             if (it == "In-game") {
                 val intent = Intent(this, OnlineBattleActivity::class.java)
@@ -129,7 +161,7 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
         }
 
         btn_invite_friends_lobby.setOnClickListener {
-
+            inviteFriendsDialog.show()
         }
 
         publicize_switch.setOnCheckedChangeListener { _, isChecked ->
@@ -251,6 +283,15 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
         CoroutineScope(IO).launch {
             viewModel.changeEquipment(equipment)
             withContext(Main) { wearEquipmentDialog.dismiss() }
+        }
+    }
+
+    override fun onFriendInviteClick(position: Int) {
+        val friend = inviteFriendsAdapter.friends[position]
+        inviteFriendsViewModel.selectFriend(friend)
+        CoroutineScope(IO).launch {
+            //TODO:implement the invite and call it here
+            withContext(Main) { inviteFriendsDialog.dismiss() }
         }
     }
 }

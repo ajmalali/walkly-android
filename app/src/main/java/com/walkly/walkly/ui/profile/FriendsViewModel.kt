@@ -25,6 +25,10 @@ class FriendsViewModel : ViewModel() {
     val searchList: LiveData<List<Friend>>
         get() = _searchList
 
+    private val _selectedFriend = MutableLiveData<Friend>()
+    val selectedFriend: LiveData<Friend>
+        get() = _selectedFriend
+
     private var tempFriendList = mutableListOf<Friend>()
 
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
@@ -110,5 +114,9 @@ class FriendsViewModel : ViewModel() {
             .addOnFailureListener { exception ->
                 Log.w(TAG, "Error getting documents: ", exception)
             }
+    }
+
+    fun selectFriend(f: Friend) {
+        _selectedFriend.value = f
     }
 }
