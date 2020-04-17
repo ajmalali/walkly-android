@@ -13,6 +13,20 @@
         android:layout_height="match_parent"
         android:background="@color/white">
 
+
+        <fragment
+            android:id="@+id/nav_host_fragment"
+            android:name="androidx.navigation.fragment.NavHostFragment"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:defaultNavHost="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/progress_header"
+            app:navGraph="@navigation/mobile_navigation" />
+
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_battles"
             android:layout_width="0dp"
@@ -62,19 +76,6 @@
             app:layout_constraintStart_toEndOf="@id/btn_map" />
 
 
-        <fragment
-            android:id="@+id/nav_host_fragment"
-            android:name="androidx.navigation.fragment.NavHostFragment"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            app:defaultNavHost="true"
-            app:layout_constraintBottom_toTopOf="@+id/btn_map"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/progress_header"
-            app:layout_constraintVertical_bias="0.0"
-            app:navGraph="@navigation/mobile_navigation" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/progress_header"
