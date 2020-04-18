@@ -5,12 +5,12 @@
     android:id="@+id/bottom_sheet"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#DDDDDD"
+    android:background="@color/white"
     android:gravity="center_horizontal"
     android:orientation="horizontal"
     android:padding="16dp"
     app:behavior_hideable="true"
-    app:behavior_peekHeight="145dp"
+    app:behavior_peekHeight="180dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <LinearLayout
