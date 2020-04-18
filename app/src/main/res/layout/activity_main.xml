@@ -5,29 +5,32 @@
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="#00FFFFFF"
     tools:openDrawer="start">
 
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/white">
+        android:layout_height="match_parent">
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_battles"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:background="@drawable/btn_nav"
             android:drawableTop="@drawable/ic_battle"
             android:drawableTint="#8AFFFFFF"
             android:gravity="center"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:text="Battles"
             android:textAllCaps="false"
             android:textColor="#8AFFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@id/btn_map"
             app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/btn_map" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_map"
@@ -37,6 +40,8 @@
             android:drawableTop="@drawable/ic_map"
             android:drawableTint="#8AFFFFFF"
             android:gravity="center"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:text="Map"
             android:textAllCaps="false"
             android:textColor="#8AFFFFFF"
@@ -48,18 +53,21 @@
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/btn_profile"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="0dp"
             android:background="@drawable/btn_nav"
             android:drawableTop="@drawable/ic_profile"
             android:drawableTint="#8AFFFFFF"
             android:gravity="center"
+            android:paddingTop="5dp"
+            android:paddingBottom="5dp"
             android:text="Profile"
             android:textAllCaps="false"
             android:textColor="#8AFFFFFF"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_weight="1"
-            app:layout_constraintStart_toEndOf="@id/btn_map" />
+            app:layout_constraintStart_toEndOf="@id/btn_map"
+            app:layout_constraintTop_toTopOf="@+id/btn_map" />
 
 
         <fragment
@@ -106,10 +114,10 @@
                 android:max="100"
                 android:progress="50"
                 android:progressDrawable="@drawable/levelbar"
-                app:layout_constraintEnd_toStartOf="@id/menu"
-                app:layout_constraintStart_toEndOf="@id/user_level"
                 app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/menu"
                 app:layout_constraintHorizontal_bias="0.379"
+                app:layout_constraintStart_toEndOf="@id/user_level"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.235" />
 
@@ -173,5 +181,6 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:menu="@menu/drawer_menu" />
+        app:menu="@menu/drawer_menu"
+        tools:visibility="gone" />
 </androidx.drawerlayout.widget.DrawerLayout>

@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/gradient">
+    android:background="@drawable/gradient_purple_rounded">
 
     <!--  user details  -->
 
@@ -12,107 +12,129 @@
         android:id="@+id/tv_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         android:layout_marginTop="52dp"
-        android:textColor="#fff"
-        android:textStyle="bold"
-        android:textSize="20sp"
         android:text="User Name"
-        />
+        android:textColor="#fff"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/img_avatar"
         android:layout_width="150dp"
         android:layout_height="150dp"
+        android:layout_marginLeft="56dp"
+        android:layout_marginTop="20dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_username"
-        android:layout_marginTop="20dp"
-        android:layout_marginLeft="56dp"
-        tools:srcCompat="@tools:sample/avatars"
-        />
+        tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
         android:id="@+id/img_equipment"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        app:layout_constraintStart_toEndOf="@id/img_avatar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tv_username"
         android:layout_marginTop="48dp"
-        tools:srcCompat="@tools:sample/avatars"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/img_avatar"
+        app:layout_constraintTop_toBottomOf="@id/tv_username"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
+        android:id="@+id/tv_equipment_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/img_avatar"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img_equipment"
-        android:layout_marginLeft="20dp"
         android:layout_marginTop="16dp"
-        android:textColor="#fff"
-        android:textSize="20sp"
-        android:textStyle="bold"
+        android:padding="4dp"
         android:text="Equipment"
-        />
+        android:textColor="#fff"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/img_equipment"
+        app:layout_constraintHorizontal_bias="0.595"
+        app:layout_constraintStart_toStartOf="@+id/img_equipment"
+        app:layout_constraintTop_toBottomOf="@id/img_equipment" />
 
     <TextView
         android:id="@+id/tv_level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/img_avatar"
-        app:layout_constraintBottom_toTopOf="@id/tv_add_friend"
         android:layout_marginTop="32dp"
+        android:text="Leve: 12"
         android:textColor="#fff"
         android:textSize="20sp"
         android:textStyle="bold"
-        android:text="Leve: 12"
-        />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/img_avatar" />
 
     <!--  actions  -->
 
-    <TextView
-        android:id="@+id/tv_add_friend"
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_add_friend"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/tv_view_achievements"
-        app:layout_constraintBottom_toTopOf="@id/tv_block"
-        android:layout_marginTop="52dp"
-        android:textColor="#fff"
-        android:textStyle="bold"
-        android:textSize="20sp"
+        android:layout_marginTop="132dp"
+        android:backgroundTint="#FF6577"
+        android:paddingHorizontal="32dp"
+        android:paddingVertical="8dp"
         android:text="Add Friend"
-        />
-
-    <TextView
-        android:id="@+id/tv_block"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="@id/tv_view_achievements"
-        app:layout_constraintBottom_toTopOf="@id/tv_view_achievements"
-        android:layout_marginTop="52dp"
-        android:textColor="#fff"
+        android:textAlignment="center"
+        android:textSize="14sp"
         android:textStyle="bold"
-        android:textSize="20sp"
-        android:text="Block"
-        />
-
-    <TextView
-        android:id="@+id/tv_view_achievements"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:visibility="visible"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="52dp"
-        android:layout_marginLeft="16dp"
-        android:textColor="#fff"
+        app:layout_constraintTop_toBottomOf="@+id/tv_level" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_remove_friend"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="132dp"
+        android:backgroundTint="#FF6577"
+        android:paddingHorizontal="32dp"
+        android:paddingVertical="8dp"
+        android:text="Unfriend"
+        android:textAlignment="center"
+        android:textSize="14sp"
         android:textStyle="bold"
-        android:textSize="20sp"
-        android:text="View Achievements"
-        />
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/btn_challenge_friend"
+        app:layout_constraintStart_toStartOf="@+id/btn_challenge_friend"
+        app:layout_constraintTop_toBottomOf="@+id/tv_level" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_chat_friend"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="#FF6577"
+        android:paddingHorizontal="32dp"
+        android:paddingVertical="8dp"
+        android:text="Chat"
+        android:textAlignment="center"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/btn_challenge_friend"
+        app:layout_constraintStart_toStartOf="@+id/btn_challenge_friend"
+        app:layout_constraintTop_toBottomOf="@+id/btn_challenge_friend" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_challenge_friend"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="#FF6577"
+        android:paddingHorizontal="32dp"
+        android:paddingVertical="8dp"
+        android:text="Challenge"
+        android:textAlignment="center"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/btn_add_friend"
+        app:layout_constraintStart_toStartOf="@+id/btn_add_friend"
+        app:layout_constraintTop_toBottomOf="@+id/btn_add_friend" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

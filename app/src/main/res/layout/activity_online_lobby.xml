@@ -158,7 +158,7 @@
         android:id="@+id/btn_invite_friends_lobby"
         android:layout_width="150dp"
         android:layout_height="35dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
         android:paddingHorizontal="6dp"
         android:paddingVertical="4dp"
@@ -207,8 +207,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.942"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rect_player_lobby"
-        app:layout_constraintVertical_bias="0.071"
+        app:layout_constraintTop_toTopOf="@+id/btn_invite_friends_lobby"
+        app:layout_constraintVertical_bias="0.0"
         tools:visibility="visible" />
 
     <androidx.appcompat.widget.AppCompatButton

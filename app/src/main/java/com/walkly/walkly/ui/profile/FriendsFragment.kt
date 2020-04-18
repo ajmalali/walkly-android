@@ -32,7 +32,7 @@ private const val TAG = "FriendsFragment"
 
 class FriendsFragment : Fragment() {
 
-//    // Imported db stuff for the onClick method, this should be moved outside the fragment
+    //    // Imported db stuff for the onClick method, this should be moved outside the fragment
 //    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val userID = FirebaseAuth.getInstance().currentUser?.uid
 
@@ -101,15 +101,18 @@ class FriendsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         val navController = activity?.findNavController(R.id.nav_host_fragment)
+
         FriendsRepository.getFriends {
             adapter = FriendsAdapter(it, navController as NavController)
             friends_recycler_view.adapter = adapter
         }
+
         et_search.setOnEditorActionListener { v, actionId, event ->
             val query = et_search.text.toString()
             if (query != "") {
-                FriendsRepository.search(query){
+                FriendsRepository.search(query) {
                     adapter.friends = it
                     adapter.notifyDataSetChanged()
                 }
