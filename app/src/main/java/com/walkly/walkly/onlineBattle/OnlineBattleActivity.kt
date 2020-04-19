@@ -17,6 +17,7 @@ import com.walkly.walkly.R
 import com.walkly.walkly.models.BattlePlayer
 import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.models.OnlineBattle
+import com.walkly.walkly.repositories.PlayerRepository
 import com.walkly.walkly.ui.consumables.ConsumablesBottomSheetDialog
 import com.walkly.walkly.ui.consumables.ConsumablesViewModel
 import com.walkly.walkly.utilities.DistanceUtil
@@ -88,6 +89,7 @@ class OnlineBattleActivity : AppCompatActivity() {
 //                enemy.level.value?.toInt()?.let { it1 -> Player.updatePoints(it1) }
 //                getReward()
                 winDialog.show()
+                PlayerRepository.updatePoints(1)
             }
         })
 
