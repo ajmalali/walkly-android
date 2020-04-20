@@ -13,7 +13,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/signing_up"
-        android:textColor="@color/grey_100"
+        android:textColor="@color/white"
         android:textSize="32sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -40,7 +40,7 @@
             android:layout_weight="1"
             android:text="@string/name"
             android:textAlignment="textStart"
-            android:textColor="@color/grey_300"
+            android:textColor="@color/white"
             android:textSize="20sp" />
 
         <EditText
@@ -64,8 +64,8 @@
             android:layout_weight="1"
             android:text="@string/email"
             android:textAlignment="textStart"
-            android:textSize="20sp"
-            android:textColor="@color/grey_300" />
+            android:textColor="@color/white"
+            android:textSize="20sp" />
 
         <EditText
             android:id="@+id/fieldEmail"
@@ -88,8 +88,8 @@
             android:layout_weight="1"
             android:text="@string/password"
             android:textAlignment="textStart"
-            android:textColor="@color/grey_300"
-            android:textSize="20sp"/>
+            android:textColor="@color/white"
+            android:textSize="20sp" />
 
         <EditText
             android:id="@+id/fieldPassword"

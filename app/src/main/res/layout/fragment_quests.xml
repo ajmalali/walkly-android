@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:background="#ddd">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <!--  header  -->
 
@@ -12,23 +12,23 @@
         android:id="@+id/gradient_rect"
         android:layout_width="match_parent"
         android:layout_height="150dp"
+        android:background="@drawable/gradient"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/gradient" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:gravity="center"
         android:layout_marginTop="50dp"
+        android:background="@color/buttonPrimary"
+        android:gravity="center"
         android:padding="4dp"
+        android:text="Quests"
+        android:textColor="#fff"
         android:textSize="24sp"
         android:textStyle="bold"
-        android:textColor="#fff"
-        android:background="@color/buttonPrimary"
-        android:text="Quests" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <!--  list  -->
 
@@ -37,10 +37,10 @@
         android:layout_width="0dp"
         android:layout_height="0dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/gradient_rect"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:listitem="@layout/list_quest"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/gradient_rect"
+        tools:listitem="@layout/list_quest" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

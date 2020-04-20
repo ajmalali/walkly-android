@@ -53,7 +53,7 @@ class AchievementFragment : Fragment(), AchievementAdapter.OnAchievementUseListe
         achievementViewModel.achievemnetsList.observe(this, Observer { list ->
             list?.let {
                 if (list.isEmpty()) {
-                    errorMessage.text = getString(R.string.no_friends)
+                    errorMessage.text = getString(R.string.no_achievemnt)
                     errorMessage.visibility = View.VISIBLE
                 } else {
                     errorMessage.visibility = View.GONE
