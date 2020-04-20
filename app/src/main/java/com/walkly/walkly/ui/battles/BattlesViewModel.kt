@@ -175,6 +175,11 @@ class BattlesViewModel : ViewModel() {
         return battle
     }
 
+    suspend fun getBattle(battleID: String): OnlineBattle? {
+        return db.collection("online_battles").document(battleID).get().await()
+            .toObject<OnlineBattle>()
+    }
+
     // Join the selected battle
     suspend fun joinBattle(battle: OnlineBattle): OnlineBattle {
         currentPlayer.joinBattle()

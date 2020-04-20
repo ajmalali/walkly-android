@@ -52,7 +52,7 @@ class FriendsViewModel : ViewModel() {
                         createFriendList(document.data?.get("friends") as MutableList<String>)
                     }
                 } catch (e: TypeCastException) {
-
+                    _friendsList.value = mutableListOf()
                 }
             }
     }
