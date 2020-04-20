@@ -53,7 +53,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/et_search"
-
+        android:paddingBottom="60dp"
+        android:clipToPadding="false"
         tools:listitem="@layout/list_friend" />
 
     <TextView

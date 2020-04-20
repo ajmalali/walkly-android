@@ -23,7 +23,6 @@ import com.walkly.walkly.models.OnlineBattle
 import com.walkly.walkly.onlineBattle.OnlineBattleActivity
 import com.walkly.walkly.ui.profile.*
 import kotlinx.android.synthetic.main.activity_online_lobby.*
-import kotlinx.android.synthetic.main.dialog_feedback.*
 import kotlinx.android.synthetic.main.dialog_wear_equipment.view.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO

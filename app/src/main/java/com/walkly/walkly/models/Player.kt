@@ -42,26 +42,4 @@ data class Player(
 
     // TODO: calculate progress form points
     // to save computation time calculate it and store it every time points change
-//    fun updatePoints(enemyLevel: Int) {
-//        PlayerRepository.scope.launch {
-//            try {
-//                val level: Long
-//                val progress: Long
-//                val sumPoints = (PlayerRepository.currentPlayer.points ?: 0) + enemyLevel * ENEMY_LEVEL_POINTS
-//
-//                level = floor(sumPoints / 150.0 + 1).toLong()
-//                progress = sumPoints - (level - 1) * 150
-//
-//                PlayerRepository.userDocument.update(
-//                    hashMapOf(
-//                        "level" to level,
-//                        "progress" to progress,
-//                        "points" to sumPoints
-//                    ) as Map<String, Any>
-//                ).await()
-//            } catch (e: FirebaseFirestoreException) {
-//                Log.d(com.walkly.walkly.repositories.TAG, "Error in updating points")
-//            }
-//        }
-//    }
 }

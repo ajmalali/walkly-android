@@ -231,6 +231,7 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
         tv_enemy_level.text = level
 
         Glide.with(this)
+            .asGif()
             .load(enemy.image)
             .into(enemy_image)
 
