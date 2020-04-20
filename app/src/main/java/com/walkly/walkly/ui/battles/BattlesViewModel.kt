@@ -57,6 +57,7 @@ class BattlesViewModel : ViewModel() {
     fun getInvites() {
         if (_invitesList.value == null) {
             invitesRegistration = db.collection("invites")
+                .whereArrayContains("toIDs", currentPlayer.id!!)
                 .addSnapshotListener { value, e ->
                     if (e != null) {
                         Log.w(TAG, "Listen failed.", e)
@@ -82,7 +83,7 @@ class BattlesViewModel : ViewModel() {
 
     fun getEnemies() {
         if (_enemyList.value == null) {
-            db.collection("online_enemies") // TODO: change to online enemies
+            db.collection("enemies") // TODO: change to online enemies
                 .get()
                 .addOnSuccessListener { result ->
                     for (doc in result) {
@@ -156,6 +157,14 @@ class BattlesViewModel : ViewModel() {
         counterRef.set(EnemyDamageCounter(numShards)).await()
 
         db.runBatch { batch ->
+            val inviteDocument = db.collection("invites").document(battle.id!!)
+            batch.set(
+                inviteDocument, BattleInvite(
+                    battleID = battle.id!!,
+                    hostName = currentPlayer.name!!,
+                    type = "ob"
+                )
+            )
             for (i in 0 until numShards) {
                 val shardDocument = counterRef.collection("shards")
                     .document(i.toString())

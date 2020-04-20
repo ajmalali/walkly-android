@@ -2,6 +2,8 @@ package com.walkly.walkly.ui.battles
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -105,6 +107,7 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
                 if (hostBtn.isChecked) {
                     if (list.isEmpty()) {
                         // Display no enemies
+                        battlesRecyclerView.adapter = null
                     } else {
                         enemyAdapter = EnemyAdapter(list, this)
                         battlesRecyclerView.adapter = enemyAdapter
@@ -163,6 +166,7 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
             .setView(loadingInflater)
             .create()
 
+        loadingDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         loadingDialog.setCancelable(false)
         loadingDialog.setCanceledOnTouchOutside(false)
 
