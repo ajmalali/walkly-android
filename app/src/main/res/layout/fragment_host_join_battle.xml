@@ -228,7 +228,8 @@
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_pvp_invites"
-                tools:listitem="@layout/list_host_battles" />
+                tools:listitem="@layout/list_host_battles"
+                />
 
             <!--        <TextView-->
             <!--            android:id="@+id/error_no_online_battle_found"-->
@@ -257,7 +258,9 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_online_battles"
                 app:layout_constraintVertical_bias="0.504"
-                tools:listitem="@layout/list_join_battles" />
+                tools:listitem="@layout/list_join_battles"
+                android:paddingBottom="60dp"
+                android:clipToPadding="false"/>
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>
