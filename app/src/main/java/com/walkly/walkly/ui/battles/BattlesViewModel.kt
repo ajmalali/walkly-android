@@ -184,7 +184,6 @@ class BattlesViewModel : ViewModel() {
 
     // Join the selected battle
     suspend fun joinBattle(battle: OnlineBattle): OnlineBattle {
-        currentPlayer.joinBattle()
         battle.playerCount = battle.playerCount?.inc()
         battle.players.add(currentBattlePlayer)
         battle.combinedPlayersHealth =

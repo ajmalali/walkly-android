@@ -149,6 +149,9 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
 
         viewModel.battleState.observe(this, Observer {
             if (it == "In-game") {
+                if (!isHost) {
+                    viewModel.currentPlayer.joinBattle()
+                }
                 val intent = Intent(this, OnlineBattleActivity::class.java)
                 intent.putExtra("battle", viewModel.battle)
                 startActivity(intent)

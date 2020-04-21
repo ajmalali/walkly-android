@@ -112,6 +112,7 @@ class LobbyViewModel : ViewModel() {
     suspend fun cancelBattle() {
         changeBattleState("Cancelled")
         // TODO: Remove the battle
+        // Can be done by cloud functions only
     }
 
 }

@@ -47,7 +47,6 @@ class FriendsViewModel : ViewModel() {
         db.collection("users").document(userID!!).get()
             .addOnSuccessListener { document ->
                 try {
-                    Log.d(TAG, "Friends: ${document.data?.get("friends") as MutableList<String>}")
                     CoroutineScope(IO).launch {
                         createFriendList(document.data?.get("friends") as MutableList<String>)
                     }
@@ -60,14 +59,19 @@ class FriendsViewModel : ViewModel() {
     // Creates the complete friend list and sets the value of friends
     private suspend fun createFriendList(friendIds: List<String>) {
         // Pass friend ids in chunks of 10 to getFriendsFromIds
-        for (idList in friendIds.chunked(10)) {
+
+        for (idList in friendIds.sorted().chunked(10)) {
             val friends = db.collection("users")
                 .whereIn(FieldPath.documentId(), idList)
+                .orderBy(FieldPath.documentId(), Query.Direction.ASCENDING)
                 .get().await().toObjects<Friend>()
 
+            Log.d(TAG, "Sorted IDs $idList")
             for (i in friends.indices) {
                 tempFriendList.add(friends[i].addId(idList[i]))
             }
+
+            Log.d(TAG, "Temp list IDs $tempFriendList")
         }
 
         tempFriendList = tempFriendList.toMutableList()
