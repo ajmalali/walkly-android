@@ -47,6 +47,10 @@ class SplashActivity:AppCompatActivity() {
                     finish()
                 }
             }
+        }else {
+            val intent = Intent(applicationContext, LoginActivity::class.java)
+            startActivity(intent)
+            finish()
         }
 //        val mainActivityIntent = Intent(applicationContext, LoginActivity::class.java)
 //        startActivity(mainActivityIntent)
