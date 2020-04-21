@@ -56,6 +56,7 @@ class BattlesViewModel : ViewModel() {
 
     fun getInvites() {
         if (_invitesList.value == null) {
+            Log.d(TAG, "ID: ${currentPlayer.id!!}")
             invitesRegistration = db.collection("invites")
                 .whereArrayContains("toIDs", currentPlayer.id!!)
                 .addSnapshotListener { value, e ->
@@ -106,6 +107,7 @@ class BattlesViewModel : ViewModel() {
         if (_battleList.value == null) {
             battlesRegistration = db.collection("online_battles")
                 .whereEqualTo("type", "public")
+                .whereIn("battleState", listOf("In-lobby", "In-game"))
                 .addSnapshotListener { value, e ->
                     if (e != null) {
                         Log.w(TAG, "Listen failed.", e)
@@ -188,12 +190,17 @@ class BattlesViewModel : ViewModel() {
         battle.combinedPlayersHealth =
             battle.combinedPlayersHealth?.plus((currentPlayer.level?.times(HP_MULTIPLAYER))?.toInt()!!)
 
+        // Update the battle in db
         db.collection("online_battles")
             .document(battle.id!!)
             .set(battle, SetOptions.merge()).await()
 
-        val numShards = 4
+        // Remove current Invite
+        db.collection("invites").document(battle.id!!)
+            .update("toIDs", FieldValue.arrayRemove(currentPlayer.id))
 
+        // Add player shards
+        val numShards = 4
         val counterRef = db.collection("online_battles").document(battle.id!!)
             .collection("enemy_damage_counter")
             .document("enemy_damage_doc")
@@ -265,7 +272,7 @@ class BattlesViewModel : ViewModel() {
         battle?.opponent = currentBattlePlayer
 
         db.collection("pvp_battles").document(id).set(battle!!).await()
-        db.collection("invites").document(id).delete().await()
+        db.collection("invites").document(id).delete()
 
         return battle
     }

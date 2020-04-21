@@ -1,32 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:id="@+id/fragment_lobby"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white">
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <View
         android:id="@+id/rect_player_lobby"
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="540dp"
         android:layout_marginBottom="24dp"
-        android:background="@drawable/gradient"
+        android:background="@drawable/gradient_rounded_bottom"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.25"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rect_enemy"
+        app:layout_constraintTop_toTopOf="@+id/rect_enemy"
         app:layout_constraintVertical_bias="0.0" />
 
     <ImageView
         android:id="@+id/current_player_avatar"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginBottom="50dp"
+        android:layout_marginBottom="45dp"
         app:layout_constraintBottom_toBottomOf="@+id/rect_player_lobby"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.501"
@@ -63,17 +64,16 @@
         android:layout_marginStart="32dp"
         app:layout_constraintStart_toEndOf="@+id/img_player2_avatar_lobby"
         app:layout_constraintTop_toTopOf="@+id/img_player2_avatar_lobby"
-        app:srcCompat="@drawable/invfriend"
+        app:srcCompat="@drawable/ic_account_circle_black_24dp"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
         android:id="@+id/img_player3_equipment_lobby"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        app:layout_constraintStart_toStartOf="@id/img_player3_avatar_lobby"
         app:layout_constraintBottom_toBottomOf="@id/img_player3_avatar_lobby"
-        tools:srcCompat="@tools:sample/avatars"
-        />
+        app:layout_constraintStart_toStartOf="@id/img_player3_avatar_lobby"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/tv_player3_name_lobby"
@@ -92,21 +92,20 @@
         android:id="@+id/img_player2_avatar_lobby"
         android:layout_width="80dp"
         android:layout_height="80dp"
-        android:layout_marginTop="50dp"
+        android:layout_marginTop="30dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/rect_player_lobby"
-        app:srcCompat="@drawable/invfriend"
+        app:layout_constraintTop_toBottomOf="@+id/rect_enemy"
+        app:srcCompat="@drawable/ic_account_circle_black_24dp"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
         android:id="@+id/img_player2_equipment_lobby"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        app:layout_constraintStart_toStartOf="@id/img_player2_avatar_lobby"
         app:layout_constraintBottom_toBottomOf="@id/img_player2_avatar_lobby"
-        tools:srcCompat="@tools:sample/avatars"
-        />
+        app:layout_constraintStart_toStartOf="@id/img_player2_avatar_lobby"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/tv_player2_name_lobby"
@@ -128,17 +127,16 @@
         android:layout_marginEnd="32dp"
         app:layout_constraintEnd_toStartOf="@+id/img_player2_avatar_lobby"
         app:layout_constraintTop_toTopOf="@+id/img_player2_avatar_lobby"
-        app:srcCompat="@drawable/invfriend"
+        app:srcCompat="@drawable/ic_account_circle_black_24dp"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
         android:id="@+id/img_player1_equipment_lobby"
         android:layout_width="36dp"
         android:layout_height="36dp"
-        app:layout_constraintStart_toStartOf="@id/img_player1_avatar_lobby"
         app:layout_constraintBottom_toBottomOf="@id/img_player1_avatar_lobby"
-        tools:srcCompat="@tools:sample/avatars"
-        />
+        app:layout_constraintStart_toStartOf="@id/img_player1_avatar_lobby"
+        tools:srcCompat="@tools:sample/avatars" />
 
     <TextView
         android:id="@+id/tv_player1_name_lobby"
@@ -158,7 +156,8 @@
         android:id="@+id/btn_invite_friends_lobby"
         android:layout_width="150dp"
         android:layout_height="35dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="24dp"
         android:layout_marginBottom="8dp"
         android:paddingHorizontal="6dp"
         android:paddingVertical="4dp"
@@ -172,8 +171,7 @@
         app:layout_constraintHorizontal_bias="0.061"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rect_player_lobby"
-        app:layout_constraintVertical_bias="0.009"
-        tools:visibility="visible" />
+        app:layout_constraintVertical_bias="0.009" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_change_equipment_lobby"
@@ -196,6 +194,7 @@
         android:id="@+id/start_button"
         android:layout_width="150dp"
         android:layout_height="35dp"
+        android:layout_marginEnd="16dp"
         android:paddingHorizontal="6dp"
         android:paddingVertical="4dp"
         android:text="@string/start"
@@ -208,11 +207,10 @@
         app:layout_constraintHorizontal_bias="0.942"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/btn_invite_friends_lobby"
-        app:layout_constraintVertical_bias="0.0"
-        tools:visibility="visible" />
+        app:layout_constraintVertical_bias="0.0" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/btn_cancel2"
+        android:id="@+id/host_btn_cancel"
         android:layout_width="150dp"
         android:layout_height="35dp"
         android:background="@drawable/btn_cancel"
@@ -226,16 +224,38 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/start_button"
         app:layout_constraintStart_toStartOf="@+id/start_button"
-        app:layout_constraintTop_toBottomOf="@+id/start_button"
-        tools:visibility="visible" />
+        app:layout_constraintTop_toBottomOf="@+id/start_button" />
+
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_leave"
+        android:layout_width="150dp"
+        android:layout_height="35dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/btn_cancel"
+        android:paddingHorizontal="6dp"
+        android:paddingVertical="4dp"
+        android:text="Leave"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tv_waiting_lobby"
+        tools:visibility="gone" />
 
     <View
         android:id="@+id/rect_enemy"
         android:layout_width="match_parent"
         android:layout_height="220dp"
-        android:background="@drawable/gradient_purple"
+        android:background="@drawable/gradient_purple_rounded_bottom"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.25"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -301,23 +321,22 @@
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/rect_player_lobby"
-        app:layout_constraintVertical_bias="0.074" />
+        app:layout_constraintVertical_bias="0.164" />
 
     <TextView
         android:id="@+id/tv_waiting_lobby"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
         android:text="@string/waiting_for_host_lobby"
         android:textAlignment="center"
         android:textColor="@android:color/black"
         android:textSize="18sp"
         android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/loading_bar"
-        app:layout_constraintVertical_bias="0.181" />
+        app:layout_constraintTop_toBottomOf="@+id/loading_bar" />
 
     <Switch
         android:id="@+id/publicize_switch"
@@ -329,6 +348,7 @@
         android:textAlignment="viewStart"
         android:textSize="18sp"
         android:textStyle="bold"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/btn_invite_friends_lobby"
         app:layout_constraintHorizontal_bias="1.0"

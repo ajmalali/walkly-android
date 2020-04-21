@@ -122,6 +122,7 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
         // Observe battle invites (real time)
         battlesViewModel.invitesList.observe(viewLifecycleOwner, Observer { list ->
             list?.let {
+                Log.d(TAG, "Invited list: $list")
                 if (joinBtn.isChecked) {
                     if (list.isEmpty()) {
                         tv_pvp_invites.visibility = View.GONE

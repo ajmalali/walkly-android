@@ -9,9 +9,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
-import com.google.firebase.firestore.SetOptions
 import com.google.firebase.firestore.ktx.toObject
-import com.walkly.walkly.models.BattleInvite
 import com.walkly.walkly.models.BattlePlayer
 import com.walkly.walkly.models.Equipment
 import com.walkly.walkly.models.OnlineBattle
@@ -83,6 +81,7 @@ class LobbyViewModel : ViewModel() {
             if (player.id == userID) {
                 player.equipmentURL = equipment.image!!
                 currentPlayer.currentEquipment = equipment
+                break
             }
         }
 
@@ -90,7 +89,29 @@ class LobbyViewModel : ViewModel() {
             .update("players", players).await()
     }
 
+    suspend fun removeCurrentPlayer() {
+        val players = _playerList.value!!.toMutableList()
+        val newPlayers = players.filter { it.id != userID }
+
+        Log.d(TAG, "Players: $newPlayers")
+
+        db.collection("online_battles").document(battleID)
+            .update(
+                "players", newPlayers,
+                "playerCount", FieldValue.increment(-1)
+            )
+            .await()
+
+        // TODO: Remove shards (optimization)
+    }
+
     fun removeListeners() {
         playersRegistration.remove()
     }
+
+    suspend fun cancelBattle() {
+        changeBattleState("Cancelled")
+        // TODO: Remove the battle
+    }
+
 }
