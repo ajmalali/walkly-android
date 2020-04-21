@@ -61,8 +61,14 @@ class OnlineBattleViewModel() : ViewModel() {
     val playerList: LiveData<List<BattlePlayer>>
         get() = _playerList
 
+    private val _totalSteps = MutableLiveData<Long>()
+    val totalSteps: LiveData<Long>
+        get() = _totalSteps
+
     private var playerPosition = 0
     private var shardID = 0
+
+    private var totalHealth = 0
 
     private lateinit var battleRegistration: ListenerRegistration
     private lateinit var enemyHealthRegistration: ListenerRegistration
@@ -99,6 +105,7 @@ class OnlineBattleViewModel() : ViewModel() {
                             playerPosition = i
                         }
                     }
+                    totalHealth = health.toInt()
 
                     // Update players health
                     currentPlayersHP = battle?.combinedPlayersHealth!!.toLong()
@@ -129,12 +136,12 @@ class OnlineBattleViewModel() : ViewModel() {
                 // Get total number of steps
                 var steps = 0
                 if (snapshot != null) {
-//                    val list = snapshot.toObjects<Shard>()
-//                    list.forEach { steps += it.steps }
                     for (document in snapshot) {
                         val shard = document.toObject<Shard>()
                         steps += shard.steps
                     }
+
+                    _totalSteps.value = steps.toLong()
 
                     // Update enemy health
                     currentEnemyHp = baseEnemyHP - steps
@@ -176,13 +183,24 @@ class OnlineBattleViewModel() : ViewModel() {
                 damageEnemy(consumableValue.toLong())
             }
             "health" -> {
-                db.collection("online_battles").document(battleID)
-                    .update("combinedPlayersHealth", FieldValue.increment(consumableValue.toLong()))
+                val battleRef = db.collection("online_battles").document(battleID)
+                db.runTransaction { transaction ->
+                    val snapshot = transaction.get(battleRef)
+
+                    var combinedPlayersHealth = snapshot.getLong("combinedPlayersHealth")!!
+                    combinedPlayersHealth += consumableValue
+                    if (combinedPlayersHealth > totalHealth) {
+                        combinedPlayersHealth = totalHealth.toLong()
+                    }
+
+                    transaction.update(battleRef, "combinedPlayersHealth", combinedPlayersHealth)
+                    null
+                }
             }
         }
     }
 
-    suspend fun leaveGame() {
+    suspend fun removeCurrentPlayer() {
         stopGame()
         val players = _playerList.value!!.toMutableList()
         val newPlayers = players.filter { it.id != userID }
@@ -206,7 +224,7 @@ class OnlineBattleViewModel() : ViewModel() {
     }
 
     fun stopGame() {
-        // Delete battle
+        // Locally stop everything
         battleRegistration.remove()
         enemyHealthRegistration.remove()
         currentPlayersHP = -1

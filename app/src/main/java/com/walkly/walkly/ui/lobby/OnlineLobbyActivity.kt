@@ -54,6 +54,7 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
     private val inviteFriendsViewModel: FriendsViewModel by viewModels()
     private var playerCount: Int = 1
     private var isHost = false
+    private var hasQuit = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -236,6 +237,7 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
             .setOnClickListener {
                 CoroutineScope(IO).launch {
                     viewModel.removeCurrentPlayer()
+                    hasQuit = true
                     withContext(Main) {
                         leaveDialog.dismiss()
                         finish()
@@ -392,11 +394,6 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
             .asGif()
             .load(enemy.image)
             .into(enemy_image)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.removeListeners()
     }
 
     override fun onBackPressed() {

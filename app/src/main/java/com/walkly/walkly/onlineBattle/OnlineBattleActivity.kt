@@ -48,6 +48,7 @@ class OnlineBattleActivity : AppCompatActivity() {
     private val scope = CoroutineScope(Dispatchers.Main + job)
     private var playerCount: Int = 1
     private var damageFlag = true
+    private var masterID: String = "" // Can only make the edits
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -71,6 +72,7 @@ class OnlineBattleActivity : AppCompatActivity() {
             list?.let {
                 playerCount = list.size
                 updatePlayers(list as MutableList<BattlePlayer>)
+                masterID = list[0].id
                 startPlayerDamage(list)
             }
         })
@@ -91,6 +93,11 @@ class OnlineBattleActivity : AppCompatActivity() {
                 winDialog.show()
                 PlayerRepository.updatePoints(1)
             }
+        })
+
+        viewModel.totalSteps.observe(this, Observer {
+            val neededSteps = "$it / ${battle?.enemy?.health}"
+            tv_no_of_steps.text = neededSteps
         })
 
         walkedDistance.observe(this, Observer {
@@ -230,7 +237,7 @@ class OnlineBattleActivity : AppCompatActivity() {
         leaveInflater.findViewById<Button>(R.id.btn_leave)
             .setOnClickListener {
                 CoroutineScope(IO).launch {
-                    viewModel.leaveGame()
+                    viewModel.removeCurrentPlayer()
                     withContext(Dispatchers.Main) {
                         leaveDialog.dismiss()
                         finish()
@@ -255,6 +262,7 @@ class OnlineBattleActivity : AppCompatActivity() {
                 endGame()
             }
 
+        winDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         winDialog.setCancelable(false)
         winDialog.setCanceledOnTouchOutside(false)
 
@@ -270,9 +278,9 @@ class OnlineBattleActivity : AppCompatActivity() {
                 endGame()
             }
 
+        loseDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         loseDialog.setCancelable(false)
         loseDialog.setCanceledOnTouchOutside(false)
-
     }
 
     private fun initConsumables() {
@@ -291,8 +299,14 @@ class OnlineBattleActivity : AppCompatActivity() {
     }
 
     private fun endGame() {
-        val intent = Intent(this, MainActivity::class.java)
+        if (masterID == viewModel.userID) {
+            CoroutineScope(IO).launch {
+                viewModel.changeBattleState("Finished")
+            }
+        }
+
         viewModel.stopGame()
+        val intent = Intent(this, MainActivity::class.java)
         startActivity(intent)
         finish()
     }
