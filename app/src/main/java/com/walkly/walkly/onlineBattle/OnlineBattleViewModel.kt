@@ -15,6 +15,7 @@ import com.walkly.walkly.models.OnlineBattle
 import com.walkly.walkly.models.Shard
 import com.walkly.walkly.repositories.PlayerRepository
 import kotlinx.coroutines.*
+import kotlinx.coroutines.tasks.await
 import java.util.*
 import kotlin.math.floor
 
@@ -101,7 +102,10 @@ class OnlineBattleViewModel() : ViewModel() {
 
                     // Update players health
                     currentPlayersHP = battle?.combinedPlayersHealth!!.toLong()
-                    basePlayersHP = health
+                    // New player joined
+                    if (health > basePlayersHP) {
+                        basePlayersHP = health
+                    }
                     playersHpPercentage = ((currentPlayersHP * 100.0) / basePlayersHP).toInt()
                     _combinedHP.value = playersHpPercentage
                 } else {
@@ -159,7 +163,6 @@ class OnlineBattleViewModel() : ViewModel() {
     suspend fun damagePlayer() {
         while (currentPlayersHP >= 0) {
             delay(HIT_FREQUENCY)
-            Log.d(TAG, "current players hp = $currentPlayersHP")
 
             db.collection("online_battles").document(battleID)
                 .update("combinedPlayersHealth", FieldValue.increment(-enemyDamage))
@@ -177,6 +180,29 @@ class OnlineBattleViewModel() : ViewModel() {
                     .update("combinedPlayersHealth", FieldValue.increment(consumableValue.toLong()))
             }
         }
+    }
+
+    suspend fun leaveGame() {
+        stopGame()
+        val players = _playerList.value!!.toMutableList()
+        val newPlayers = players.filter { it.id != userID }
+
+        Log.d(TAG, "Players: $newPlayers")
+
+        db.collection("online_battles").document(battleID)
+            .update(
+                "players", newPlayers,
+                "playerCount", FieldValue.increment(-1)
+            ).await()
+
+        if (newPlayers.isEmpty()) {
+            changeBattleState("Finished")
+        }
+    }
+
+    suspend fun changeBattleState(state: String) {
+        db.collection("online_battles").document(battleID)
+            .update("battleState", state).await()
     }
 
     fun stopGame() {

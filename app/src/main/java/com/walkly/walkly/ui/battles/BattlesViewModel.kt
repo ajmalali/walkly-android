@@ -186,13 +186,30 @@ class BattlesViewModel : ViewModel() {
     suspend fun joinBattle(battle: OnlineBattle): OnlineBattle {
         battle.playerCount = battle.playerCount?.inc()
         battle.players.add(currentBattlePlayer)
-        battle.combinedPlayersHealth =
-            battle.combinedPlayersHealth?.plus((currentPlayer.level?.times(HP_MULTIPLAYER))?.toInt()!!)
+        // Calculate combined base health
+        var health: Long = 0
+        for (i in battle.players.indices) {
+            health += battle.players[i].level * HP_MULTIPLAYER
+        }
+
+        val battleRef = db.collection("online_battles").document(battle.id!!)
 
         // Update the battle in db
-        db.collection("online_battles")
-            .document(battle.id!!)
-            .set(battle, SetOptions.merge()).await()
+        battleRef.set(battle, SetOptions.merge()).await()
+
+        // Update combined players health
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(battleRef)
+
+            var combinedPlayersHealth = snapshot.getLong("combinedPlayersHealth")!!
+            combinedPlayersHealth += (currentPlayer.level!! * HP_MULTIPLAYER)
+            if (combinedPlayersHealth > health) {
+                combinedPlayersHealth = health
+            }
+
+            transaction.update(battleRef, "combinedPlayersHealth", combinedPlayersHealth)
+            combinedPlayersHealth.toInt()
+        }
 
         // Remove current Invite
         db.collection("invites").document(battle.id!!)
@@ -200,7 +217,7 @@ class BattlesViewModel : ViewModel() {
 
         // Add player shards
         val numShards = 4
-        val counterRef = db.collection("online_battles").document(battle.id!!)
+        val counterRef = battleRef
             .collection("enemy_damage_counter")
             .document("enemy_damage_doc")
 

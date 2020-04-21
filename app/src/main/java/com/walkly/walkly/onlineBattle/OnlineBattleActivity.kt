@@ -2,9 +2,12 @@ package com.walkly.walkly.onlineBattle
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -22,11 +25,8 @@ import com.walkly.walkly.ui.consumables.ConsumablesBottomSheetDialog
 import com.walkly.walkly.ui.consumables.ConsumablesViewModel
 import com.walkly.walkly.utilities.DistanceUtil
 import kotlinx.android.synthetic.main.activity_online_battle.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
 
 private const val TAG = "OnlineBattleActivity"
 
@@ -102,8 +102,17 @@ class OnlineBattleActivity : AppCompatActivity() {
             }
         })
 
+        btn_leave.setOnClickListener {
+            leaveDialog.show()
+        }
+
         viewModel.setupBattleListener()
         viewModel.setupEnemyHealthListener()
+    }
+
+    // Minimize the app
+    override fun onBackPressed() {
+        this.moveTaskToBack(true)
     }
 
     private fun setupEnemy(enemy: Enemy) {
@@ -115,20 +124,27 @@ class OnlineBattleActivity : AppCompatActivity() {
     }
 
     private fun setupPlayer(
-        player: BattlePlayer,
+        player: BattlePlayer?,
         nameTextView: TextView,
         avatarImage: ImageView,
         equipmentImage: ImageView
     ) {
-        nameTextView.text = player.name
+        if (player != null) {
+            equipmentImage.visibility = View.VISIBLE
+            nameTextView.text = player.name
 
-        Glide.with(this)
-            .load(player.avatarURL)
-            .into(avatarImage)
+            Glide.with(this)
+                .load(player.avatarURL)
+                .into(avatarImage)
 
-        Glide.with(this)
-            .load(player.equipmentURL)
-            .into(equipmentImage)
+            Glide.with(this)
+                .load(player.equipmentURL)
+                .into(equipmentImage)
+        } else {
+            nameTextView.text = "Waiting"
+            avatarImage.setImageResource(R.drawable.ic_account_circle_black_24dp)
+            equipmentImage.visibility = View.INVISIBLE
+        }
     }
 
     private fun updatePlayers(players: MutableList<BattlePlayer>) {
@@ -136,6 +152,13 @@ class OnlineBattleActivity : AppCompatActivity() {
         if (players.size == 4) {
             setupPlayer(
                 players[3],
+                tv_player4_name,
+                img_player4_avatar,
+                img_player4_equipment
+            )
+        } else {
+            setupPlayer(
+                null,
                 tv_player4_name,
                 img_player4_avatar,
                 img_player4_equipment
@@ -149,11 +172,25 @@ class OnlineBattleActivity : AppCompatActivity() {
                 img_player3_avatar,
                 img_player3_equipment
             )
+        } else {
+            setupPlayer(
+                null,
+                tv_player3_name,
+                img_player3_avatar,
+                img_player3_equipment
+            )
         }
 
         if (players.size >= 2) {
             setupPlayer(
                 players[1],
+                tv_player2_name,
+                img_player2_avatar,
+                img_player2_equipment
+            )
+        } else {
+            setupPlayer(
+                null,
                 tv_player2_name,
                 img_player2_avatar,
                 img_player2_equipment
@@ -184,16 +221,23 @@ class OnlineBattleActivity : AppCompatActivity() {
 
     private fun initDialogs() {
         // Leave Dialog
-        val leaveInflater = layoutInflater.inflate(R.layout.dialog_battle_leave, null)
+        val leaveInflater = layoutInflater.inflate(R.layout.dialog_leave_lobby, null)
         leaveDialog = AlertDialog.Builder(this)
             .setView(leaveInflater)
             .create()
+        leaveDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
         leaveInflater.findViewById<Button>(R.id.btn_leave)
             .setOnClickListener {
-                leaveDialog.dismiss()
-                viewModel.battleEnded = true
-                endGame()
+                CoroutineScope(IO).launch {
+                    viewModel.leaveGame()
+                    withContext(Dispatchers.Main) {
+                        leaveDialog.dismiss()
+                        finish()
+                    }
+                }
             }
+
         leaveInflater.findViewById<Button>(R.id.btn_stay)
             .setOnClickListener {
                 leaveDialog.dismiss()

@@ -9,10 +9,20 @@
     <!--  header  -->
 
     <View
+        android:id="@+id/rect_enemy"
+        android:layout_width="match_parent"
+        android:layout_height="370dp"
+        android:background="@drawable/gradient_purple_left_to_right_rounded"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.25"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/rect_player" />
+
+    <View
         android:id="@+id/rect_player"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:background="@drawable/gradient_left_to_right"
+        android:background="@drawable/gradient_left_to_right_rounded"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.25"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +39,7 @@
         app:layout_constraintEnd_toStartOf="@id/img_player2_avatar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/rect_player"
-        app:srcCompat="@drawable/invfriend"
+        app:srcCompat="@drawable/ic_account_circle_black_24dp"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
@@ -59,7 +69,7 @@
         app:layout_constraintEnd_toStartOf="@id/img_player3_avatar"
         app:layout_constraintStart_toEndOf="@id/img_player1_avatar"
         app:layout_constraintTop_toTopOf="@+id/img_player1_avatar"
-        app:srcCompat="@drawable/invfriend"
+        app:srcCompat="@drawable/ic_account_circle_black_24dp"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
@@ -89,7 +99,7 @@
         app:layout_constraintEnd_toStartOf="@id/img_player4_avatar"
         app:layout_constraintStart_toEndOf="@id/img_player2_avatar"
         app:layout_constraintTop_toTopOf="@+id/img_player2_avatar"
-        app:srcCompat="@drawable/invfriend"
+        app:srcCompat="@drawable/ic_account_circle_black_24dp"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
@@ -143,15 +153,7 @@
 
     <!--  enemy  -->
 
-    <View
-        android:id="@+id/rect_enemy"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:background="@drawable/gradient_purlpe_left_to_right"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.25"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rect_player" />
+    <!--  battle info  -->
 
     <ImageView
         android:id="@+id/img_enemy_avatar"
@@ -160,7 +162,7 @@
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/rect_enemy"
+        app:layout_constraintTop_toBottomOf="@+id/rect_player"
         app:srcCompat="@drawable/boss2"
         tools:srcCompat="@tools:sample/avatars" />
 
@@ -170,12 +172,10 @@
         android:text="@string/vs"
         android:textColor="#fff"
         android:textSize="70sp"
-        app:layout_constraintBottom_toTopOf="@id/rect_enemy"
+        app:layout_constraintBottom_toBottomOf="@+id/rect_player"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rect_player" />
-
-    <!--  battle info  -->
+        app:layout_constraintTop_toBottomOf="@+id/rect_player" />
 
     <TextView
         android:id="@+id/tv_enemy_hp"
@@ -255,7 +255,7 @@
         android:id="@+id/use_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="76dp"
         android:paddingHorizontal="32dp"
         android:paddingVertical="8dp"
         android:text="@string/use_item"
@@ -263,6 +263,23 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_leave"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/btn_cancel"
+        android:paddingHorizontal="32dp"
+        android:paddingVertical="8dp"
+        android:text="Leave"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/use_item"
+        app:layout_constraintStart_toStartOf="@+id/use_item"
+        app:layout_constraintTop_toBottomOf="@+id/use_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
