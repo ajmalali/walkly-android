@@ -1,24 +1,19 @@
 package com.walkly.walkly
 
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
-import android.content.SharedPreferences
 import android.content.res.ColorStateList
 import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
 import android.widget.Button
 import android.widget.EditText
-import android.widget.LinearLayout
-import androidx.lifecycle.Observer
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -26,20 +21,15 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
-import com.google.firebase.iid.FirebaseInstanceId
 import com.walkly.walkly.auth.LoginActivity
-import com.walkly.walkly.models.Feedback
 import com.walkly.walkly.repositories.ConsumablesRepository
 import com.walkly.walkly.repositories.EquipmentRepository
 import com.walkly.walkly.repositories.PlayerRepository
 import com.walkly.walkly.utilities.TutorialUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
-import kotlinx.android.synthetic.main.tutorial_box.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
-import java.util.*
-import kotlin.collections.HashMap
 
 // max of 3 stamina points
 private const val MAX_STAMINA = 300
@@ -209,9 +199,9 @@ class MainActivity : AppCompatActivity() {
             stamina.let {
                 if (stamina <= 100) {
                     // no balls
-                    view_energy_ball_3.visibility = View.INVISIBLE
-                    view_energy_ball_2.visibility = View.INVISIBLE
-                    view_energy_ball_1.visibility = View.INVISIBLE
+                    view_energy_ball_3.setBackgroundResource(R.drawable.staminacircleempty)
+                    view_energy_ball_2.setBackgroundResource(R.drawable.staminacircleempty)
+                    view_energy_ball_1.setBackgroundResource(R.drawable.staminacircleempty)
 
                     // player cannot join a battle
                     join_button.isEnabled = false
@@ -220,15 +210,15 @@ class MainActivity : AppCompatActivity() {
                     join_button.isEnabled = true
                     join_button.background.alpha = 255
                     if (stamina >= 300) {
-                        view_energy_ball_3.visibility = View.VISIBLE
+                        view_energy_ball_3.setBackgroundResource(R.drawable.staminacircle)
                     }
 
                     if (stamina >= 200) {
-                        view_energy_ball_2.visibility = View.VISIBLE
+                        view_energy_ball_2.setBackgroundResource(R.drawable.staminacircle)
                     }
 
                     if (stamina >= 100) {
-                        view_energy_ball_1.visibility = View.VISIBLE
+                        view_energy_ball_1.setBackgroundResource(R.drawable.staminacircle)
                     }
                 }
             }

@@ -129,8 +129,8 @@
                 android:id="@+id/view_energy_ball_1"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:background="@drawable/staminacircle"
-                android:visibility="invisible"
+                android:background="@drawable/staminacircleempty"
+                android:visibility="visible"
                 app:layout_constraintStart_toStartOf="@id/progressBar"
                 app:layout_constraintTop_toTopOf="@id/tv_energy" />
 
@@ -139,8 +139,8 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
-                android:background="@drawable/staminacircle"
-                android:visibility="invisible"
+                android:background="@drawable/staminacircleempty"
+                android:visibility="visible"
                 app:layout_constraintStart_toEndOf="@id/view_energy_ball_1"
                 app:layout_constraintTop_toTopOf="@id/tv_energy" />
 
@@ -149,8 +149,8 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
-                android:background="@drawable/staminacircle"
-                android:visibility="invisible"
+                android:background="@drawable/staminacircleempty"
+                android:visibility="visible"
                 app:layout_constraintStart_toEndOf="@id/view_energy_ball_2"
                 app:layout_constraintTop_toTopOf="@id/tv_energy" />
 
@@ -174,5 +174,5 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_gravity="start"
-        app:menu="@menu/drawer_menu" />
+        app:menu="@menu/drawer_menu"/>
 </androidx.drawerlayout.widget.DrawerLayout>
