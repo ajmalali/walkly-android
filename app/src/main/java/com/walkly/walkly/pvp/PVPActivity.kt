@@ -15,14 +15,12 @@ import com.walkly.walkly.models.PVPBattle
 import com.walkly.walkly.ui.consumables.ConsumablesBottomSheetDialog
 import com.walkly.walkly.ui.consumables.ConsumablesViewModel
 import com.walkly.walkly.utilities.DistanceUtil
-import kotlinx.android.synthetic.main.activity_online_battle.*
 import kotlinx.android.synthetic.main.activity_pvp_battle.*
 import kotlinx.android.synthetic.main.activity_pvp_battle.btn_leave
 import kotlinx.android.synthetic.main.activity_pvp_battle.use_item
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 
 private const val TAG = "PVPActivity"
 
@@ -78,6 +76,14 @@ class PVPActivity : AppCompatActivity() {
             }
         })
 
+        viewModel.battle.observe(this, Observer { battle ->
+            if (battle.host == null) {
+                endGame()
+            } else if (battle.opponent == null) {
+
+            }
+        })
+
         walkedDistance.observe(this, Observer {
             it?.let {
                 scope.launch {
@@ -98,6 +104,7 @@ class PVPActivity : AppCompatActivity() {
             setupPlayers(battle)
             viewModel.battleID = battle.id
             viewModel.setupHealthListeners(battle.host, battle.opponent)
+            viewModel.setupBattleListener()
         }
     }
 
@@ -141,8 +148,14 @@ class PVPActivity : AppCompatActivity() {
             .create()
         leaveInflater.findViewById<Button>(R.id.btn_leave)
             .setOnClickListener {
-                leaveDialog.dismiss()
-                endGame()
+                CoroutineScope(IO).launch {
+                    viewModel.stopGame()
+                    viewModel.removeCurrentPlayer()
+                    withContext(Main) {
+                        leaveDialog.dismiss()
+                        endGame()
+                    }
+                }
             }
         leaveInflater.findViewById<Button>(R.id.btn_stay)
             .setOnClickListener {

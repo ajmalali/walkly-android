@@ -9,7 +9,6 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.toObject
-import com.google.firebase.firestore.ktx.toObjects
 import com.walkly.walkly.models.BattlePlayer
 import com.walkly.walkly.models.OnlineBattle
 import com.walkly.walkly.models.Shard
@@ -17,11 +16,10 @@ import com.walkly.walkly.repositories.PlayerRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
 import java.util.*
-import kotlin.math.floor
 
 private const val TAG = "OnlineBattleViewModel"
 
-class OnlineBattleViewModel() : ViewModel() {
+class OnlineBattleViewModel : ViewModel() {
 
     var battleEnded: Boolean = false
     var battleID: String = ""

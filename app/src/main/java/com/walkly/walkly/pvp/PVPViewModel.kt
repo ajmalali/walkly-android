@@ -10,8 +10,10 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.toObject
 import com.walkly.walkly.models.BattlePlayer
+import com.walkly.walkly.models.PVPBattle
 import com.walkly.walkly.models.Shard
 import com.walkly.walkly.repositories.PlayerRepository
+import kotlinx.coroutines.tasks.await
 import java.util.*
 
 private const val TAG = "PVPViewModel"
@@ -46,14 +48,18 @@ class PVPViewModel : ViewModel() {
     val opponentHP: LiveData<Int>
         get() = _opponentHP
 
+    private val _battle = MutableLiveData<PVPBattle>()
+    val battle: LiveData<PVPBattle>
+        get() = _battle
+
     private lateinit var hostHealthListener: ListenerRegistration
     private lateinit var opponentHealthListener: ListenerRegistration
+    private lateinit var battleListener: ListenerRegistration
 
     fun setupHealthListeners(
         host: BattlePlayer?,
         opponent: BattlePlayer?
     ) {
-
         baseHostHP = host?.level?.times(HP_MULTIPLAYER)!!
         baseOpponentHP = opponent?.level?.times(HP_MULTIPLAYER)!!
 
@@ -124,6 +130,18 @@ class PVPViewModel : ViewModel() {
 
     }
 
+    fun setupBattleListener() {
+        battleListener = db.collection("pvp_battles").document(battleID)
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e)
+                    return@addSnapshotListener
+                }
+
+                _battle.value = snapshot?.toObject<PVPBattle>()
+            }
+    }
+
     fun damageOpponent(steps: Long) {
         val docID = (shardId++ % 4).toString()
         db.collection("pvp_battles")
@@ -164,5 +182,14 @@ class PVPViewModel : ViewModel() {
         // TODO: Delete battle
         hostHealthListener.remove()
         opponentHealthListener.remove()
+        battleListener.remove()
+    }
+
+    suspend fun removeCurrentPlayer() {
+        if (_battle.value?.host?.id == currentPlayer.id) {
+            db.collection("pvp_battles").document(battleID).update("host", null).await()
+        } else {
+            db.collection("pvp_battles").document(battleID).update("opponent", null).await()
+        }
     }
 }
