@@ -27,7 +27,8 @@ data class Player(
     var lastUpdate: String? = null,
     var photoURL: String? = null,
     var deviceToken: String = "",
-    var CompletedQuests: List<String> = listOf()
+    var CompletedQuests: List<String> = listOf(),
+    var steps: Long = 0
 ): Parcelable {
 
     @IgnoredOnParcel
