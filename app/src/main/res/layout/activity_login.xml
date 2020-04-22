@@ -35,7 +35,7 @@
             android:id="@+id/status"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
@@ -52,14 +52,15 @@
             android:layout_weight="1"
             android:background="@drawable/auth_input"
             android:inputType="textEmailAddress"
-            android:padding="4dp"
-            android:paddingLeft="8dp"/>
+            android:padding="6dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp" />
 
         <TextView
             android:id="@+id/detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
@@ -75,8 +76,9 @@
             android:layout_weight="1"
             android:background="@drawable/auth_input"
             android:inputType="textPassword"
-            android:padding="4dp"
-            android:paddingLeft="8dp"/>
+            android:padding="6dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -96,6 +98,7 @@
             android:layout_height="wrap_content"
             android:background="@drawable/button_selector"
             android:gravity="center"
+            android:padding="4dp"
             android:text="@string/sign_in"
             android:textColor="#FFFFFF"
             android:textSize="24sp" />

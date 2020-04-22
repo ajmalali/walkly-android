@@ -15,6 +15,7 @@
         android:text="@string/signing_up"
         android:textColor="@color/white"
         android:textSize="32sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -34,7 +35,7 @@
             android:id="@+id/name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
@@ -47,18 +48,19 @@
             android:id="@+id/fieldName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="4dp"
-            android:paddingLeft="8dp"
             android:layout_marginBottom="32dp"
+            android:layout_weight="1"
+            android:background="@drawable/auth_input"
             android:inputType="textPersonName"
-            android:background="@drawable/auth_input"/>
+            android:padding="6dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp" />
 
         <TextView
             android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
@@ -71,18 +73,19 @@
             android:id="@+id/fieldEmail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:padding="4dp"
-            android:paddingLeft="8dp"
             android:layout_marginBottom="32dp"
+            android:layout_weight="1"
+            android:background="@drawable/auth_input"
             android:inputType="textEmailAddress"
-            android:background="@drawable/auth_input"/>
+            android:padding="6dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp" />
 
         <TextView
             android:id="@+id/detail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:layout_weight="1"
@@ -96,10 +99,11 @@
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:padding="4dp"
-            android:paddingLeft="8dp"
+            android:background="@drawable/auth_input"
             android:inputType="textPassword"
-            android:background="@drawable/auth_input"/>
+            android:padding="6dp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp" />
     </LinearLayout>
 
     <LinearLayout
@@ -118,9 +122,10 @@
             android:layout_height="wrap_content"
             android:background="@drawable/button_selector"
             android:gravity="center"
+            android:padding="4dp"
             android:text="@string/create_account"
             android:textColor="#FFFFFF"
-            android:textSize="24sp"/>
+            android:textSize="24sp" />
     </LinearLayout>
 
 
