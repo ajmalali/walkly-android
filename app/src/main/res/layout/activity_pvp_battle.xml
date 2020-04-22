@@ -9,21 +9,33 @@
     <!--  header  -->
 
     <View
-        android:id="@+id/rect_host"
+        android:id="@+id/rect_opponent"
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:background="@drawable/gradient_left_to_right"
+        android:layout_height="390dp"
+        android:background="@drawable/gradient_purple_left_to_right_rounded"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHeight_percent="0.25"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/rect_host" />
+
+    <View
+        android:id="@+id/rect_host"
+        android:layout_width="match_parent"
+        android:layout_height="190dp"
+        android:background="@drawable/gradient_left_to_right_rounded"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHeight_percent="0.25"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageView
         android:id="@+id/img_pvp_host_avatar"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginStart="25dp"
+        android:layout_marginTop="25dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/rect_host"
         tools:srcCompat="@tools:sample/avatars" />
@@ -44,38 +56,29 @@
         android:text="Host"
         android:textAlignment="center"
         android:textColor="#fff"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/img_pvp_host_avatar"
         app:layout_constraintStart_toStartOf="@+id/img_pvp_host_avatar"
         app:layout_constraintTop_toBottomOf="@+id/img_pvp_host_avatar"
         tools:text="player_name" />
 
-    <View
-        android:id="@+id/rect_opponent"
-        android:layout_width="416dp"
-        android:layout_height="200dp"
-        android:background="@drawable/gradient_purlpe_left_to_right"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHeight_percent="0.25"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/rect_host" />
-
     <ImageView
         android:id="@+id/img_pvp_opponent_avatar"
-        android:layout_width="150dp"
-        android:layout_height="150dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="16dp"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:layout_marginTop="25dp"
+        android:layout_marginEnd="25dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/rect_opponent"
+        app:layout_constraintTop_toBottomOf="@+id/rect_host"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
         android:id="@+id/img_pvp_opponent_equipment"
         android:layout_width="56dp"
         android:layout_height="56dp"
-        app:layout_constraintStart_toStartOf="@+id/img_pvp_opponent_avatar"
         app:layout_constraintBottom_toBottomOf="@id/img_pvp_opponent_avatar"
+        app:layout_constraintStart_toStartOf="@+id/img_pvp_opponent_avatar"
         tools:layout_editor_absoluteY="293dp"
         tools:srcCompat="@tools:sample/avatars" />
 
@@ -87,11 +90,14 @@
         android:text="Host"
         android:textAlignment="center"
         android:textColor="#fff"
+        android:textSize="16sp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="@+id/img_pvp_opponent_avatar"
         app:layout_constraintStart_toStartOf="@+id/img_pvp_opponent_avatar"
         app:layout_constraintTop_toBottomOf="@+id/img_pvp_opponent_avatar"
         tools:text="player_name" />
+
+    <!--  battle info  -->
 
     <TextView
         android:layout_width="wrap_content"
@@ -99,18 +105,17 @@
         android:text="@string/vs"
         android:textColor="#fff"
         android:textSize="70sp"
-        app:layout_constraintBottom_toTopOf="@id/rect_opponent"
+        app:layout_constraintBottom_toBottomOf="@+id/rect_host"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.501"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rect_host" />
-
-    <!--  battle info  -->
 
     <TextView
         android:id="@+id/tv_host_hp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="60dp"
+        android:layout_marginTop="40dp"
         android:text="Host HP"
         android:textColor="@color/buttonPrimary"
         android:textStyle="bold"
@@ -173,7 +178,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="500 / 1000"
+        android:text="0 / 0"
         android:textColor="#FF9067"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
@@ -181,17 +186,34 @@
         app:layout_constraintTop_toBottomOf="@id/tv_steps_label" />
 
     <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/pvp_use_item"
+        android:id="@+id/use_item"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="64dp"
+        android:layout_marginBottom="76dp"
         android:paddingHorizontal="32dp"
         android:paddingVertical="8dp"
         android:text="@string/use_item"
-        android:textSize="14sp"
+        android:textSize="18sp"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/btn_leave"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:background="@drawable/btn_cancel"
+        android:paddingHorizontal="32dp"
+        android:paddingVertical="8dp"
+        android:text="Leave"
+        android:textAlignment="center"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/use_item"
+        app:layout_constraintStart_toStartOf="@+id/use_item"
+        app:layout_constraintTop_toBottomOf="@+id/use_item" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

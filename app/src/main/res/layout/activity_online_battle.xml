@@ -58,6 +58,7 @@
         android:textAlignment="center"
         android:textColor="#fff"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/img_player1_avatar"
         app:layout_constraintStart_toStartOf="@id/img_player1_avatar"
         app:layout_constraintTop_toBottomOf="@id/img_player1_avatar"
         tools:text="player_name" />
@@ -88,6 +89,7 @@
         android:textAlignment="center"
         android:textColor="#fff"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/img_player2_avatar"
         app:layout_constraintStart_toStartOf="@id/img_player2_avatar"
         app:layout_constraintTop_toBottomOf="@id/img_player2_avatar"
         tools:text="player_name" />
@@ -117,6 +119,7 @@
         android:textAlignment="center"
         android:textColor="#fff"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/img_player3_avatar"
         app:layout_constraintStart_toStartOf="@id/img_player3_avatar"
         app:layout_constraintTop_toBottomOf="@id/img_player3_avatar"
         tools:text="player name" />
@@ -147,6 +150,7 @@
         android:textAlignment="center"
         android:textColor="#fff"
         android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/img_player4_avatar"
         app:layout_constraintStart_toStartOf="@id/img_player4_avatar"
         app:layout_constraintTop_toBottomOf="@id/img_player4_avatar"
         tools:text="player name" />

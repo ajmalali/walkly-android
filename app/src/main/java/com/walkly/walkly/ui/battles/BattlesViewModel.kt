@@ -265,6 +265,14 @@ class BattlesViewModel : ViewModel() {
             .document("opponent_damage_doc")
 
         db.runBatch { batch ->
+            val inviteDocument = db.collection("invites").document(battle.id)
+            batch.set(
+                inviteDocument, BattleInvite(
+                    battleID = battle.id,
+                    hostName = currentPlayer.name!!,
+                    type = "pvp"
+                )
+            )
             for (i in 0 until numShards) {
                 val hostShardDoc = hostDamageRef.collection("shards")
                     .document(i.toString())

@@ -140,7 +140,7 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
             val intent = Intent(activity, PVPActivity::class.java)
             intent.putExtra("battle", it)
             startActivity(intent)
-            activity?.finish()
+//            activity?.finish()
         })
 
         battlesViewModel.getInvites()
@@ -161,7 +161,7 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
                 intent.putExtra("battle", battle)
                 loadingDialog.dismiss()
                 startActivity(intent)
-                activity?.finish()
+//                activity?.finish()
             }
         }
 
