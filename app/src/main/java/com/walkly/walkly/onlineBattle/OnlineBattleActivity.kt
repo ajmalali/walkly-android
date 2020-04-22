@@ -7,6 +7,7 @@ import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.view.LayoutInflater
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
@@ -19,6 +20,7 @@ import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import com.walkly.walkly.models.BattlePlayer
 import com.walkly.walkly.models.Enemy
+import com.walkly.walkly.models.Equipment
 import com.walkly.walkly.models.OnlineBattle
 import com.walkly.walkly.repositories.PlayerRepository
 import com.walkly.walkly.ui.consumables.ConsumablesBottomSheetDialog
@@ -27,6 +29,7 @@ import com.walkly.walkly.utilities.DistanceUtil
 import kotlinx.android.synthetic.main.activity_online_battle.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 
 private const val TAG = "OnlineBattleActivity"
 
@@ -38,6 +41,7 @@ class OnlineBattleActivity : AppCompatActivity() {
     private lateinit var loseDialog: AlertDialog
     private lateinit var leaveDialog: AlertDialog
     private lateinit var winDialog: AlertDialog
+    private lateinit var winInflater: View
 
     private lateinit var consumablesBottomSheetDialog: ConsumablesBottomSheetDialog
 
@@ -49,6 +53,7 @@ class OnlineBattleActivity : AppCompatActivity() {
     private var playerCount: Int = 1
     private var damageFlag = true
     private var masterID: String = "" // Can only make the edits
+    private var battleEnded = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,10 +92,16 @@ class OnlineBattleActivity : AppCompatActivity() {
 
         viewModel.enemyHP.observe(this, Observer {
             bar_enemy_hp.progress = it.toInt()
-            if (it <= 0) {
-//                enemy.level.value?.toInt()?.let { it1 -> Player.updatePoints(it1) }
-//                getReward()
-                winDialog.show()
+            if (it <= 0 && !battleEnded) {
+                battleEnded = true
+                CoroutineScope(IO).launch {
+                    val equipment = viewModel.getReward()
+                    withContext(Main) {
+                        setupReward(equipment)
+                        winDialog.show()
+                    }
+                }
+
                 PlayerRepository.updatePoints(1)
             }
         })
@@ -115,6 +126,16 @@ class OnlineBattleActivity : AppCompatActivity() {
 
         viewModel.setupBattleListener()
         viewModel.setupEnemyHealthListener()
+    }
+
+    private fun setupReward(equipment: Equipment) {
+        Glide.with(this)
+            .load(equipment.image)
+            .into(winInflater.findViewById(R.id.item_image))
+
+        winInflater.findViewById<TextView>(R.id.item_name).text = equipment.name
+        winInflater.findViewById<TextView>(R.id.item_level).text = "Level: ${equipment.level}"
+        winInflater.findViewById<TextView>(R.id.item_value).text = "+ ${equipment.value} damage"
     }
 
     // Minimize the app
@@ -251,7 +272,7 @@ class OnlineBattleActivity : AppCompatActivity() {
             }
 
         // Win Dialog
-        val winInflater = layoutInflater.inflate(R.layout.dialog_battle_won, null)
+        winInflater = layoutInflater.inflate(R.layout.dialog_battle_won, null)
         winDialog = AlertDialog.Builder(this)
             .setView(winInflater)
             .create()

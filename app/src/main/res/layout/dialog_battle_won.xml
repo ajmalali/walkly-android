@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/gradient_inverted_rounded"
@@ -36,70 +37,76 @@
 
     <ImageView
         android:id="@+id/item_image"
-        android:layout_width="100dp"
+        android:layout_width="150dp"
         android:layout_height="150dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/item_name"
-        app:layout_constraintTop_toBottomOf="@id/textView2"
-        app:layout_constraintBottom_toTopOf="@id/btn_collect"
-        android:layout_marginRight="16dp"
+        android:layout_marginStart="70dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
         android:src="@drawable/ic_item"
-        />
+        app:layout_constraintBottom_toTopOf="@+id/btn_collect"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <TextView
         android:id="@+id/item_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/item_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textView2"
-        app:layout_constraintBottom_toTopOf="@id/item_level"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="@color/buttonPrimary"
+        android:layout_marginBottom="20dp"
         android:text="item name"
-        />
+        android:textAlignment="center"
+        android:textColor="@color/buttonPrimary"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/item_level"
+        app:layout_constraintEnd_toEndOf="@+id/item_level"
+        app:layout_constraintStart_toStartOf="@+id/item_level" />
+
 
     <TextView
         android:id="@+id/item_level"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/item_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/item_name"
-        app:layout_constraintBottom_toTopOf="@id/item_value"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="@color/buttonPrimary"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="70dp"
+        android:layout_marginBottom="16dp"
         android:text="item level"
-        />
+        android:textAlignment="center"
+        android:textColor="@color/buttonPrimary"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/btn_collect"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/item_image"
+        app:layout_constraintTop_toBottomOf="@+id/textView2" />
 
     <TextView
         android:id="@+id/item_value"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintStart_toEndOf="@id/item_image"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/item_level"
-        app:layout_constraintBottom_toTopOf="@id/btn_collect"
-        android:textSize="16sp"
-        android:textStyle="bold"
-        android:textColor="@color/buttonPrimary"
+        android:layout_marginTop="20dp"
         android:text="item value"
-        />
-
+        android:textAlignment="center"
+        android:textColor="@color/buttonPrimary"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="@+id/item_level"
+        app:layout_constraintStart_toStartOf="@+id/item_level"
+        app:layout_constraintTop_toBottomOf="@+id/item_level" />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_collect"
         android:layout_width="120dp"
         android:layout_height="30dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:layout_marginBottom="48dp"
+        android:layout_marginBottom="32dp"
         android:gravity="center"
+        android:padding="4sp"
+        android:text="Collect"
+        android:textSize="16sp"
         android:textStyle="bold"
-        android:text="Collect Item"
-        />
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

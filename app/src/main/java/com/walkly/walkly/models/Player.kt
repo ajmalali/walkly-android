@@ -28,11 +28,14 @@ data class Player(
     var photoURL: String? = null,
     var deviceToken: String = "",
     var CompletedQuests: List<String> = listOf(),
-    var steps: Long = 0
-): Parcelable {
+    var steps: Long = 0,
+    var friends: List<Friend>? = listOf(),
+    var friendRequests: List<String>? = listOf()
+) : Parcelable {
 
     @IgnoredOnParcel
-    @get:Exclude var id: String? = null
+    @get:Exclude
+    var id: String? = null
 
     fun joinBattle() {
         stamina = stamina?.minus(100)

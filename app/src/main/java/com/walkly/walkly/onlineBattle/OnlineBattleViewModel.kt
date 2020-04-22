@@ -10,6 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.toObject
 import com.walkly.walkly.models.BattlePlayer
+import com.walkly.walkly.models.Equipment
 import com.walkly.walkly.models.OnlineBattle
 import com.walkly.walkly.models.Shard
 import com.walkly.walkly.repositories.PlayerRepository
@@ -149,6 +150,23 @@ class OnlineBattleViewModel : ViewModel() {
                     Log.d(TAG, "Current data: null")
                 }
             }
+    }
+
+    suspend fun getReward(): Equipment {
+        val equipmentList = mutableListOf<Equipment>()
+        val snapshot = db.collection("equipments").get().await()
+        for (document in snapshot) {
+            val equipment = document.toObject<Equipment>()
+            equipmentList.add(equipment.addId(document.id))
+        }
+
+        val index = (0 until equipmentList.size).random()
+        val reward = equipmentList[index]
+
+        db.collection("users").document(currentPlayer.id!!)
+            .collection("equipments").document(reward.id!!).set(reward)
+
+        return reward
     }
 
     // Sets the steps value in the shard of the player position.

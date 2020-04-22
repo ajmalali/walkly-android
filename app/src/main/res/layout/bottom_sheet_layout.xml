@@ -10,7 +10,7 @@
     android:orientation="horizontal"
     android:padding="16dp"
     app:behavior_hideable="true"
-    app:behavior_peekHeight="180dp"
+    app:behavior_peekHeight="200dp"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <LinearLayout
@@ -63,7 +63,8 @@
             android:gravity="center"
             android:paddingTop="4dp"
             android:paddingBottom="4dp"
-            android:text="Join" />
+            android:text="Fight"
+            android:textStyle="bold" />
 
     </LinearLayout>
 
