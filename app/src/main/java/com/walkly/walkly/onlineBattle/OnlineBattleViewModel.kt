@@ -172,7 +172,6 @@ class OnlineBattleViewModel : ViewModel() {
             db.collection("online_battles").document(battleID)
                 .update("combinedPlayersHealth", FieldValue.increment(-enemyDamage))
         }
-
     }
 
     // TODO: Make this faster for health
@@ -189,23 +188,12 @@ class OnlineBattleViewModel : ViewModel() {
                             FieldValue.increment(consumableValue.toLong())
                         )
                 } else {
-                    val battleRef = db.collection("online_battles").document(battleID)
-                    db.runTransaction { transaction ->
-                        val snapshot = transaction.get(battleRef)
-
-                        var combinedPlayersHealth = snapshot.getLong("combinedPlayersHealth")!!
-                        combinedPlayersHealth += consumableValue
-                        if (combinedPlayersHealth > totalHealth) {
-                            combinedPlayersHealth = totalHealth.toLong()
-                        }
-
-                        transaction.update(
-                            battleRef,
+                    val difference = (currentPlayersHP + consumableValue) - basePlayersHP
+                    db.collection("online_battles").document(battleID)
+                        .update(
                             "combinedPlayersHealth",
-                            combinedPlayersHealth
+                            FieldValue.increment(consumableValue - difference)
                         )
-                        null
-                    }
                 }
 
             }
