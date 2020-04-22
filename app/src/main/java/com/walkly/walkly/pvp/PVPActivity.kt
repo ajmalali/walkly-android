@@ -2,9 +2,12 @@ package com.walkly.walkly.pvp
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -16,10 +19,11 @@ import com.walkly.walkly.ui.consumables.ConsumablesBottomSheetDialog
 import com.walkly.walkly.ui.consumables.ConsumablesViewModel
 import com.walkly.walkly.utilities.DistanceUtil
 import kotlinx.android.synthetic.main.activity_pvp_battle.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.android.synthetic.main.activity_pvp_battle.btn_leave
+import kotlinx.android.synthetic.main.activity_pvp_battle.use_item
+import kotlinx.coroutines.*
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.Dispatchers.Main
 
 private const val TAG = "PVPActivity"
 
@@ -31,6 +35,7 @@ class PVPActivity : AppCompatActivity() {
     private lateinit var loseDialog: AlertDialog
     private lateinit var leaveDialog: AlertDialog
     private lateinit var winDialog: AlertDialog
+    private lateinit var opponentLeftDialog: AlertDialog
 
     private lateinit var consumablesBottomSheetDialog: ConsumablesBottomSheetDialog
 
@@ -75,6 +80,12 @@ class PVPActivity : AppCompatActivity() {
             }
         })
 
+        viewModel.battle.observe(this, Observer { battle ->
+            if (battle.host == null || battle.opponent == null) {
+                opponentLeftDialog.show()
+            }
+        })
+
         walkedDistance.observe(this, Observer {
             it?.let {
                 scope.launch {
@@ -87,10 +98,27 @@ class PVPActivity : AppCompatActivity() {
             }
         })
 
+        if (battle.host?.id == viewModel.userID) {
+            viewModel.hostSteps.observe(this, Observer {
+                val steps = "$it / ${viewModel.baseOpponentHP}"
+                tv_no_of_steps.text = steps
+            })
+        } else {
+            viewModel.opponentSteps.observe(this, Observer {
+                val steps = "$it / ${viewModel.baseHostHP}"
+                tv_no_of_steps.text = steps
+            })
+        }
+
+        btn_leave.setOnClickListener {
+            leaveDialog.show()
+        }
+
         battle.let {
             setupPlayers(battle)
             viewModel.battleID = battle.id
             viewModel.setupHealthListeners(battle.host, battle.opponent)
+            viewModel.setupBattleListener()
         }
     }
 
@@ -121,22 +149,36 @@ class PVPActivity : AppCompatActivity() {
 
     }
 
+    // Minimize the app
+    override fun onBackPressed() {
+        this.moveTaskToBack(true)
+    }
+
     private fun initDialogs() {
         // Leave Dialog
-//        val leaveInflater = layoutInflater.inflate(R.layout.dialog_battle_leave, null)
-//        leaveDialog = AlertDialog.Builder(this)
-//            .setView(leaveInflater)
-//            .create()
-//        leaveInflater.findViewById<Button>(R.id.btn_leave)
-//            .setOnClickListener {
-//                leaveDialog.dismiss()
-////                viewModel.battleEnded = true
-//                endGame()
-//            }
-//        leaveInflater.findViewById<Button>(R.id.btn_stay)
-//            .setOnClickListener {
-//                leaveDialog.dismiss()
-//            }
+        val leaveInflater = layoutInflater.inflate(R.layout.dialog_leave_lobby, null)
+        leaveDialog = AlertDialog.Builder(this)
+            .setView(leaveInflater)
+            .create()
+        leaveInflater.findViewById<TextView>(R.id.textView3).text =
+            "Your opponent will take your equipment!"
+        leaveInflater.findViewById<Button>(R.id.btn_leave)
+            .setOnClickListener {
+                CoroutineScope(IO).launch {
+                    viewModel.stopGame()
+                    viewModel.removeCurrentPlayer()
+                    withContext(Main) {
+                        leaveDialog.dismiss()
+                        endGame()
+                    }
+                }
+            }
+        leaveInflater.findViewById<Button>(R.id.btn_stay)
+            .setOnClickListener {
+                leaveDialog.dismiss()
+            }
+
+        leaveDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
 
         // Win Dialog
         val winInflater = layoutInflater.inflate(R.layout.dialog_battle_won, null)
@@ -150,6 +192,7 @@ class PVPActivity : AppCompatActivity() {
                 endGame()
             }
 
+        winDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         winDialog.setCancelable(false)
         winDialog.setCanceledOnTouchOutside(false)
 
@@ -165,9 +208,25 @@ class PVPActivity : AppCompatActivity() {
                 endGame()
             }
 
+        loseDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         loseDialog.setCancelable(false)
         loseDialog.setCanceledOnTouchOutside(false)
 
+        // Lose Dialog
+        val leftInflater = layoutInflater.inflate(R.layout.dialog_pvp_opponent_left, null)
+        opponentLeftDialog = AlertDialog.Builder(this)
+            .setView(leftInflater)
+            .create()
+
+        leftInflater.findViewById<Button>(R.id.btn_leave)
+            .setOnClickListener {
+                opponentLeftDialog.dismiss()
+                endGame()
+            }
+
+        opponentLeftDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        opponentLeftDialog.setCancelable(false)
+        opponentLeftDialog.setCanceledOnTouchOutside(false)
     }
 
     private fun initConsumables() {
@@ -182,7 +241,7 @@ class PVPActivity : AppCompatActivity() {
             consumablesViewModel.removeSelectedConsumable()
         })
 
-        pvp_use_item.setOnClickListener {
+        use_item.setOnClickListener {
             consumablesBottomSheetDialog.show(
                 supportFragmentManager,
                 ConsumablesBottomSheetDialog.TAG

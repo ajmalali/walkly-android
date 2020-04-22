@@ -1,5 +1,6 @@
 package com.walkly.walkly.ui.lobby
 
+import android.nfc.Tag
 import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -59,26 +60,9 @@ class LobbyViewModel : ViewModel() {
             }
     }
 
-    fun invFriend(battleID: String) {
-        Log.d(TAG, battleID)
-        val players = hashMapOf(
-            "players" to arrayListOf("h")
-        )
-        val invRef = db.collection("invites")
-        val task = invRef.document(battleID).get().addOnCompleteListener {
-            if (it.isSuccessful) {
-                val result = it.result
-                if (result != null && result.exists()) {
-                    invRef.document(battleID).update("players", FieldValue.arrayUnion("xx"))
-                        .addOnSuccessListener { Log.d(TAG, "document successfully updated!") }
-                        .addOnFailureListener { e -> Log.w(TAG, "trying to update but failed", e) }
-                } else {
-                    invRef.document(battleID).set(players)
-                        .addOnSuccessListener { Log.d(TAG, "made a documebnt!") }
-                        .addOnFailureListener { e -> Log.w(TAG, "trying to create a document", e) }
-                }
-            }
-        }
+    suspend fun inviteFriend(friendID: String) {
+        db.collection("invites").document(battleID)
+            .update("toIDs", FieldValue.arrayUnion(friendID)).await()
     }
 
     suspend fun changeBattleState(state: String) {
@@ -97,6 +81,7 @@ class LobbyViewModel : ViewModel() {
             if (player.id == userID) {
                 player.equipmentURL = equipment.image!!
                 currentPlayer.currentEquipment = equipment
+                break
             }
         }
 
@@ -104,7 +89,30 @@ class LobbyViewModel : ViewModel() {
             .update("players", players).await()
     }
 
+    suspend fun removeCurrentPlayer() {
+        val players = _playerList.value!!.toMutableList()
+        val newPlayers = players.filter { it.id != userID }
+
+        Log.d(TAG, "Players: $newPlayers")
+
+        db.collection("online_battles").document(battleID)
+            .update(
+                "players", newPlayers,
+                "playerCount", FieldValue.increment(-1)
+            )
+            .await()
+
+        // TODO: Remove shards (optimization)
+    }
+
     fun removeListeners() {
         playersRegistration.remove()
     }
+
+    suspend fun cancelBattle() {
+        changeBattleState("Cancelled")
+        // TODO: Remove the battle
+        // Can be done by cloud functions only
+    }
+
 }

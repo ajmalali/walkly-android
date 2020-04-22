@@ -12,30 +12,18 @@
 
     <TextView
         android:id="@+id/tv_enemy_name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
         android:textColor="@color/buttonPrimary"
         android:textSize="16sp"
         android:visibility="invisible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.651"
         app:layout_constraintStart_toEndOf="@+id/enemy_image"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/enemy_image"
         tools:text="The Big Demon" />
-
-    <ImageView
-        android:id="@+id/enemy_image"
-        android:layout_width="200dp"
-        android:layout_height="120dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginBottom="16dp"
-        android:visibility="invisible"
-        app:layout_constraintBottom_toTopOf="@+id/battle_options_bar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/boss1" />
 
     <TextView
         android:id="@+id/tv_enemy_health"
@@ -49,6 +37,19 @@
         app:layout_constraintStart_toStartOf="@+id/tv_enemy_level"
         app:layout_constraintTop_toBottomOf="@+id/tv_enemy_level"
         tools:text="5000 HP" />
+
+    <ImageView
+        android:id="@+id/enemy_image"
+        android:layout_width="200dp"
+        android:layout_height="120dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toTopOf="@+id/battle_options_bar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/boss1" />
 
     <TextView
         android:id="@+id/tv_enemy_level"
@@ -78,19 +79,16 @@
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/create_button"
-        android:layout_width="144dp"
+        android:layout_width="0dp"
         android:layout_height="32dp"
-        android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
         android:paddingHorizontal="6dp"
         android:paddingVertical="4dp"
         android:text="Create"
         android:textAlignment="center"
         android:visibility="invisible"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.263"
-        app:layout_constraintStart_toEndOf="@+id/enemy_image"
+        app:layout_constraintEnd_toEndOf="@+id/tv_enemy_name"
+        app:layout_constraintStart_toStartOf="@+id/tv_enemy_name"
         app:layout_constraintTop_toBottomOf="@+id/tv_enemy_health" />
 
     <LinearLayout
@@ -164,7 +162,7 @@
                 android:textColor="?android:attr/textColorPrimaryNoDisable"
                 android:textSize="18sp"
                 android:textStyle="bold"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.08"
                 app:layout_constraintStart_toStartOf="parent"
@@ -229,27 +227,31 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_pvp_invites"
                 tools:listitem="@layout/list_host_battles"
-                />
+                tools:visibility="gone" />
 
-            <!--        <TextView-->
-            <!--            android:id="@+id/error_no_online_battle_found"-->
-            <!--            android:layout_width="wrap_content"-->
-            <!--            android:layout_height="wrap_content"-->
-            <!--            android:text="@string/no_online_battle_found"-->
-            <!--            android:textAlignment="center"-->
-            <!--            android:textColor="@color/buttonPrimary"-->
-            <!--            android:textSize="18sp"-->
-            <!--            app:layout_constraintBottom_toBottomOf="@+id/battles_recycler_view"-->
-            <!--            app:layout_constraintEnd_toEndOf="parent"-->
-            <!--            app:layout_constraintHorizontal_bias="0.494"-->
-            <!--            app:layout_constraintStart_toStartOf="parent"-->
-            <!--            app:layout_constraintTop_toTopOf="@+id/battles_recycler_view"-->
-            <!--            app:layout_constraintVertical_bias="0.224" />-->
+            <TextView
+                android:id="@+id/error_no_online_battle_found"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/no_online_battle_found"
+                android:textAlignment="center"
+                android:textColor="@color/buttonPrimary"
+                android:textSize="18sp"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tv_online_battles" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/battles_recycler_view"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:clipToPadding="false"
+                android:paddingBottom="60dp"
                 android:visibility="visible"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -259,8 +261,7 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_online_battles"
                 app:layout_constraintVertical_bias="0.504"
                 tools:listitem="@layout/list_join_battles"
-                android:paddingBottom="60dp"
-                android:clipToPadding="false"/>
+                tools:visibility="gone" />
 
 
         </androidx.constraintlayout.widget.ConstraintLayout>

@@ -96,6 +96,7 @@
     <string name="use_item">Use Item</string>
     <string name="creating_pvp_loading">Creating PVP battle...</string>
     <string name="pvp_waiting">Waiting for the opponent to join...</string>
+    <string name="error_no_invites">You don\'t have any invites currently</string>
 
 
 </resources>

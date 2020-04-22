@@ -9,18 +9,17 @@ import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.toObject
-import com.google.firebase.firestore.ktx.toObjects
 import com.walkly.walkly.models.BattlePlayer
 import com.walkly.walkly.models.OnlineBattle
 import com.walkly.walkly.models.Shard
 import com.walkly.walkly.repositories.PlayerRepository
 import kotlinx.coroutines.*
+import kotlinx.coroutines.tasks.await
 import java.util.*
-import kotlin.math.floor
 
 private const val TAG = "OnlineBattleViewModel"
 
-class OnlineBattleViewModel() : ViewModel() {
+class OnlineBattleViewModel : ViewModel() {
 
     var battleEnded: Boolean = false
     var battleID: String = ""
@@ -60,8 +59,14 @@ class OnlineBattleViewModel() : ViewModel() {
     val playerList: LiveData<List<BattlePlayer>>
         get() = _playerList
 
+    private val _totalSteps = MutableLiveData<Long>()
+    val totalSteps: LiveData<Long>
+        get() = _totalSteps
+
     private var playerPosition = 0
     private var shardID = 0
+
+    private var totalHealth = 0
 
     private lateinit var battleRegistration: ListenerRegistration
     private lateinit var enemyHealthRegistration: ListenerRegistration
@@ -98,10 +103,14 @@ class OnlineBattleViewModel() : ViewModel() {
                             playerPosition = i
                         }
                     }
+                    totalHealth = health.toInt()
 
                     // Update players health
                     currentPlayersHP = battle?.combinedPlayersHealth!!.toLong()
-                    basePlayersHP = health
+                    // New player joined
+                    if (health > basePlayersHP) {
+                        basePlayersHP = health
+                    }
                     playersHpPercentage = ((currentPlayersHP * 100.0) / basePlayersHP).toInt()
                     _combinedHP.value = playersHpPercentage
                 } else {
@@ -125,12 +134,12 @@ class OnlineBattleViewModel() : ViewModel() {
                 // Get total number of steps
                 var steps = 0
                 if (snapshot != null) {
-//                    val list = snapshot.toObjects<Shard>()
-//                    list.forEach { steps += it.steps }
                     for (document in snapshot) {
                         val shard = document.toObject<Shard>()
                         steps += shard.steps
                     }
+
+                    _totalSteps.value = steps.toLong()
 
                     // Update enemy health
                     currentEnemyHp = baseEnemyHP - steps
@@ -159,28 +168,63 @@ class OnlineBattleViewModel() : ViewModel() {
     suspend fun damagePlayer() {
         while (currentPlayersHP >= 0) {
             delay(HIT_FREQUENCY)
-            Log.d(TAG, "current players hp = $currentPlayersHP")
 
             db.collection("online_battles").document(battleID)
                 .update("combinedPlayersHealth", FieldValue.increment(-enemyDamage))
         }
-
     }
 
+    // TODO: Make this faster for health
     fun useConsumable(consumableType: String, consumableValue: Int) {
         when (consumableType.toLowerCase(Locale.ROOT)) {
             "attack" -> {
                 damageEnemy(consumableValue.toLong())
             }
             "health" -> {
-                db.collection("online_battles").document(battleID)
-                    .update("combinedPlayersHealth", FieldValue.increment(consumableValue.toLong()))
+                if (currentPlayersHP + consumableValue <= basePlayersHP) {
+                    db.collection("online_battles").document(battleID)
+                        .update(
+                            "combinedPlayersHealth",
+                            FieldValue.increment(consumableValue.toLong())
+                        )
+                } else {
+                    val difference = (currentPlayersHP + consumableValue) - basePlayersHP
+                    db.collection("online_battles").document(battleID)
+                        .update(
+                            "combinedPlayersHealth",
+                            FieldValue.increment(consumableValue - difference)
+                        )
+                }
+
             }
         }
     }
 
+    suspend fun removeCurrentPlayer() {
+        stopGame()
+        val players = _playerList.value!!.toMutableList()
+        val newPlayers = players.filter { it.id != userID }
+
+        Log.d(TAG, "Players: $newPlayers")
+
+        db.collection("online_battles").document(battleID)
+            .update(
+                "players", newPlayers,
+                "playerCount", FieldValue.increment(-1)
+            ).await()
+
+        if (newPlayers.isEmpty()) {
+            changeBattleState("Finished")
+        }
+    }
+
+    suspend fun changeBattleState(state: String) {
+        db.collection("online_battles").document(battleID)
+            .update("battleState", state).await()
+    }
+
     fun stopGame() {
-        // Delete battle
+        // Locally stop everything
         battleRegistration.remove()
         enemyHealthRegistration.remove()
         currentPlayersHP = -1

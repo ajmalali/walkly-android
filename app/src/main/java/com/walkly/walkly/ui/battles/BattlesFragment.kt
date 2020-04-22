@@ -2,6 +2,8 @@ package com.walkly.walkly.ui.battles
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -15,6 +17,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.walkly.walkly.R
+import com.walkly.walkly.models.OnlineBattle
 import com.walkly.walkly.onlineBattle.OnlineBattleActivity
 import com.walkly.walkly.pvp.PVPActivity
 import com.walkly.walkly.ui.lobby.OnlineLobbyActivity
@@ -90,8 +93,10 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
                 if (joinBtn.isChecked) {
                     if (list.isEmpty()) {
                         // Display no battles
+                        error_no_online_battle_found.visibility = View.VISIBLE
                         battlesRecyclerView.adapter = null
                     } else {
+                        error_no_online_battle_found.visibility = View.GONE
                         battleAdapter = BattleAdapter(list, this)
                         battlesRecyclerView.adapter = battleAdapter
                     }
@@ -105,6 +110,7 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
                 if (hostBtn.isChecked) {
                     if (list.isEmpty()) {
                         // Display no enemies
+                        battlesRecyclerView.adapter = null
                     } else {
                         enemyAdapter = EnemyAdapter(list, this)
                         battlesRecyclerView.adapter = enemyAdapter
@@ -116,11 +122,13 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
         // Observe battle invites (real time)
         battlesViewModel.invitesList.observe(viewLifecycleOwner, Observer { list ->
             list?.let {
+                Log.d(TAG, "Invited list: $list")
                 if (joinBtn.isChecked) {
                     if (list.isEmpty()) {
-                        // Display no invites
+                        tv_pvp_invites.visibility = View.GONE
                         invitesRecyclerView.adapter = null
                     } else {
+                        tv_pvp_invites.visibility = View.VISIBLE
                         invitesAdapter = InvitesAdapter(list, this)
                         invitesRecyclerView.adapter = invitesAdapter
                     }
@@ -132,7 +140,7 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
             val intent = Intent(activity, PVPActivity::class.java)
             intent.putExtra("battle", it)
             startActivity(intent)
-            activity?.finish()
+//            activity?.finish()
         })
 
         battlesViewModel.getInvites()
@@ -153,7 +161,7 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
                 intent.putExtra("battle", battle)
                 loadingDialog.dismiss()
                 startActivity(intent)
-                activity?.finish()
+//                activity?.finish()
             }
         }
 
@@ -163,6 +171,7 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
             .setView(loadingInflater)
             .create()
 
+        loadingDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         loadingDialog.setCancelable(false)
         loadingDialog.setCanceledOnTouchOutside(false)
 
@@ -191,6 +200,21 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
         tv_enemy_name.visibility = View.VISIBLE
     }
 
+    private suspend fun launchBattle(battle: OnlineBattle) {
+        withContext(Main) {
+            val intent: Intent = if (battle.battleState == "In-lobby") {
+                Intent(activity, OnlineLobbyActivity::class.java)
+            } else {
+                Intent(activity, OnlineBattleActivity::class.java)
+            }
+
+            intent.putExtra("battle", battle)
+            loadingDialog.dismiss()
+            startActivity(intent)
+//            activity?.finish()
+        }
+    }
+
     // TODO: FIX
     override fun onBattleClick(position: Int) {
         //this.background.setBackgroundColor(Color.parseColor("#340055"))
@@ -203,19 +227,7 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
             }
 
             battle = battlesViewModel.joinBattle(battle)
-
-            withContext(Main) {
-                val intent: Intent = if (battle.battleState == "In-lobby") {
-                    Intent(activity, OnlineLobbyActivity::class.java)
-                } else {
-                    Intent(activity, OnlineBattleActivity::class.java)
-                }
-
-                intent.putExtra("battle", battle)
-                loadingDialog.dismiss()
-                startActivity(intent)
-                activity?.finish()
-            }
+            launchBattle(battle)
         }
     }
 
@@ -231,6 +243,7 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
         tv_enemy_level.text = level
 
         Glide.with(this)
+            .asGif()
             .load(enemy.image)
             .into(enemy_image)
 
@@ -249,7 +262,7 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
                     intent.putExtra("battle", battle)
                     loadingDialog.dismiss()
                     startActivity(intent)
-                    activity?.finish()
+//                    activity?.finish()
                 }
             }
         }
@@ -265,14 +278,20 @@ class BattlesFragment : Fragment(), BattleAdapter.OnBattleListener, EnemyAdapter
                 loadingDialog.show()
             }
 
-            val battle = battlesViewModel.joinPVPBattle(invite.battleID)
-
-            withContext(Main) {
-                val intent = Intent(activity, PVPLobbyActivity::class.java)
-                intent.putExtra("battle", battle)
-                loadingDialog.dismiss()
-                startActivity(intent)
-                activity?.finish()
+            if (invite.type == "pvp") {
+                val battle = battlesViewModel.joinPVPBattle(invite.battleID)
+                withContext(Main) {
+                    val intent = Intent(activity, PVPLobbyActivity::class.java)
+                    intent.putExtra("battle", battle)
+                    loadingDialog.dismiss()
+                    startActivity(intent)
+//                    activity?.finish()
+                }
+            } else {
+                var battle = battlesViewModel.getBattle(invite.battleID)
+                Log.d(TAG, "Got battle : $battle")
+                battle = battlesViewModel.joinBattle(battle!!)
+                launchBattle(battle)
             }
         }
     }
