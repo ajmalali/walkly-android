@@ -4,6 +4,7 @@ import android.app.AlertDialog
 import android.content.Intent
 import android.content.res.ColorStateList
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -87,6 +88,7 @@ class MainActivity : AppCompatActivity() {
                     val feedbackDialog = AlertDialog.Builder(this)
                         .setView(R.layout.dialog_feedback)
                         .create()
+                    feedbackDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
                     feedbackDialog.show()
                     feedbackDialog.findViewById<Button>(R.id.btn_cancel)
                         ?.setOnClickListener {
