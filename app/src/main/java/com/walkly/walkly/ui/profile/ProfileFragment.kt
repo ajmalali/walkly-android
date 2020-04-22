@@ -72,7 +72,7 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
         adapter =
             EquipmentAdapter(mutableListOf(), this)
         val rv = dialogView.findViewById(R.id.equipment_recycler_view) as RecyclerView
-        rv.layoutManager = GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false)
+        rv.layoutManager = GridLayoutManager(context, 1, GridLayoutManager.HORIZONTAL, false)
         rv.adapter = adapter
 
         dialogView.progressBar.visibility = View.VISIBLE
@@ -83,13 +83,6 @@ class ProfileFragment : Fragment(), EquipmentAdapter.OnEquipmentUseListener {
             } else {
                 Log.d(TAG, "$list")
                 adapter.equipmentList = list
-                if (list.size < 5) {
-                    rv.layoutManager =
-                        GridLayoutManager(context, 2, GridLayoutManager.VERTICAL, false)
-                } else {
-                    rv.layoutManager =
-                        GridLayoutManager(context, 2, GridLayoutManager.HORIZONTAL, false)
-                }
                 adapter.notifyDataSetChanged()
             }
         })
