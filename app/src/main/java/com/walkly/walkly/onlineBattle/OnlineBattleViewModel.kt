@@ -184,19 +184,32 @@ class OnlineBattleViewModel() : ViewModel() {
                 damageEnemy(consumableValue.toLong())
             }
             "health" -> {
-                val battleRef = db.collection("online_battles").document(battleID)
-                db.runTransaction { transaction ->
-                    val snapshot = transaction.get(battleRef)
+                if (currentPlayersHP + consumableValue <= basePlayersHP) {
+                    db.collection("online_battles").document(battleID)
+                        .update(
+                            "combinedPlayersHealth",
+                            FieldValue.increment(consumableValue.toLong())
+                        )
+                } else {
+                    val battleRef = db.collection("online_battles").document(battleID)
+                    db.runTransaction { transaction ->
+                        val snapshot = transaction.get(battleRef)
 
-                    var combinedPlayersHealth = snapshot.getLong("combinedPlayersHealth")!!
-                    combinedPlayersHealth += consumableValue
-                    if (combinedPlayersHealth > totalHealth) {
-                        combinedPlayersHealth = totalHealth.toLong()
+                        var combinedPlayersHealth = snapshot.getLong("combinedPlayersHealth")!!
+                        combinedPlayersHealth += consumableValue
+                        if (combinedPlayersHealth > totalHealth) {
+                            combinedPlayersHealth = totalHealth.toLong()
+                        }
+
+                        transaction.update(
+                            battleRef,
+                            "combinedPlayersHealth",
+                            combinedPlayersHealth
+                        )
+                        null
                     }
-
-                    transaction.update(battleRef, "combinedPlayersHealth", combinedPlayersHealth)
-                    null
                 }
+
             }
         }
     }
