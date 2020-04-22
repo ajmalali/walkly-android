@@ -7,7 +7,7 @@ import com.google.firebase.auth.FirebaseAuth
 *   - friend list is array
 *   - user has image url*/
 
-data class Friend (
+data class Friend(
     val name: String = "",
     val level: Int = 0,
     val points: Int = 0,
@@ -18,7 +18,7 @@ data class Friend (
     lateinit var status: String
     var type = -1
 
-    fun addIdAndStatus(id: String, status: String): Friend{
+    fun addIdAndStatus(id: String, status: String): Friend {
         this.id = id
         this.status = status
         return this

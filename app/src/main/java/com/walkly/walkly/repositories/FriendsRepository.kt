@@ -1,5 +1,6 @@
 package com.walkly.walkly.repositories
 
+import android.util.Log
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
@@ -21,19 +22,22 @@ object FriendsRepository {
             try {
                 friends.addAll(snapshot?.data?.get("friends") as List<String>)
                 friendRquests.addAll(snapshot?.data?.get("friendRequests") as List<String>)
-            } catch (tce: TypeCastException){
+            } catch (tce: TypeCastException) {
                 return@addSnapshotListener
             }
         }
     }
 
-    fun search(name: String, callback: (List<Friend>) -> Unit){
+    // TODO: Uncomment general search (after DB clean up)
+    fun search(name: String, callback: (List<Friend>) -> Unit) {
         db.collection("users")
             .whereEqualTo("name", name)
+//            .whereGreaterThanOrEqualTo("name", name)
+//            .whereLessThanOrEqualTo("name", "$name\uF7FF")
             .get()
             .addOnSuccessListener {
                 users.clear()
-                for (document in it){
+                for (document in it) {
                     val friend = document.toObject<Friend>().addId(document.id)
                     // TODO: check pending, accepted or else
                     friend.type = 2
@@ -43,19 +47,19 @@ object FriendsRepository {
             }
     }
 
-    fun getFriends(callback: (List<Friend>) -> Unit){
+    fun getFriends(callback: (List<Friend>) -> Unit) {
         db.collection("users")
             .get()
             .addOnSuccessListener {
                 users.clear()
-                for (document in it){
+                for (document in it) {
                     // TODO: check pending or accepted
-                    if (friends.contains(document.id)){
+                    if (friends.contains(document.id)) {
                         val friend = document.toObject<Friend>().addId(document.id)
 
                         friend.type = 1
                         users.add(friend)
-                    } else if (friendRquests.contains(document.id)){
+                    } else if (friendRquests.contains(document.id)) {
                         val friend = document.toObject<Friend>().addId(document.id)
 
                         friend.type = 0
@@ -81,7 +85,7 @@ object FriendsRepository {
         }
     }
 
-    fun acceptFriend(id: String, callback: (Boolean) -> Unit){
+    fun acceptFriend(id: String, callback: (Boolean) -> Unit) {
         userDoc.update(
             "friends", FieldValue.arrayUnion(id),
             "friendRequests", FieldValue.arrayRemove(id)
@@ -90,7 +94,7 @@ object FriendsRepository {
         }
     }
 
-    fun rejectFriend(id: String, callback: (Boolean) -> Unit){
+    fun rejectFriend(id: String, callback: (Boolean) -> Unit) {
         userDoc.update(
             "friendRequests", FieldValue.arrayRemove(id)
         ).addOnSuccessListener {

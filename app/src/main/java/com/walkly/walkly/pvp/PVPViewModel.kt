@@ -10,8 +10,13 @@ import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.toObject
 import com.walkly.walkly.models.BattlePlayer
+import com.walkly.walkly.models.PVPBattle
 import com.walkly.walkly.models.Shard
 import com.walkly.walkly.repositories.PlayerRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 import java.util.*
 
 private const val TAG = "PVPViewModel"
@@ -32,7 +37,7 @@ class PVPViewModel : ViewModel() {
     private var hostHpPercentage = 100
     private var shardId: Int = 0
 
-    private var baseOpponentHP = 1L
+    var baseOpponentHP = 1L
     private var currentOpponentHP = 0L
     private var opponentHpPercentage = 100
 
@@ -46,14 +51,33 @@ class PVPViewModel : ViewModel() {
     val opponentHP: LiveData<Int>
         get() = _opponentHP
 
+    private val _battle = MutableLiveData<PVPBattle>()
+    val battle: LiveData<PVPBattle>
+        get() = _battle
+
+    private val _hostSteps = MutableLiveData<Long>()
+    val hostSteps: LiveData<Long>
+        get() = _hostSteps
+
+    private val _opponentSteps = MutableLiveData<Long>()
+    val opponentSteps: LiveData<Long>
+        get() = _opponentSteps
+
     private lateinit var hostHealthListener: ListenerRegistration
     private lateinit var opponentHealthListener: ListenerRegistration
+    private lateinit var battleListener: ListenerRegistration
+
+    init {
+        _hostHP.value = 100
+        _opponentHP.value = 100
+        _hostSteps.value = 0
+        _opponentSteps.value = 0
+    }
 
     fun setupHealthListeners(
         host: BattlePlayer?,
         opponent: BattlePlayer?
     ) {
-
         baseHostHP = host?.level?.times(HP_MULTIPLAYER)!!
         baseOpponentHP = opponent?.level?.times(HP_MULTIPLAYER)!!
 
@@ -75,15 +99,14 @@ class PVPViewModel : ViewModel() {
                         steps += shard.steps
                     }
 
-                    if (steps > 0) {
+                    _opponentSteps.value = steps.toLong()
+
+                    if (steps >= 0) {
                         // Update host health
                         currentHostHp = baseHostHP - steps
                         hostHpPercentage = ((currentHostHp * 100.0) / baseHostHP).toInt()
                         _hostHP.value = hostHpPercentage
-                    } else {
-                        _hostHP.value = 100
                     }
-
                 } else {
                     Log.d(TAG, "host data: null")
                 }
@@ -107,21 +130,32 @@ class PVPViewModel : ViewModel() {
                         steps += shard.steps
                     }
 
-                    if (steps > 0) {
+                    _hostSteps.value = steps.toLong()
+
+                    if (steps >= 0) {
                         // Update opponent  health
                         currentOpponentHP = baseOpponentHP - steps
                         opponentHpPercentage =
                             ((currentOpponentHP * 100.0) / baseOpponentHP).toInt()
                         _opponentHP.value = opponentHpPercentage
-                    } else {
-                        _opponentHP.value = 100
                     }
-
                 } else {
-                    Log.d(TAG, "host data: null")
+                    Log.d(TAG, "opponent data: null")
                 }
             }
 
+    }
+
+    fun setupBattleListener() {
+        battleListener = db.collection("pvp_battles").document(battleID)
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w(TAG, "Listen failed.", e)
+                    return@addSnapshotListener
+                }
+
+                _battle.value = snapshot?.toObject<PVPBattle>()
+            }
     }
 
     fun damageOpponent(steps: Long) {
@@ -149,14 +183,28 @@ class PVPViewModel : ViewModel() {
     fun useHostConsumable(consumableType: String, consumableValue: Int) {
         when (consumableType.toLowerCase(Locale.ROOT)) {
             "attack" -> damageOpponent(consumableValue.toLong())
-            "health" -> damageOpponent(-consumableValue.toLong())
+            "health" -> {
+                if ((currentHostHp + consumableValue) <= baseHostHP) {
+                    damageHost(-consumableValue.toLong())
+                } else {
+                    val difference = (currentHostHp + consumableValue) - baseHostHP
+                    damageHost(-(consumableValue - difference))
+                }
+            }
         }
     }
 
     fun useOpponentConsumable(consumableType: String, consumableValue: Int) {
         when (consumableType.toLowerCase(Locale.ROOT)) {
             "attack" -> damageHost(consumableValue.toLong())
-            "health" -> damageHost(-consumableValue.toLong())
+            "health" -> {
+                if ((currentOpponentHP + consumableValue) <= baseOpponentHP) {
+                    damageOpponent(-consumableValue.toLong())
+                } else {
+                    val difference = (currentOpponentHP + consumableValue) - baseOpponentHP
+                    damageOpponent(-(consumableValue - difference))
+                }
+            }
         }
     }
 
@@ -164,5 +212,14 @@ class PVPViewModel : ViewModel() {
         // TODO: Delete battle
         hostHealthListener.remove()
         opponentHealthListener.remove()
+        battleListener.remove()
+    }
+
+    suspend fun removeCurrentPlayer() {
+        if (_battle.value?.host?.id == currentPlayer.id) {
+            db.collection("pvp_battles").document(battleID).update("host", null).await()
+        } else {
+            db.collection("pvp_battles").document(battleID).update("opponent", null).await()
+        }
     }
 }

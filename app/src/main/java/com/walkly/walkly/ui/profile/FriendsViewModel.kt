@@ -11,11 +11,19 @@ import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
+import com.google.firebase.firestore.ktx.toObjects
 import com.walkly.walkly.models.Friend
+import com.walkly.walkly.repositories.PlayerRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.tasks.await
 
 private const val TAG = "FriendsViewModel"
 
 class FriendsViewModel : ViewModel() {
+
+    private val currentPlayer = PlayerRepository.getPlayer()
 
     private val _friendsList = MutableLiveData<List<Friend>>()
     val friendsList: LiveData<List<Friend>>
@@ -30,66 +38,45 @@ class FriendsViewModel : ViewModel() {
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val userID = FirebaseAuth.getInstance().currentUser?.uid
 
-    private val friendIds = mutableListOf<String>()
-    private val friendStatus = mutableListOf<String>()
-
-
     init {
         getFriends()
     }
 
-    fun getFriends() {
-        db.collection("users")
-            .document(userID!!)
-            .collection("friends").orderBy("status", Query.Direction.DESCENDING)
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    friendIds.add(document.id)
-                    friendStatus.add((document.get("status") as String).replace("\"","") )
-                    Log.d(TAG, friendStatus.toString())
+    private fun getFriends() {
+//        createFriendList(currentPlayer.friends)
+        db.collection("users").document(userID!!).get()
+            .addOnSuccessListener { document ->
+                try {
+                    CoroutineScope(IO).launch {
+                        createFriendList(document.data?.get("friends") as MutableList<String>)
+                    }
+                } catch (e: TypeCastException) {
+                    _friendsList.value = mutableListOf()
                 }
-                // create the list
-                createFriendList(friendIds)
-            }
-            .addOnFailureListener { exception ->
-                Log.d(TAG, "Error getting friends documents.", exception)
             }
     }
 
     // Creates the complete friend list and sets the value of friends
-    private fun createFriendList(friendIds: List<String>) {
+    private suspend fun createFriendList(friendIds: List<String>) {
         // Pass friend ids in chunks of 10 to getFriendsFromIds
-        val taskList = mutableListOf<Task<QuerySnapshot>>()
-        for (idList in friendIds.chunked(10)) {
-            taskList.add(getFriendsFromIds(idList))
+
+        for (idList in friendIds.sorted().chunked(10)) {
+            val friends = db.collection("users")
+                .whereIn(FieldPath.documentId(), idList)
+                .orderBy(FieldPath.documentId(), Query.Direction.ASCENDING)
+                .get().await().toObjects<Friend>()
+
+            Log.d(TAG, "Sorted IDs $idList")
+            for (i in friends.indices) {
+                tempFriendList.add(friends[i].addId(idList[i]))
+            }
+
+            Log.d(TAG, "Temp list IDs $tempFriendList")
         }
 
-        Tasks.whenAllSuccess<Task<QuerySnapshot>>(taskList)
-            .addOnSuccessListener {
-                tempFriendList = tempFriendList.toMutableList()
-                _friendsList.value = tempFriendList
-                Log.d(TAG, "New friends list created: $tempFriendList")
-            }
-    }
-
-    // Create a friend list from a given list of ids
-    private fun getFriendsFromIds(idList: List<String>): Task<QuerySnapshot> {
-        var statusCounter = 0;
-        return db.collection("users")
-            .whereIn(FieldPath.documentId(), idList)
-            .get()
-            .addOnSuccessListener { result ->
-                for (document in result) {
-                    val item: Friend =
-                        document.toObject(Friend::class.java).addIdAndStatus(document.id, friendStatus[statusCounter])
-                    tempFriendList.add(item)
-                    statusCounter++
-                }
-            }
-            .addOnFailureListener { exception ->
-                Log.w(TAG, "Error getting friend documents.", exception)
-            }
+        tempFriendList = tempFriendList.toMutableList()
+        _friendsList.postValue(tempFriendList)
+        Log.d(TAG, "New friends list created: $tempFriendList")
     }
 
     fun searchUser(userName: String) {

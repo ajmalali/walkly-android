@@ -56,7 +56,9 @@ class BattlesViewModel : ViewModel() {
 
     fun getInvites() {
         if (_invitesList.value == null) {
+            Log.d(TAG, "ID: ${currentPlayer.id!!}")
             invitesRegistration = db.collection("invites")
+                .whereArrayContains("toIDs", currentPlayer.id!!)
                 .addSnapshotListener { value, e ->
                     if (e != null) {
                         Log.w(TAG, "Listen failed.", e)
@@ -82,7 +84,7 @@ class BattlesViewModel : ViewModel() {
 
     fun getEnemies() {
         if (_enemyList.value == null) {
-            db.collection("online_enemies") // TODO: change to online enemies
+            db.collection("enemies") // TODO: change to online enemies
                 .get()
                 .addOnSuccessListener { result ->
                     for (doc in result) {
@@ -105,6 +107,7 @@ class BattlesViewModel : ViewModel() {
         if (_battleList.value == null) {
             battlesRegistration = db.collection("online_battles")
                 .whereEqualTo("type", "public")
+                .whereIn("battleState", listOf("In-lobby", "In-game"))
                 .addSnapshotListener { value, e ->
                     if (e != null) {
                         Log.w(TAG, "Listen failed.", e)
@@ -156,6 +159,14 @@ class BattlesViewModel : ViewModel() {
         counterRef.set(EnemyDamageCounter(numShards)).await()
 
         db.runBatch { batch ->
+            val inviteDocument = db.collection("invites").document(battle.id!!)
+            batch.set(
+                inviteDocument, BattleInvite(
+                    battleID = battle.id!!,
+                    hostName = currentPlayer.name!!,
+                    type = "ob"
+                )
+            )
             for (i in 0 until numShards) {
                 val shardDocument = counterRef.collection("shards")
                     .document(i.toString())
@@ -166,21 +177,47 @@ class BattlesViewModel : ViewModel() {
         return battle
     }
 
+    suspend fun getBattle(battleID: String): OnlineBattle? {
+        return db.collection("online_battles").document(battleID).get().await()
+            .toObject<OnlineBattle>()
+    }
+
     // Join the selected battle
     suspend fun joinBattle(battle: OnlineBattle): OnlineBattle {
-        currentPlayer.joinBattle()
         battle.playerCount = battle.playerCount?.inc()
         battle.players.add(currentBattlePlayer)
-        battle.combinedPlayersHealth =
-            battle.combinedPlayersHealth?.plus((currentPlayer.level?.times(HP_MULTIPLAYER))?.toInt()!!)
+        // Calculate combined base health
+        var health: Long = 0
+        for (i in battle.players.indices) {
+            health += battle.players[i].level * HP_MULTIPLAYER
+        }
 
-        db.collection("online_battles")
-            .document(battle.id!!)
-            .set(battle, SetOptions.merge()).await()
+        val battleRef = db.collection("online_battles").document(battle.id!!)
 
+        // Update the battle in db
+        battleRef.set(battle, SetOptions.merge()).await()
+
+        // Update combined players health
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(battleRef)
+
+            var combinedPlayersHealth = snapshot.getLong("combinedPlayersHealth")!!
+            combinedPlayersHealth += (currentPlayer.level!! * HP_MULTIPLAYER)
+            if (combinedPlayersHealth > health) {
+                combinedPlayersHealth = health
+            }
+
+            transaction.update(battleRef, "combinedPlayersHealth", combinedPlayersHealth)
+            combinedPlayersHealth.toInt()
+        }
+
+        // Remove current Invite
+        db.collection("invites").document(battle.id!!)
+            .update("toIDs", FieldValue.arrayRemove(currentPlayer.id))
+
+        // Add player shards
         val numShards = 4
-
-        val counterRef = db.collection("online_battles").document(battle.id!!)
+        val counterRef = battleRef
             .collection("enemy_damage_counter")
             .document("enemy_damage_doc")
 
@@ -228,6 +265,14 @@ class BattlesViewModel : ViewModel() {
             .document("opponent_damage_doc")
 
         db.runBatch { batch ->
+            val inviteDocument = db.collection("invites").document(battle.id)
+            batch.set(
+                inviteDocument, BattleInvite(
+                    battleID = battle.id,
+                    hostName = currentPlayer.name!!,
+                    type = "pvp"
+                )
+            )
             for (i in 0 until numShards) {
                 val hostShardDoc = hostDamageRef.collection("shards")
                     .document(i.toString())
@@ -251,7 +296,7 @@ class BattlesViewModel : ViewModel() {
         battle?.opponent = currentBattlePlayer
 
         db.collection("pvp_battles").document(id).set(battle!!).await()
-        db.collection("invites").document(id).delete().await()
+        db.collection("invites").document(id).delete()
 
         return battle
     }

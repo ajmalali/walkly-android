@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.toObject
@@ -65,5 +66,18 @@ class PVPLobbyViewModel : ViewModel() {
             .update("status", state).await()
     }
 
+    suspend fun inviteFriend(friendID: String) {
+        db.collection("invites").document(_battle.value?.id!!)
+            .update("toIDs", FieldValue.arrayUnion(friendID)).await()
+    }
+
+    suspend fun removeOpponent() {
+        db.collection("pvp_battles").document(_battle.value?.id!!)
+            .update("opponent", null).await()
+    }
+
+    fun removeListeners() {
+        battleRegistration.remove()
+    }
 
 }

@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.activity.viewModels
@@ -21,11 +22,10 @@ import com.walkly.walkly.models.BattlePlayer
 import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.models.OnlineBattle
 import com.walkly.walkly.onlineBattle.OnlineBattleActivity
-import com.walkly.walkly.ui.profile.EquipmentAdapter
-import com.walkly.walkly.ui.profile.WearEquipmentViewModel
+import com.walkly.walkly.ui.profile.*
 import kotlinx.android.synthetic.main.activity_online_lobby.*
-import kotlinx.android.synthetic.main.dialog_feedback.*
-import kotlinx.android.synthetic.main.dialog_wear_equipment.view.*
+import kotlinx.android.synthetic.main.dialog_invite_friend.view.*
+import kotlinx.android.synthetic.main.dialog_wear_equipment.view.progressBar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -34,15 +34,26 @@ import kotlinx.coroutines.withContext
 
 private const val TAG = "OnlineLobbyActivity"
 
-class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUseListener {
+class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUseListener,
+    InviteFriendsAdapter.OnFriendInviteListener {
 
     private lateinit var wearEquipmentDialog: AlertDialog
     private lateinit var wearEquipmentBuilder: AlertDialog.Builder
     private lateinit var adapter: EquipmentAdapter
 
+    private lateinit var leaveDialog: AlertDialog
+    private lateinit var hostLeaveDialog: AlertDialog
+    private lateinit var cancelledDialog: AlertDialog
+
+    private lateinit var inviteFriendsDialog: AlertDialog
+    private lateinit var inviteFriendsBuilder: AlertDialog.Builder
+    private lateinit var inviteFriendsAdapter: InviteFriendsAdapter
+
     private val viewModel: LobbyViewModel by viewModels()
     private val equipmentViewModel: WearEquipmentViewModel by viewModels()
+    private val inviteFriendsViewModel: FriendsViewModel by viewModels()
     private var playerCount: Int = 1
+    private var isHost = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -57,6 +68,7 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
             playerCount = battle.playerCount!!
             if (battle.playerCount == 1) {
                 displayBattleControls()
+                isHost = true
             } else {
                 displayWaiting()
             }
@@ -76,6 +88,8 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
                 updatePlayers(list as MutableList<BattlePlayer>)
             }
         })
+
+        initDialogs()
 
         // Wear Equipment Dialog
         val dialogView = layoutInflater.inflate(R.layout.dialog_wear_equipment, null, false)
@@ -105,12 +119,45 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
             adapter.notifyDataSetChanged()
         })
 
+        // Invites only for the host
+        if (battle?.playerCount == 1) {
+            // Invite Friends Dialog
+            val inviteDialog = layoutInflater.inflate(R.layout.dialog_invite_friend, null, false)
+            inviteFriendsBuilder = AlertDialog.Builder(this)
+                .setView(inviteDialog)
+            inviteFriendsDialog = inviteFriendsBuilder.create()
+            //To make the background for the dialog Transparent
+            inviteFriendsDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+            inviteFriendsAdapter = InviteFriendsAdapter(mutableListOf(), this)
+            val r = inviteDialog.findViewById(R.id.invite_friends_recycler_view) as RecyclerView
+            r.layoutManager = GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false)
+            r.adapter = inviteFriendsAdapter
+
+            inviteDialog.progressBar.visibility = View.VISIBLE
+            inviteFriendsViewModel.friendsList.observe(this, Observer { list ->
+                inviteDialog.progressBar.visibility = View.GONE
+                if (list.isEmpty()) {
+                    inviteDialog.error_message.visibility = View.VISIBLE
+                } else {
+                    inviteDialog.error_message.visibility = View.GONE
+                    inviteFriendsAdapter.friends = list
+                    inviteFriendsAdapter.notifyDataSetChanged()
+                }
+            })
+        }
+
         viewModel.battleState.observe(this, Observer {
             if (it == "In-game") {
+                if (!isHost) {
+                    viewModel.currentPlayer.joinBattle()
+                }
                 val intent = Intent(this, OnlineBattleActivity::class.java)
                 intent.putExtra("battle", viewModel.battle)
                 startActivity(intent)
                 this.finish()
+            } else if (it == "Cancelled") {
+                cancelledDialog.show()
             }
         })
 
@@ -130,7 +177,7 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
         }
 
         btn_invite_friends_lobby.setOnClickListener {
-
+            inviteFriendsDialog.show()
         }
 
         publicize_switch.setOnCheckedChangeListener { _, isChecked ->
@@ -147,13 +194,22 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
             }
         }
 
+        btn_leave.setOnClickListener {
+            leaveDialog.show()
+        }
+
+        host_btn_cancel.setOnClickListener {
+            hostLeaveDialog.show()
+        }
+
     }
 
     private fun displayBattleControls() {
         start_button.visibility = View.VISIBLE
         btn_invite_friends_lobby.visibility = View.VISIBLE
-        btn_cancel2.visibility = View.VISIBLE
+        host_btn_cancel.visibility = View.VISIBLE
         publicize_switch.visibility = View.VISIBLE
+        btn_leave.visibility = View.GONE
         loading_bar.visibility = View.GONE
         tv_waiting_lobby.visibility = View.GONE
     }
@@ -161,27 +217,100 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
     private fun displayWaiting() {
         start_button.visibility = View.GONE
         btn_invite_friends_lobby.visibility = View.GONE
-        btn_cancel2.visibility = View.GONE
+        host_btn_cancel.visibility = View.GONE
         publicize_switch.visibility = View.GONE
         loading_bar.visibility = View.VISIBLE
+        btn_leave.visibility = View.VISIBLE
         tv_waiting_lobby.visibility = View.VISIBLE
     }
 
+    private fun initDialogs() {
+        // Leave Dialog
+        val leaveInflater = layoutInflater.inflate(R.layout.dialog_leave_lobby, null)
+        leaveDialog = AlertDialog.Builder(this)
+            .setView(leaveInflater)
+            .create()
+        leaveDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        leaveInflater.findViewById<Button>(R.id.btn_leave)
+            .setOnClickListener {
+                CoroutineScope(IO).launch {
+                    viewModel.removeCurrentPlayer()
+                    withContext(Main) {
+                        leaveDialog.dismiss()
+                        finish()
+                    }
+                }
+            }
+
+        leaveInflater.findViewById<Button>(R.id.btn_stay)
+            .setOnClickListener {
+                leaveDialog.dismiss()
+            }
+
+
+        // Host Cancel Dialog
+        val cancelInflater = layoutInflater.inflate(R.layout.dialog_leave_lobby_host, null)
+        hostLeaveDialog = AlertDialog.Builder(this)
+            .setView(cancelInflater)
+            .create()
+        hostLeaveDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
+        cancelInflater.findViewById<Button>(R.id.btn_yes)
+            .setOnClickListener {
+                CoroutineScope(IO).launch {
+                    viewModel.removeListeners()
+                    viewModel.cancelBattle()
+                    withContext(Main) {
+                        hostLeaveDialog.dismiss()
+                        finish()
+                    }
+                }
+            }
+
+        cancelInflater.findViewById<Button>(R.id.btn_no)
+            .setOnClickListener {
+                hostLeaveDialog.dismiss()
+            }
+
+        // Battle Cancelled Dialog
+        val battleCancelledInflater = layoutInflater.inflate(R.layout.dialog_battle_cancelled, null)
+        cancelledDialog = AlertDialog.Builder(this)
+            .setView(battleCancelledInflater)
+            .create()
+        cancelledDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        cancelledDialog.setCancelable(false)
+        cancelledDialog.setCanceledOnTouchOutside(false)
+
+        battleCancelledInflater.findViewById<Button>(R.id.btn_leave)
+            .setOnClickListener {
+                cancelledDialog.dismiss()
+                finish()
+            }
+    }
+
     private fun setupPlayer(
-        player: BattlePlayer,
+        player: BattlePlayer? = null,
         nameTextView: TextView,
         avatarImage: ImageView,
         equipmentImage: ImageView
     ) {
-        nameTextView.text = player.name
+        if (player != null) {
+            nameTextView.text = player.name
 
-        Glide.with(this)
-            .load(player.avatarURL)
-            .into(avatarImage)
+            Glide.with(this)
+                .load(player.avatarURL)
+                .into(avatarImage)
 
-        Glide.with(this)
-            .load(player.equipmentURL)
-            .into(equipmentImage)
+            equipmentImage.visibility = View.VISIBLE
+            Glide.with(this)
+                .load(player.equipmentURL)
+                .into(equipmentImage)
+        } else {
+            nameTextView.text = "Waiting"
+            avatarImage.setImageResource(R.drawable.ic_account_circle_black_24dp)
+            equipmentImage.visibility = View.INVISIBLE
+        }
     }
 
     private fun updatePlayers(players: MutableList<BattlePlayer>) {
@@ -201,6 +330,13 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
                 img_player3_avatar_lobby,
                 img_player3_equipment_lobby
             )
+        } else {
+            setupPlayer(
+                null,
+                tv_player3_name_lobby,
+                img_player3_avatar_lobby,
+                img_player3_equipment_lobby
+            )
         }
 
         if (playerCount >= 3) {
@@ -210,11 +346,25 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
                 img_player2_avatar_lobby,
                 img_player2_equipment_lobby
             )
+        } else {
+            setupPlayer(
+                null,
+                tv_player2_name_lobby,
+                img_player2_avatar_lobby,
+                img_player2_equipment_lobby
+            )
         }
 
         if (playerCount >= 2) {
             setupPlayer(
                 players[1],
+                tv_player1_name_lobby,
+                img_player1_avatar_lobby,
+                img_player1_equipment_lobby
+            )
+        } else {
+            setupPlayer(
+                null,
                 tv_player1_name_lobby,
                 img_player1_avatar_lobby,
                 img_player1_equipment_lobby
@@ -239,13 +389,17 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
         tv_enemy_level.text = level
 
         Glide.with(this)
+            .asGif()
             .load(enemy.image)
             .into(enemy_image)
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.removeListeners()
+    override fun onBackPressed() {
+        if (isHost) {
+            hostLeaveDialog.show()
+        } else {
+            leaveDialog.show()
+        }
     }
 
     override fun onEquipmentClick(position: Int) {
@@ -254,6 +408,14 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
         CoroutineScope(IO).launch {
             viewModel.changeEquipment(equipment)
             withContext(Main) { wearEquipmentDialog.dismiss() }
+        }
+    }
+
+    override fun onFriendInviteClick(position: Int) {
+        val friend = inviteFriendsAdapter.friends[position]
+        CoroutineScope(IO).launch {
+            viewModel.inviteFriend(friend.id)
+//            withContext(Main) { inviteFriendsDialog.dismiss() }
         }
     }
 }
