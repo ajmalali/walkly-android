@@ -32,6 +32,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         supportActionBar?.hide()
         setContentView(R.layout.activity_login)
 
+        loading.visibility = View.GONE
         // Buttons
         emailSignInButton.setOnClickListener(this)
         signUp.setOnClickListener(this)
@@ -43,7 +44,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = viewModel.getCurrentUser()
         if (currentUser != null) {
-            // TODO: Show loading
+
             scope.launch {
                 PlayerRepository.initPlayer()
                 withContext(Main) {
@@ -62,12 +63,13 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
             return
         }
 
-        // TODO: Add loading icon
+        loading.visibility = View.VISIBLE
         scope.launch {
             try {
                 val user = viewModel.signIn(email, password)
                 PlayerRepository.initPlayer()
                 withContext(Main) {
+                    loading.visibility = View.GONE
                     updateUI(user)
                 }
             } catch (e: FirebaseAuthException) {

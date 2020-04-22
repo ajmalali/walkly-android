@@ -43,7 +43,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         super.onStart()
         // Check if user is signed in (non-null) and update UI accordingly.
         val currentUser = viewModel.getCurrentUser()
-
+        loading.visibility = View.GONE
         if (currentUser != null) {
             // TODO: Show loading
             scope.launch {
@@ -61,13 +61,14 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         if (!validateForm()) {
             return
         }
-
+        loading.visibility = View.VISIBLE
         scope.launch {
             try {
                 val name = fieldName.text.toString()
                 val user = viewModel.createAccount(email, password, name)
                 PlayerRepository.initPlayer()
                 withContext(Main) {
+                    loading.visibility = View.GONE
                     updateUI(user)
                 }
 
