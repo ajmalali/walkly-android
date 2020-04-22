@@ -33,6 +33,10 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         supportActionBar?.hide()
         setContentView(R.layout.activity_signup)
         emailCreateAccountButton.setOnClickListener(this)
+
+        signIn.setOnClickListener {
+            finish()
+        }
     }
 
     public override fun onStart() {
