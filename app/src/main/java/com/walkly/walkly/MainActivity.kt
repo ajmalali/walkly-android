@@ -25,6 +25,7 @@ import com.walkly.walkly.auth.LoginActivity
 import com.walkly.walkly.repositories.ConsumablesRepository
 import com.walkly.walkly.repositories.EquipmentRepository
 import com.walkly.walkly.repositories.PlayerRepository
+import com.walkly.walkly.utilities.DistanceUtil
 import com.walkly.walkly.utilities.TutorialUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
@@ -56,11 +57,16 @@ class MainActivity : AppCompatActivity() {
     private val auth = FirebaseAuth.getInstance()
     private lateinit var tutorial: TutorialUtil
 
+    private val walkedDistance = MutableLiveData<Float>()
+    private lateinit var distanceUtil: DistanceUtil
 
     @RequiresApi(Build.VERSION_CODES.M)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        // To get permissions
+        distanceUtil = DistanceUtil(this, walkedDistance)
 
         tutorial = TutorialUtil(drawer_layout, this)
         tutorial.startTutorial("main", R.bool.main_bool)
