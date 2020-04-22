@@ -15,7 +15,10 @@ import com.walkly.walkly.models.PVPBattle
 import com.walkly.walkly.ui.consumables.ConsumablesBottomSheetDialog
 import com.walkly.walkly.ui.consumables.ConsumablesViewModel
 import com.walkly.walkly.utilities.DistanceUtil
+import kotlinx.android.synthetic.main.activity_online_battle.*
 import kotlinx.android.synthetic.main.activity_pvp_battle.*
+import kotlinx.android.synthetic.main.activity_pvp_battle.btn_leave
+import kotlinx.android.synthetic.main.activity_pvp_battle.use_item
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -87,6 +90,10 @@ class PVPActivity : AppCompatActivity() {
             }
         })
 
+        btn_leave.setOnClickListener {
+            leaveDialog.show()
+        }
+
         battle.let {
             setupPlayers(battle)
             viewModel.battleID = battle.id
@@ -121,6 +128,11 @@ class PVPActivity : AppCompatActivity() {
 
     }
 
+    // Minimize the app
+    override fun onBackPressed() {
+        this.moveTaskToBack(true)
+    }
+
     private fun initDialogs() {
         // Leave Dialog
         val leaveInflater = layoutInflater.inflate(R.layout.dialog_battle_leave, null)
@@ -130,7 +142,6 @@ class PVPActivity : AppCompatActivity() {
         leaveInflater.findViewById<Button>(R.id.btn_leave)
             .setOnClickListener {
                 leaveDialog.dismiss()
-//                viewModel.battleEnded = true
                 endGame()
             }
         leaveInflater.findViewById<Button>(R.id.btn_stay)
