@@ -15,6 +15,13 @@
         <item name="windowNoTitle">true</item>
     </style>
 
+    <!--    Splash screen -->
+    <style name="ThemeOverlay.SplashScreen" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="windowActionBar">false</item>
+        <item name="windowNoTitle">true</item>
+        <item name="android:windowDisablePreview">true</item>
+    </style>
+
     <!-- Dark Buttons -->
     <style name="MyDarkButton" parent="AppTheme">
         <item name="colorButtonNormal">@color/grey_500</item>

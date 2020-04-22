@@ -42,11 +42,23 @@
             android:label="@string/app_name"
             android:windowSoftInputMode="adjustResize">
 <!--  TODO: Login screen should not be shown if user already logged in  -->
+<!--            <intent-filter>-->
+<!--                <action android:name="android.intent.action.MAIN" />-->
+<!--                <category android:name="android.intent.category.LAUNCHER" />-->
+<!--            </intent-filter>-->
+        </activity>
+
+        <activity
+            android:name=".SplashActivity"
+            android:theme="@style/ThemeOverlay.SplashScreen">
+            <!--  TODO: Login screen should not be shown if user already logged in  -->
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+
         <activity android:name=".offlineBattle.OfflineBattleActivity" />
     </application>
 

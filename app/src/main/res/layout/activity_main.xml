@@ -11,8 +11,8 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
+        android:layout_height="match_parent"
+        android:background="@color/white">
 
         <fragment
             android:id="@+id/nav_host_fragment"
@@ -84,7 +84,6 @@
             app:layout_constraintTop_toTopOf="@+id/btn_map" />
 
 
-
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/progress_header"
             android:layout_width="match_parent"
@@ -137,8 +136,8 @@
                 android:id="@+id/view_energy_ball_1"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:background="@drawable/staminacircle"
-                android:visibility="invisible"
+                android:background="@drawable/staminacircleempty"
+                android:visibility="visible"
                 app:layout_constraintStart_toStartOf="@id/progressBar"
                 app:layout_constraintTop_toTopOf="@id/tv_energy" />
 
@@ -147,8 +146,8 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
-                android:background="@drawable/staminacircle"
-                android:visibility="invisible"
+                android:background="@drawable/staminacircleempty"
+                android:visibility="visible"
                 app:layout_constraintStart_toEndOf="@id/view_energy_ball_1"
                 app:layout_constraintTop_toTopOf="@id/tv_energy" />
 
@@ -157,8 +156,8 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginStart="8dp"
-                android:background="@drawable/staminacircle"
-                android:visibility="invisible"
+                android:background="@drawable/staminacircleempty"
+                android:visibility="visible"
                 app:layout_constraintStart_toEndOf="@id/view_energy_ball_2"
                 app:layout_constraintTop_toTopOf="@id/tv_energy" />
 
