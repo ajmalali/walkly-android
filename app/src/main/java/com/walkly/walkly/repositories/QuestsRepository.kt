@@ -16,7 +16,8 @@ object QuestsRepository {
 
     init {
         userDoc.addSnapshotListener { snapshot, exception ->
-            completedQuests.addAll(0, snapshot?.data?.get("CompletedQuests") as List<String>)
+            val list = snapshot?.data?.get("completedQuests") as List<String>
+            completedQuests.addAll(0, list)
         }
     }
 
