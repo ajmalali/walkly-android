@@ -42,6 +42,7 @@
 
     <ImageView
         android:id="@+id/img_pvp_host_equipment"
+        android:background="@drawable/equipment_background"
         android:layout_width="56dp"
         android:layout_height="56dp"
         app:layout_constraintBottom_toBottomOf="@+id/img_pvp_host_avatar"
@@ -77,6 +78,7 @@
         android:id="@+id/img_pvp_opponent_equipment"
         android:layout_width="56dp"
         android:layout_height="56dp"
+        android:background="@drawable/equipment_background"
         app:layout_constraintBottom_toBottomOf="@id/img_pvp_opponent_avatar"
         app:layout_constraintStart_toStartOf="@+id/img_pvp_opponent_avatar"
         tools:layout_editor_absoluteY="293dp"

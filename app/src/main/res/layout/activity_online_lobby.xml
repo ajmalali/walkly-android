@@ -37,9 +37,10 @@
 
     <ImageView
         android:id="@+id/current_player_equipment_lobby"
-        android:layout_width="65dp"
-        android:layout_height="74dp"
+        android:layout_width="75dp"
+        android:layout_height="75dp"
         android:layout_marginStart="32dp"
+        android:background="@drawable/equipment_background"
         app:layout_constraintStart_toEndOf="@+id/current_player_avatar"
         app:layout_constraintTop_toTopOf="@+id/current_player_avatar"
         tools:srcCompat="@tools:sample/avatars" />
@@ -71,6 +72,7 @@
         android:id="@+id/img_player3_equipment_lobby"
         android:layout_width="36dp"
         android:layout_height="36dp"
+        android:background="@drawable/equipment_background"
         app:layout_constraintBottom_toBottomOf="@id/img_player3_avatar_lobby"
         app:layout_constraintStart_toStartOf="@id/img_player3_avatar_lobby"
         tools:srcCompat="@tools:sample/avatars" />
@@ -103,6 +105,7 @@
         android:id="@+id/img_player2_equipment_lobby"
         android:layout_width="36dp"
         android:layout_height="36dp"
+        android:background="@drawable/equipment_background"
         app:layout_constraintBottom_toBottomOf="@id/img_player2_avatar_lobby"
         app:layout_constraintStart_toStartOf="@id/img_player2_avatar_lobby"
         tools:srcCompat="@tools:sample/avatars" />
@@ -134,6 +137,7 @@
         android:id="@+id/img_player1_equipment_lobby"
         android:layout_width="36dp"
         android:layout_height="36dp"
+        android:background="@drawable/equipment_background"
         app:layout_constraintBottom_toBottomOf="@id/img_player1_avatar_lobby"
         app:layout_constraintStart_toStartOf="@id/img_player1_avatar_lobby"
         tools:srcCompat="@tools:sample/avatars" />

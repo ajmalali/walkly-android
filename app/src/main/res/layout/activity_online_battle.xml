@@ -46,6 +46,7 @@
         android:id="@+id/img_player1_equipment"
         android:layout_width="36dp"
         android:layout_height="36dp"
+        android:background="@drawable/equipment_background"
         app:layout_constraintBottom_toBottomOf="@id/img_player1_avatar"
         app:layout_constraintStart_toStartOf="@id/img_player1_avatar"
         tools:srcCompat="@tools:sample/avatars" />
@@ -77,6 +78,7 @@
         android:id="@+id/img_player2_equipment"
         android:layout_width="36dp"
         android:layout_height="36dp"
+        android:background="@drawable/equipment_background"
         app:layout_constraintBottom_toBottomOf="@id/img_player2_avatar"
         app:layout_constraintStart_toStartOf="@id/img_player2_avatar"
         tools:srcCompat="@tools:sample/avatars" />
@@ -108,6 +110,7 @@
         android:id="@+id/img_player3_equipment"
         android:layout_width="36dp"
         android:layout_height="36dp"
+        android:background="@drawable/equipment_background"
         app:layout_constraintBottom_toBottomOf="@id/img_player3_avatar"
         app:layout_constraintStart_toStartOf="@id/img_player3_avatar"
         tools:srcCompat="@tools:sample/avatars" />
@@ -132,13 +135,14 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/img_player3_avatar"
         app:layout_constraintTop_toTopOf="@+id/img_player3_avatar"
-        app:srcCompat="@drawable/invfriend"
+        app:srcCompat="@drawable/ic_account_circle_black_24dp"
         tools:srcCompat="@tools:sample/avatars" />
 
     <ImageView
         android:id="@+id/img_player4_equipment"
         android:layout_width="36dp"
         android:layout_height="36dp"
+        android:background="@drawable/equipment_background"
         app:layout_constraintBottom_toBottomOf="@id/img_player4_avatar"
         app:layout_constraintStart_toStartOf="@id/img_player4_avatar"
         tools:srcCompat="@tools:sample/avatars" />
