@@ -2,9 +2,12 @@ package com.walkly.walkly.pvp
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Observer
@@ -32,6 +35,7 @@ class PVPActivity : AppCompatActivity() {
     private lateinit var loseDialog: AlertDialog
     private lateinit var leaveDialog: AlertDialog
     private lateinit var winDialog: AlertDialog
+    private lateinit var opponentLeftDialog: AlertDialog
 
     private lateinit var consumablesBottomSheetDialog: ConsumablesBottomSheetDialog
 
@@ -77,10 +81,8 @@ class PVPActivity : AppCompatActivity() {
         })
 
         viewModel.battle.observe(this, Observer { battle ->
-            if (battle.host == null) {
-                endGame()
-            } else if (battle.opponent == null) {
-
+            if (battle.host == null || battle.opponent == null) {
+                opponentLeftDialog.show()
             }
         })
 
@@ -95,6 +97,18 @@ class PVPActivity : AppCompatActivity() {
                 }
             }
         })
+
+        if (battle.host?.id == viewModel.userID) {
+            viewModel.hostSteps.observe(this, Observer {
+                val steps = "$it / ${viewModel.baseOpponentHP}"
+                tv_no_of_steps.text = steps
+            })
+        } else {
+            viewModel.opponentSteps.observe(this, Observer {
+                val steps = "$it / ${viewModel.baseHostHP}"
+                tv_no_of_steps.text = steps
+            })
+        }
 
         btn_leave.setOnClickListener {
             leaveDialog.show()
@@ -142,10 +156,12 @@ class PVPActivity : AppCompatActivity() {
 
     private fun initDialogs() {
         // Leave Dialog
-        val leaveInflater = layoutInflater.inflate(R.layout.dialog_battle_leave, null)
+        val leaveInflater = layoutInflater.inflate(R.layout.dialog_leave_lobby, null)
         leaveDialog = AlertDialog.Builder(this)
             .setView(leaveInflater)
             .create()
+        leaveInflater.findViewById<TextView>(R.id.textView3).text =
+            "Your opponent will take your equipment!"
         leaveInflater.findViewById<Button>(R.id.btn_leave)
             .setOnClickListener {
                 CoroutineScope(IO).launch {
@@ -162,6 +178,8 @@ class PVPActivity : AppCompatActivity() {
                 leaveDialog.dismiss()
             }
 
+        leaveDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
         // Win Dialog
         val winInflater = layoutInflater.inflate(R.layout.dialog_battle_won, null)
         winDialog = AlertDialog.Builder(this)
@@ -174,6 +192,7 @@ class PVPActivity : AppCompatActivity() {
                 endGame()
             }
 
+        winDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         winDialog.setCancelable(false)
         winDialog.setCanceledOnTouchOutside(false)
 
@@ -189,9 +208,25 @@ class PVPActivity : AppCompatActivity() {
                 endGame()
             }
 
+        loseDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         loseDialog.setCancelable(false)
         loseDialog.setCanceledOnTouchOutside(false)
 
+        // Lose Dialog
+        val leftInflater = layoutInflater.inflate(R.layout.dialog_pvp_opponent_left, null)
+        opponentLeftDialog = AlertDialog.Builder(this)
+            .setView(leftInflater)
+            .create()
+
+        leftInflater.findViewById<Button>(R.id.btn_leave)
+            .setOnClickListener {
+                opponentLeftDialog.dismiss()
+                endGame()
+            }
+
+        opponentLeftDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        opponentLeftDialog.setCancelable(false)
+        opponentLeftDialog.setCanceledOnTouchOutside(false)
     }
 
     private fun initConsumables() {
