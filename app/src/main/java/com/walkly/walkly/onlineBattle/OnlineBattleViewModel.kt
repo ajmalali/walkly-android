@@ -177,6 +177,7 @@ class OnlineBattleViewModel() : ViewModel() {
 
     }
 
+    // TODO: Make this faster for health
     fun useConsumable(consumableType: String, consumableValue: Int) {
         when (consumableType.toLowerCase(Locale.ROOT)) {
             "attack" -> {

@@ -123,20 +123,20 @@ class PVPActivity : AppCompatActivity() {
 
     private fun initDialogs() {
         // Leave Dialog
-//        val leaveInflater = layoutInflater.inflate(R.layout.dialog_battle_leave, null)
-//        leaveDialog = AlertDialog.Builder(this)
-//            .setView(leaveInflater)
-//            .create()
-//        leaveInflater.findViewById<Button>(R.id.btn_leave)
-//            .setOnClickListener {
-//                leaveDialog.dismiss()
-////                viewModel.battleEnded = true
-//                endGame()
-//            }
-//        leaveInflater.findViewById<Button>(R.id.btn_stay)
-//            .setOnClickListener {
-//                leaveDialog.dismiss()
-//            }
+        val leaveInflater = layoutInflater.inflate(R.layout.dialog_battle_leave, null)
+        leaveDialog = AlertDialog.Builder(this)
+            .setView(leaveInflater)
+            .create()
+        leaveInflater.findViewById<Button>(R.id.btn_leave)
+            .setOnClickListener {
+                leaveDialog.dismiss()
+//                viewModel.battleEnded = true
+                endGame()
+            }
+        leaveInflater.findViewById<Button>(R.id.btn_stay)
+            .setOnClickListener {
+                leaveDialog.dismiss()
+            }
 
         // Win Dialog
         val winInflater = layoutInflater.inflate(R.layout.dialog_battle_won, null)
@@ -182,7 +182,7 @@ class PVPActivity : AppCompatActivity() {
             consumablesViewModel.removeSelectedConsumable()
         })
 
-        pvp_use_item.setOnClickListener {
+        use_item.setOnClickListener {
             consumablesBottomSheetDialog.show(
                 supportFragmentManager,
                 ConsumablesBottomSheetDialog.TAG
