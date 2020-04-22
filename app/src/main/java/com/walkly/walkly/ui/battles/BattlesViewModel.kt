@@ -84,7 +84,7 @@ class BattlesViewModel : ViewModel() {
 
     fun getEnemies() {
         if (_enemyList.value == null) {
-            db.collection("enemies") // TODO: change to online enemies
+            db.collection("online_enemies") // TODO: change to online enemies
                 .get()
                 .addOnSuccessListener { result ->
                     for (doc in result) {
