@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginTop="10dp"
     android:padding="7dp"
-    android:background="@color/grey_100">
+    android:background="@drawable/gradient_purple_inverted">
 
     <ImageView
         android:id="@+id/img_avatar_2"
@@ -65,5 +65,6 @@
         android:paddingVertical="4dp"
         android:paddingHorizontal="16dp"
         android:text="Make Friend"
+        android:backgroundTint="@color/gradient_orange"
         />
 </androidx.constraintlayout.widget.ConstraintLayout>

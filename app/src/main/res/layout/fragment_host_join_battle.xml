@@ -145,7 +145,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/battle_options_bar">
+        app:layout_constraintTop_toBottomOf="@+id/battle_options_bar"
+        android:background="@drawable/texture">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
