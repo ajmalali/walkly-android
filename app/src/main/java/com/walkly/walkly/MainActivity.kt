@@ -32,6 +32,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
+import java.lang.IllegalStateException
 
 // max of 3 stamina points
 private const val MAX_STAMINA = 300
@@ -204,6 +205,8 @@ class MainActivity : AppCompatActivity() {
         stamina.observe(this, Observer {
             val stamina = it
 
+            try {
+
             stamina.let {
                 if (stamina <= 100) {
                     // no balls
@@ -230,6 +233,10 @@ class MainActivity : AppCompatActivity() {
                     }
                 }
             }
+            } catch (e: IllegalStateException) {
+                Log.d("Miain", "because started activity again from service", e)
+            }
+
 
             Log.d("Stamina from map", stamina.toString())
         })
