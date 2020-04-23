@@ -1,34 +1,41 @@
 package com.walkly.walkly.ui.leaderboard
 
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.walkly.walkly.R
 import com.walkly.walkly.databinding.LeaderboardItemBinding
+import kotlinx.android.synthetic.main.list_leaderboard.view.*
+import java.lang.Exception
 
 class LeaderboardAdapter :
-    ListAdapter<LeaderboardItem, LeaderboardAdapter.LeaderboardViewHolder>(LeaderboardItemCallback()) {
+    ListAdapter<LeaderboardItem, LeaderboardAdapter.LeaderbardViewHolder2>(LeaderboardItemCallback()) {
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LeaderboardViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LeaderbardViewHolder2 {
 
-        val layoutInflater = LayoutInflater.from(parent.context)
-        val binding = LeaderboardItemBinding.inflate(layoutInflater, parent, false)
-
-        return LeaderboardViewHolder(binding)
+//        val layoutInflater = LayoutInflater.from(parent.context)
+//        val binding = LeaderboardItemBinding.inflate(layoutInflater, parent, false)
+        val view = LayoutInflater.from(parent.context)
+            .inflate(R.layout.list_leaderboard, parent, false)
+        return LeaderbardViewHolder2(view)
     }
 
-    override fun onBindViewHolder(holder: LeaderboardViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: LeaderbardViewHolder2, position: Int) {
         val item = getItem(position)
-        holder.position.text = (position + 1).toString()
+        /*holder.position.text = (position + 1).toString()
         holder.userName.text = item.name
         val level = "Level: ${item.level}"
         holder.userLevel.text = level
         holder.userPoints.text = item.points.toString()
-        holder.userImage.setImageResource(R.drawable.fui_ic_anonymous_white_24dp)
+        holder.userImage.setImageResource(R.drawable.fui_ic_anonymous_white_24dp)*/
+        holder.bind(item)
     }
 
     class LeaderboardViewHolder(binding: LeaderboardItemBinding) : RecyclerView.ViewHolder(binding.root) {
@@ -37,6 +44,27 @@ class LeaderboardAdapter :
         val userLevel: TextView = binding.userLevel
         val userPoints: TextView = binding.userPoints
         val userImage: ImageView = binding.userImage
+    }
+
+    class LeaderbardViewHolder2(view: View) : RecyclerView.ViewHolder(view){
+        private val userName : TextView = view.tv_username
+        private val level : TextView = view.tv_level
+        private val points : TextView = view.tv_points
+        private val avatar : ImageView = view.img_avatar
+
+        fun bind (item: LeaderboardItem){
+            userName.text = item.name
+            level.text = "level ${item.level}"
+            points.text = "${item.points} points"
+
+            try {
+                Glide.with(this.itemView)
+                    .load(R.drawable.ic_person_black_24dp)
+                    .into(avatar)
+            } catch (e: Exception){
+                Log.d("leaderboard binding", "Failed to load avatar")
+            }
+        }
     }
 
     class LeaderboardItemCallback : DiffUtil.ItemCallback<LeaderboardItem>() {
