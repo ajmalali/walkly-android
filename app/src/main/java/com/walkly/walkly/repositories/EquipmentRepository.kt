@@ -36,6 +36,10 @@ object EquipmentRepository {
         return equipmentList
     }
 
+    fun addEquipment(equipment: Equipment) {
+        equipmentList.add(equipment)
+    }
+
     // TODO: Store locally when no internet
     suspend fun syncEquipment() {
         for (equipment in equipmentList) {
@@ -46,7 +50,7 @@ object EquipmentRepository {
 
     fun getDefaultEquipment(): Equipment {
         return Equipment(
-            name = "sword_x",
+            name = "Sword X",
             type = "attack",
             value = 5,
             level = 1,

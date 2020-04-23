@@ -9,17 +9,21 @@
 
     <ImageView
         android:id="@+id/tutorial_character"
-        android:layout_width="97dp"
-        android:layout_height="111dp"
-        app:layout_constraintBottom_toTopOf="@+id/tutorial_text_container"
-        app:srcCompat="@drawable/ic_launcher_foreground"
-        tools:layout_editor_absoluteX="29dp" />
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginStart="16dp"
+        android:cropToPadding="false"
+        app:layout_constraintBottom_toBottomOf="@+id/tutorial_text_container"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.75"
+        app:srcCompat="@mipmap/numa_foreground" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/tutorial_text_container"
         android:layout_width="match_parent"
         android:layout_height="144dp"
-        android:background="@drawable/gradient_purple"
+        android:background="@drawable/gradient_purple_rounded"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -30,15 +34,19 @@
 
         <TextView
             android:id="@+id/textbox"
-            android:layout_width="375dp"
-            android:layout_height="73dp"
-            android:layout_marginTop="36dp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
             android:text="TextView"
             android:textAlignment="textStart"
             android:textColor="@color/white"
             android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 

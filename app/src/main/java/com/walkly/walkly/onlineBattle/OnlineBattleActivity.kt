@@ -135,7 +135,8 @@ class OnlineBattleActivity : AppCompatActivity() {
 
         winInflater.findViewById<TextView>(R.id.item_name).text = equipment.name
         winInflater.findViewById<TextView>(R.id.item_level).text = "Level: ${equipment.level}"
-        winInflater.findViewById<TextView>(R.id.item_value).text = "+ ${equipment.value} damage"
+        winInflater.findViewById<TextView>(R.id.item_value).text =
+            "+ ${equipment.value} ${equipment.type}"
     }
 
     // Minimize the app
