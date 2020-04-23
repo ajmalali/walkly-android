@@ -5,7 +5,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_marginTop="10dp"
-    android:background="@color/grey_100">
+    android:background="@color/buttonPrimary">
 
     <ImageView
         android:id="@+id/img_avatar_0"
@@ -52,6 +52,7 @@
         android:paddingVertical="4dp"
         android:paddingHorizontal="6dp"
         android:text="Accept"
+        android:backgroundTint="@color/gradient_orange"
         />
 
     <androidx.appcompat.widget.AppCompatButton
