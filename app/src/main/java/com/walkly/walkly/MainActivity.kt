@@ -8,9 +8,12 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.EditText
+import android.widget.TextView
 import android.widget.Toast
+import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.MutableLiveData
@@ -18,18 +21,24 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreException
 import com.walkly.walkly.auth.LoginActivity
+import com.walkly.walkly.pvp.PVPInvitesViewModel
 import com.walkly.walkly.repositories.ConsumablesRepository
 import com.walkly.walkly.repositories.EquipmentRepository
 import com.walkly.walkly.repositories.PlayerRepository
+import com.walkly.walkly.ui.battles.InvitesAdapter
+import com.walkly.walkly.ui.lobby.PVPLobbyActivity
 import com.walkly.walkly.utilities.DistanceUtil
 import com.walkly.walkly.utilities.TutorialUtil
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.bottom_sheet_layout.*
+import kotlinx.android.synthetic.main.dialog_invite_friend.view.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 
@@ -41,7 +50,7 @@ private const val INTERVAL = 36000L
 
 private const val TAG = "MainActivity"
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), InvitesAdapter.OnInviteListener {
 
     // nav bar colors
     private val SOLID_WHITE = Color.parseColor("#FFFFFF")
@@ -57,6 +66,16 @@ class MainActivity : AppCompatActivity() {
     private lateinit var feedbackDialog: AlertDialog
     private val auth = FirebaseAuth.getInstance()
     private lateinit var tutorial: TutorialUtil
+
+    private lateinit var pvpInvitesDialog: AlertDialog
+    private lateinit var pvpInvitesBuilder: AlertDialog.Builder
+    private lateinit var pvpInvitesAdapter: InvitesAdapter
+    private lateinit var invitesRecyclerView: RecyclerView
+
+    private lateinit var loadingDialog: AlertDialog
+    private lateinit var loadingInflater: View
+
+    private val pvpInvitesViewModel: PVPInvitesViewModel by viewModels()
 
     private val walkedDistance = MutableLiveData<Float>()
     private lateinit var distanceUtil: DistanceUtil
@@ -75,6 +94,8 @@ class MainActivity : AppCompatActivity() {
         menu.setOnClickListener {
             drawer_layout.open()
         }
+
+        initInviteDialog()
 
         val navController = findNavController(R.id.nav_host_fragment)
         nav_view.setNavigationItemSelectedListener {
@@ -131,6 +152,11 @@ class MainActivity : AppCompatActivity() {
                 }
                 R.id.nav_logout -> {
                     signOut()
+                }
+
+                R.id.nav_pvp_invites -> {
+                    pvpInvitesDialog.show()
+                    drawer_layout.close()
                 }
             }
             return@setNavigationItemSelectedListener false
@@ -197,6 +223,47 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun initInviteDialog() {
+        // Creating battle dialog
+        loadingInflater = layoutInflater.inflate(R.layout.dialog_loading_battle, null, false)
+        loadingDialog = AlertDialog.Builder(this)
+            .setView(loadingInflater)
+            .create()
+
+        loadingDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        loadingDialog.setCancelable(false)
+        loadingDialog.setCanceledOnTouchOutside(false)
+
+        // Invite Friends Dialog
+        val inviteDialog = layoutInflater.inflate(R.layout.dialog_invite_friend, null, false)
+        pvpInvitesBuilder = AlertDialog.Builder(this)
+            .setView(inviteDialog)
+        pvpInvitesDialog = pvpInvitesBuilder.create()
+        //To make the background for the dialog Transparent
+        pvpInvitesDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        inviteDialog.findViewById<TextView>(R.id.invTitle).text = "Your PvP Invites"
+        inviteDialog.findViewById<TextView>(R.id.error_message).text =
+            "You don't have any invites currently"
+
+        pvpInvitesAdapter = InvitesAdapter(mutableListOf(), this)
+        invitesRecyclerView =
+            inviteDialog.findViewById(R.id.invite_friends_recycler_view)
+        invitesRecyclerView.layoutManager = LinearLayoutManager(this)
+        invitesRecyclerView.adapter = pvpInvitesAdapter
+
+        inviteDialog.progressBar.visibility = View.VISIBLE
+        pvpInvitesViewModel.invitesList.observe(this, Observer { list ->
+            inviteDialog.progressBar.visibility = View.GONE
+            if (list.isEmpty()) {
+                inviteDialog.error_message.visibility = View.VISIBLE
+            } else {
+                inviteDialog.error_message.visibility = View.GONE
+                pvpInvitesAdapter.invites = list
+                pvpInvitesAdapter.notifyDataSetChanged()
+            }
+        })
     }
 
     // TODO: FIX THIS
@@ -309,6 +376,26 @@ class MainActivity : AppCompatActivity() {
                 currentPlayer.stamina = currentPlayer.stamina?.inc()
                 stamina.postValue(currentPlayer.stamina)
                 Log.d(TAG, "Current stamina: ${currentPlayer.stamina}")
+            }
+        }
+    }
+
+    override fun onInviteClick(position: Int) {
+        val invite = pvpInvitesAdapter.invites[position]
+        pvpInvitesDialog.dismiss()
+        CoroutineScope(IO).launch {
+            withContext(Dispatchers.Main) {
+                loadingInflater.findViewById<TextView>(R.id.loading_text).text =
+                    getString(R.string.joining_battle)
+                loadingDialog.show()
+            }
+
+            val battle = pvpInvitesViewModel.joinPVPBattle(invite.battleID)
+            withContext(Dispatchers.Main) {
+                val intent = Intent(this@MainActivity, PVPLobbyActivity::class.java)
+                intent.putExtra("battle", battle)
+                loadingDialog.dismiss()
+                startActivity(intent)
             }
         }
     }
