@@ -44,6 +44,7 @@ class SplashActivity : AppCompatActivity() {
             splashTime
         )
 
+//        goToMainActivity()
     }
 
     private fun goToMainActivity() {
@@ -52,9 +53,7 @@ class SplashActivity : AppCompatActivity() {
             scope.launch {
                 PlayerRepository.initPlayer()
                 withContext(Main) {
-                    val intent = Intent(applicationContext, MainActivity::class.java)
-                    startActivity(intent)
-                    finish()
+                    updateUI()
                 }
             }
         } else {
@@ -65,5 +64,11 @@ class SplashActivity : AppCompatActivity() {
 //        val mainActivityIntent = Intent(applicationContext, LoginActivity::class.java)
 //        startActivity(mainActivityIntent)
 //        finish()
+    }
+
+    private fun updateUI() {
+        val intent = Intent(this, MainActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 }

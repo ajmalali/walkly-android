@@ -59,6 +59,7 @@ class BattlesViewModel : ViewModel() {
             Log.d(TAG, "ID: ${currentPlayer.id!!}")
             invitesRegistration = db.collection("invites")
                 .whereArrayContains("toIDs", currentPlayer.id!!)
+                .whereEqualTo("type", "ob")
                 .addSnapshotListener { value, e ->
                     if (e != null) {
                         Log.w(TAG, "Listen failed.", e)

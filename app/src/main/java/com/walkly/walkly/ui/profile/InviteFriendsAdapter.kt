@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Friend
-import kotlinx.android.synthetic.main.activity_online_lobby.*
 import kotlinx.android.synthetic.main.list_friend.view.img_avatar_1
 import kotlinx.android.synthetic.main.list_friend.view.tv_level_1
 import kotlinx.android.synthetic.main.list_friend.view.tv_username_1

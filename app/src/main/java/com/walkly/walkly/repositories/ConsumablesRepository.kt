@@ -61,15 +61,11 @@ object ConsumablesRepository {
     // Adds 3 new consumables to the current user. just for test purposes
     private fun initConsumableList() {
         var ref = userDocument.collection("consumables").document()
-        var consumable = Consumable("consumable 1", 2, "image", "health", 40).addId(ref.id)
+        var consumable = Consumable("Healing potion", 2, "image", "health", 40).addId(ref.id)
         consumableList.add(consumable)
 
         ref = userDocument.collection("consumables").document()
-        consumable = Consumable("consumable 2", 3, "image", "attack", 30).addId(ref.id)
-        consumableList.add(consumable)
-
-        ref = userDocument.collection("consumables").document()
-        consumable = Consumable("consumable 3", 3, "image", "attack", 40).addId(ref.id)
+        consumable = Consumable("Poison", 3, "image", "attack", 30).addId(ref.id)
         consumableList.add(consumable)
     }
 }
