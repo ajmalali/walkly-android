@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="10dp"
-    android:background="@color/grey_100">
+    android:background="@color/buttonPrimary">
 
     <ImageView
         android:id="@+id/img_avatar_0"
@@ -48,7 +48,9 @@
         android:text="Accept"
         app:layout_constraintBaseline_toBaselineOf="@id/tv_level_0"
         app:layout_constraintEnd_toStartOf="@id/btn_reject"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        android:backgroundTint="@color/gradient_orange"
+        />
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/btn_reject"
