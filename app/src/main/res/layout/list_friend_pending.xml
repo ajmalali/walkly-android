@@ -24,7 +24,6 @@
         android:layout_marginLeft="16dp"
         android:textColor="@color/white"
         android:text="player name"
-        android:textColor="@color/list_details"
         app:layout_constraintStart_toEndOf="@id/img_avatar_0"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -36,7 +35,6 @@
         android:layout_marginLeft="32dp"
         android:textColor="@color/white"
         android:text="Level 10"
-        android:textColor="@color/list_details"
         app:layout_constraintStart_toEndOf="@id/tv_username_0"
         app:layout_constraintTop_toTopOf="parent" />
 
