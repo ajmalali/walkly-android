@@ -41,6 +41,7 @@ import kotlinx.android.synthetic.main.bottom_sheet_layout.*
 import kotlinx.android.synthetic.main.dialog_invite_friend.view.*
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
+import java.lang.IllegalStateException
 
 // max of 3 stamina points
 private const val MAX_STAMINA = 300
@@ -271,6 +272,8 @@ class MainActivity : AppCompatActivity(), InvitesAdapter.OnInviteListener {
         stamina.observe(this, Observer {
             val stamina = it
 
+            try {
+
             stamina.let {
                 if (stamina <= 100) {
                     // no balls
@@ -297,6 +300,10 @@ class MainActivity : AppCompatActivity(), InvitesAdapter.OnInviteListener {
                     }
                 }
             }
+            } catch (e: IllegalStateException) {
+                Log.d("Miain", "because started activity again from service", e)
+            }
+
 
             Log.d("Stamina from map", stamina.toString())
         })
