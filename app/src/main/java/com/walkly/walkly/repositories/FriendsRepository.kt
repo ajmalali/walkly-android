@@ -21,7 +21,7 @@ object FriendsRepository {
             friendRquests.clear()
             try {
                 friends.addAll(snapshot?.data?.get("friends") as List<String>)
-                friendRquests.addAll(snapshot?.data?.get("friendRequests") as List<String>)
+                friendRquests.addAll(snapshot.data?.get("friendRequests") as List<String>)
             } catch (tce: TypeCastException) {
                 return@addSnapshotListener
             }
