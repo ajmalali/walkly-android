@@ -13,6 +13,7 @@ import com.walkly.walkly.models.BattlePlayer
 import com.walkly.walkly.models.Equipment
 import com.walkly.walkly.models.OnlineBattle
 import com.walkly.walkly.models.Shard
+import com.walkly.walkly.repositories.EquipmentRepository
 import com.walkly.walkly.repositories.PlayerRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.tasks.await
@@ -154,7 +155,8 @@ class OnlineBattleViewModel : ViewModel() {
 
     suspend fun getReward(): Equipment {
         val equipmentList = mutableListOf<Equipment>()
-        val snapshot = db.collection("equipments").get().await()
+        val snapshot =
+            db.collection("equipments").whereEqualTo("name", "Ketchup Packet").get().await()
         for (document in snapshot) {
             val equipment = document.toObject<Equipment>()
             equipmentList.add(equipment.addId(document.id))
@@ -163,8 +165,7 @@ class OnlineBattleViewModel : ViewModel() {
         val index = (0 until equipmentList.size).random()
         val reward = equipmentList[index]
 
-        db.collection("users").document(currentPlayer.id!!)
-            .collection("equipments").document(reward.id!!).set(reward)
+        EquipmentRepository.addEquipment(reward)
 
         return reward
     }

@@ -39,20 +39,20 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     // [START on_start_check_user]
-    public override fun onStart() {
-        super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = viewModel.getCurrentUser()
-        if (currentUser != null) {
-
-            scope.launch {
-                PlayerRepository.initPlayer()
-                withContext(Main) {
-                    updateUI(currentUser)
-                }
-            }
-        }
-    }
+//    public override fun onStart() {
+//        super.onStart()
+//        // Check if user is signed in (non-null) and update UI accordingly.
+//        val currentUser = viewModel.getCurrentUser()
+//        if (currentUser != null) {
+//
+//            scope.launch {
+//                PlayerRepository.initPlayer()
+//                withContext(Main) {
+//                    updateUI(currentUser)
+//                }
+//            }
+//        }
+//    }
     // [END on_start_check_user]
 
 
@@ -60,10 +60,10 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
         Log.d(TAG, "signIn:$email")
 
         if (!validateForm()) {
+            loading.visibility = View.GONE
             return
         }
 
-        loading.visibility = View.VISIBLE
         scope.launch {
             try {
                 val user = viewModel.signIn(email, password)
@@ -74,6 +74,7 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
                 }
             } catch (e: FirebaseAuthException) {
                 // If sign in fails, display a message to the user.
+                withContext(Main) { loading.visibility = View.GONE }
                 displayMessage(e.message)
             }
             // [END create_user_with_email]
@@ -131,10 +132,13 @@ class LoginActivity : AppCompatActivity(), View.OnClickListener {
     override fun onClick(v: View) {
         val i = v.id
         when (i) {
-            R.id.emailSignInButton -> signIn(
-                fieldEmail.text.toString(),
-                fieldPassword.text.toString()
-            )
+            R.id.emailSignInButton -> {
+                loading.visibility = View.VISIBLE
+                signIn(
+                    fieldEmail.text.toString(),
+                    fieldPassword.text.toString()
+                )
+            }
             R.id.signUp -> signUp()
         }
     }

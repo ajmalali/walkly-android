@@ -14,7 +14,11 @@ import com.google.firebase.firestore.FirebaseFirestoreException
 import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import com.walkly.walkly.repositories.PlayerRepository
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_signup.*
+import kotlinx.android.synthetic.main.activity_signup.fieldEmail
+import kotlinx.android.synthetic.main.activity_signup.fieldPassword
+import kotlinx.android.synthetic.main.activity_signup.loading
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -39,29 +43,30 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
         }
     }
 
-    public override fun onStart() {
-        super.onStart()
-        // Check if user is signed in (non-null) and update UI accordingly.
-        val currentUser = viewModel.getCurrentUser()
-        loading.visibility = View.GONE
-        if (currentUser != null) {
-            // TODO: Show loading
-            scope.launch {
-                PlayerRepository.initPlayer()
-                withContext(Main) {
-                    updateUI(currentUser)
-                }
-            }
-        }
-    }
+//    public override fun onStart() {
+//        super.onStart()
+//        // Check if user is signed in (non-null) and update UI accordingly.
+//        val currentUser = viewModel.getCurrentUser()
+//        loading.visibility = View.GONE
+//        if (currentUser != null) {
+//            // TODO: Show loading
+//            scope.launch {
+//                PlayerRepository.initPlayer()
+//                withContext(Main) {
+//                    updateUI(currentUser)
+//                }
+//            }
+//        }
+//    }
 
     private fun createAccount(email: String, password: String) {
         Log.d(DEBUG_TAG, "createAccount:$email")
 
         if (!validateForm()) {
+            loading.visibility = View.GONE
             return
         }
-        loading.visibility = View.VISIBLE
+
         scope.launch {
             try {
                 val name = fieldName.text.toString()
@@ -73,11 +78,14 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
                 }
 
             } catch (e: FirebaseAuthException) {
+                withContext(Main) { loading.visibility = View.GONE }
                 // If sign in fails, display a message to the user.
                 displayMessage(e.message)
             } catch (e: FirebaseFirestoreException) {
+                withContext(Main) { loading.visibility = View.GONE }
                 displayMessage(e.message)
             } catch (e: Exception) {
+                withContext(Main) { loading.visibility = View.GONE }
                 Log.d(DEBUG_TAG, "${e.message}")
             }
 
@@ -136,6 +144,7 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener {
     }
 
     override fun onClick(v: View) {
+        loading.visibility = View.VISIBLE
         when (v.id) {
             R.id.emailCreateAccountButton -> {
                 createAccount(fieldEmail.text.toString(), fieldPassword.text.toString())
