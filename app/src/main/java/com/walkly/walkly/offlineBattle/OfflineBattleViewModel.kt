@@ -21,7 +21,7 @@ class OfflineBattleViewModel : ViewModel() {
     // used to convert player level to HP
     private val HP_MULTIPLAYER = 100
 
-    private val currentPlayer = PlayerRepository.getPlayer()
+    val currentPlayer = PlayerRepository.getPlayer()
 
     var baseEnemyHP = -1L
     var currentEnemyHp = 0L
@@ -42,8 +42,7 @@ class OfflineBattleViewModel : ViewModel() {
 
     init {
         // Get damage player can do based on equipment
-//        playerDamage = currentPlayer.currentEquipment?.value!!
-        playerDamage = 5L
+        playerDamage = currentPlayer.currentEquipment?.value!!
 
         // Get the starting player HP
         basePlayerHP = currentPlayer.level?.times(HP_MULTIPLAYER) ?: 1
@@ -69,8 +68,8 @@ class OfflineBattleViewModel : ViewModel() {
 
     // reduce enemy HP by distance walked * equipment value
     fun damageEnemy(steps: Float) {
-//        currentEnemyHp -= steps * currentPlayer.currentEquipment?.value!!
-        currentEnemyHp -= steps.toLong()
+        currentEnemyHp -= (steps * playerDamage).toLong()
+//        currentEnemyHp -= steps.toLong()
         if (currentEnemyHp <= 0) {
             battleEnded = true
         }

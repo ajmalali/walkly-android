@@ -2,26 +2,27 @@ package com.walkly.walkly.offlineBattle
 
 import android.app.AlertDialog
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
+import com.bumptech.glide.Glide
 import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.ui.consumables.ConsumablesBottomSheetDialog
 import com.walkly.walkly.ui.consumables.ConsumablesViewModel
 import com.walkly.walkly.utilities.DistanceUtil
-import kotlinx.android.synthetic.main.fragment_battle_activity.*
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.android.synthetic.main.activity_offline_battle.*
+import kotlinx.coroutines.*
 import java.io.Serializable
 import java.util.*
 
@@ -35,6 +36,7 @@ class OfflineBattleActivity : AppCompatActivity() {
     private lateinit var loseDialog: AlertDialog
     private lateinit var leaveDialog: AlertDialog
     private lateinit var winDialog: AlertDialog
+    private lateinit var winInflater: View
 
     private lateinit var consumablesBottomSheetDialog: ConsumablesBottomSheetDialog
     private val walkedDistance = MutableLiveData<Float>()
@@ -49,13 +51,21 @@ class OfflineBattleActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
-        setContentView(R.layout.fragment_battle_activity)
+        setContentView(R.layout.activity_offline_battle)
 
         initDialogs()
 
-        leaveBattle.setOnClickListener {
+        btn_leave.setOnClickListener {
             leaveDialog.show()
         }
+
+        Glide.with(this)
+            .load(viewModel.currentPlayer.photoURL)
+            .into(img_player_avatar)
+
+        Glide.with(this)
+            .load(viewModel.currentPlayer.currentEquipment?.image)
+            .into(img_player_equipment)
 
         val bundle = intent.extras
         // From notification
@@ -67,7 +77,7 @@ class OfflineBattleActivity : AppCompatActivity() {
                 winDialog.show()
             }
             else -> {
-                initEnemy(bundle)
+                initEnemy()
                 initHealthListeners()
                 initConsumables()
 
@@ -136,23 +146,26 @@ class OfflineBattleActivity : AppCompatActivity() {
 
     private fun initDialogs() {
         // Leave Dialog
-        val leaveInflater = layoutInflater.inflate(R.layout.dialog_battle_leave, null)
+        val leaveInflater = layoutInflater.inflate(R.layout.dialog_leave_lobby, null)
         leaveDialog = AlertDialog.Builder(this)
             .setView(leaveInflater)
             .create()
+        leaveDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+
         leaveInflater.findViewById<Button>(R.id.btn_leave)
             .setOnClickListener {
                 leaveDialog.dismiss()
-                viewModel.battleEnded = true
-                endGame()
+                finish()
             }
+
         leaveInflater.findViewById<Button>(R.id.btn_stay)
             .setOnClickListener {
                 leaveDialog.dismiss()
             }
 
+
         // Win Dialog
-        val winInflater = layoutInflater.inflate(R.layout.dialog_battle_won, null)
+        winInflater = layoutInflater.inflate(R.layout.dialog_battle_won, null)
         winDialog = AlertDialog.Builder(this)
             .setView(winInflater)
             .create()
@@ -162,6 +175,10 @@ class OfflineBattleActivity : AppCompatActivity() {
                 winDialog.dismiss()
                 endGame()
             }
+
+        winDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        winDialog.setCancelable(false)
+        winDialog.setCanceledOnTouchOutside(false)
 
         // Lose Dialog
         val loseInflater = layoutInflater.inflate(R.layout.dialog_battle_lost, null)
@@ -174,33 +191,20 @@ class OfflineBattleActivity : AppCompatActivity() {
                 loseDialog.dismiss()
                 endGame()
             }
+
+        loseDialog.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        loseDialog.setCancelable(false)
+        loseDialog.setCanceledOnTouchOutside(false)
     }
 
-    private fun initEnemy(bundle: Bundle?) {
-        // TODO: Refactor this (Use Parcelables)
-        var enemy: Enemy? = null
-        bundle?.let {
-            enemy = Enemy(
-                level = bundle.getLong("enemyLvl"),
-                health = bundle.getLong("enemyHP"),
-                damage = bundle.getLong("enemyDmg"),
-                name = bundle.getString("enemyName"),
-                image = bundle.getString("enemyImg")
-            ).addId(bundle.getString("enemyId")!!)
-        }
+    private fun initEnemy() {
+        val enemy: Enemy? = intent.getParcelableExtra("enemy")
 
         enemy?.let { viewModel.initEnemy(it) }
-        // TODO: Use enemy image
         // get enemy image
-//        val imagename = enemy.image.toString()
-        val imagename = "boss" + bundle?.getString("enemyId")
-        boss_bitmoji.setImageResource(
-            resources.getIdentifier(
-                imagename,
-                "drawable",
-                this.packageName
-            )
-        )
+        Glide.with(this)
+            .load(enemy?.image)
+            .into(img_enemy_avatar)
     }
 
     private fun initConsumables() {
@@ -210,7 +214,7 @@ class OfflineBattleActivity : AppCompatActivity() {
             consumablesViewModel.removeSelectedConsumable()
         })
 
-        use_items.setOnClickListener {
+        use_item.setOnClickListener {
             consumablesBottomSheetDialog.show(
                 supportFragmentManager,
                 ConsumablesBottomSheetDialog.TAG
@@ -222,7 +226,7 @@ class OfflineBattleActivity : AppCompatActivity() {
     private fun initHealthListeners() {
         viewModel.playerHP.observe(this, Observer {
 //            player_health_bar.progress = it.toInt()
-            player_health_bar.setProgress(it, true)
+            bar_player_hp.setProgress(it, true)
             if (it <= 0) {
                 viewModel.battleEnded = true
                 loseDialog.show()
@@ -233,7 +237,7 @@ class OfflineBattleActivity : AppCompatActivity() {
         // TODO: Fix points
         viewModel.enemyHP.observe(this, Observer {
 //            enemy_health_bar.progress = it.toInt()
-            enemy_health_bar.setProgress(it, true)
+            bar_enemy_hp.setProgress(it, true)
             // If game ends
             if (it <= 0) {
 //                enemy.level.value?.toInt()?.let { it1 -> Player.updatePoints(it1) }

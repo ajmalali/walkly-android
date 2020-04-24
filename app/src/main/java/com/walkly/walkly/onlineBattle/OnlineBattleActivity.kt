@@ -86,6 +86,7 @@ class OnlineBattleActivity : AppCompatActivity() {
             Log.d(TAG, "Combined player health: $it")
             bar_player_hp.progress = it.toInt()
             if (it <= 0) {
+                viewModel.stopGame()
                 loseDialog.show()
             }
         })
@@ -93,6 +94,7 @@ class OnlineBattleActivity : AppCompatActivity() {
         viewModel.enemyHP.observe(this, Observer {
             bar_enemy_hp.progress = it.toInt()
             if (it <= 0 && !battleEnded) {
+                viewModel.stopGame()
                 battleEnded = true
                 CoroutineScope(IO).launch {
                     val equipment = viewModel.getReward()

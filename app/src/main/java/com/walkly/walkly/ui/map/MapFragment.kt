@@ -154,24 +154,17 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                     // decreasing energy on battle join
                     mapViewModel.currentPlayer.joinBattle()
                     val intent = Intent(activity, OfflineBattleActivity::class.java)
-                    val bundle = Bundle()
-                    bundle.putString("enemyName", curen.name)
-                    bundle.putString("enemyId", curen.id)
-                    bundle.putLong("enemyHP", curen.health ?: 100)
-                    bundle.putString("enemyImg", curen.image)
-                    bundle.putLong("enemyDmg", curen.damage ?: 1)
-                    bundle.putString("enemyLvl", curen.level.toString())
-                    intent.putExtras(bundle)
+                    intent.putExtra("enemy", curen)
                     startActivity(intent)
 //                    activity?.finish()
                 }
                 bottom_sheet_text.setText(curen.name)
-                bottom_sheet_lvl.setText("Level: "+ curen.level)
-                bottom_sheet_health.setText("HP: "+ curen.health)
+                bottom_sheet_lvl.setText("Level: " + curen.level)
+                bottom_sheet_health.setText("HP: " + curen.health)
                 Glide.with(requireActivity())
-                        .load(curen.image)
-                        .diskCacheStrategy(DiskCacheStrategy.DATA)
-                        .into(requireActivity().bossgif)
+                    .load(curen.image)
+                    .diskCacheStrategy(DiskCacheStrategy.DATA)
+                    .into(requireActivity().bossgif)
                 BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_COLLAPSED
 
             }
@@ -200,9 +193,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                     .build()
 
             val locationComponentActivationOptions = LocationComponentActivationOptions.builder(
-                    requireActivity().applicationContext,
-                    loadedMapStyle
-                )
+                requireActivity().applicationContext,
+                loadedMapStyle
+            )
                 .locationComponentOptions(customLocationComponentOptions)
                 .build()
 
