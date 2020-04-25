@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.util.Log
 import android.view.View
 import android.widget.Button
+import android.widget.TextView
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -18,10 +19,18 @@ import com.bumptech.glide.Glide
 import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
+import com.walkly.walkly.models.Equipment
 import com.walkly.walkly.ui.consumables.ConsumablesBottomSheetDialog
 import com.walkly.walkly.ui.consumables.ConsumablesViewModel
 import com.walkly.walkly.utilities.DistanceUtil
 import kotlinx.android.synthetic.main.activity_offline_battle.*
+import kotlinx.android.synthetic.main.activity_offline_battle.bar_enemy_hp
+import kotlinx.android.synthetic.main.activity_offline_battle.bar_player_hp
+import kotlinx.android.synthetic.main.activity_offline_battle.btn_leave
+import kotlinx.android.synthetic.main.activity_offline_battle.img_enemy_avatar
+import kotlinx.android.synthetic.main.activity_offline_battle.tv_no_of_steps
+import kotlinx.android.synthetic.main.activity_offline_battle.use_item
+import kotlinx.android.synthetic.main.activity_online_battle.*
 import kotlinx.coroutines.*
 import java.io.Serializable
 import java.util.*
@@ -81,17 +90,11 @@ class OfflineBattleActivity : AppCompatActivity() {
                 initHealthListeners()
                 initConsumables()
 
-                // NOT TESTED
-                // Since starting time is now where the walked distance = 0
-                // TODO: Change to Enemy Health / player equipment
-                var steps = 0
-                var totalSteps = "$steps / 1000"
+                var totalSteps = "0 / ${viewModel.requiredSteps}"
                 tv_no_of_steps.text = totalSteps
-
                 walkedDistance.observe(this, Observer {
                     viewModel.damageEnemy(it)
-                    steps += it.toInt()
-                    totalSteps = "$steps / 1000"
+                    totalSteps = "${viewModel.stepsTaken} / ${viewModel.requiredSteps}"
                     tv_no_of_steps.text = totalSteps
                     Log.d("steps = ", it.toString())
                 })
@@ -239,18 +242,29 @@ class OfflineBattleActivity : AppCompatActivity() {
 //            enemy_health_bar.progress = it.toInt()
             bar_enemy_hp.setProgress(it, true)
             // If game ends
-            if (it <= 0) {
+            if (it <= 0 && !viewModel.battleEnded) {
 //                enemy.level.value?.toInt()?.let { it1 -> Player.updatePoints(it1) }
-                getReward()
-                viewModel.battleEnded = true
-                winDialog.show()
+                CoroutineScope(Dispatchers.IO).launch {
+                    val equipment = viewModel.getReward()
+                    withContext(Dispatchers.Main) {
+                        viewModel.battleEnded = true
+                        setupReward(equipment)
+                        winDialog.show()
+                    }
+                }
             }
         })
     }
 
-    private fun getReward() {
-        // TODO: construct win dialog based real reward
+    private fun setupReward(equipment: Equipment) {
+        Glide.with(this)
+            .load(equipment.image)
+            .into(winInflater.findViewById(R.id.item_image))
 
+        winInflater.findViewById<TextView>(R.id.item_name).text = equipment.name
+        winInflater.findViewById<TextView>(R.id.item_level).text = "Level: ${equipment.level}"
+        winInflater.findViewById<TextView>(R.id.item_value).text =
+            "+ ${equipment.value} ${equipment.type}"
     }
 
     private fun startBattle() {

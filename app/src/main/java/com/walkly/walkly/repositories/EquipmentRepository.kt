@@ -37,7 +37,9 @@ object EquipmentRepository {
     }
 
     fun addEquipment(equipment: Equipment) {
-        equipmentList.add(equipment)
+        if (!equipmentList.contains(equipment)) {
+            equipmentList.add(equipment)
+        }
     }
 
     // TODO: Store locally when no internet

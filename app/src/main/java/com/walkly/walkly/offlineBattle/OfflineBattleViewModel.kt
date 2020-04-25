@@ -2,10 +2,15 @@ package com.walkly.walkly.offlineBattle
 
 import android.util.Log
 import androidx.lifecycle.*
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
 import com.walkly.walkly.models.Enemy
+import com.walkly.walkly.models.Equipment
+import com.walkly.walkly.repositories.EquipmentRepository
 import com.walkly.walkly.repositories.PlayerRepository
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
+import kotlinx.coroutines.tasks.await
 
 import java.util.*
 
@@ -32,13 +37,14 @@ class OfflineBattleViewModel : ViewModel() {
     var currentPlayerHP = 0L
     var playerHpPercentage = 100
     var playerDamage = 0L
-
+    private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     // view observes these
     // Health bar values
     val enemyHP = MutableLiveData<Int>()
     val playerHP = MutableLiveData<Int>()
 
-    private var scope = CoroutineScope(IO)
+    var requiredSteps = 0
+    var stepsTaken = 0
 
     init {
         // Get damage player can do based on equipment
@@ -53,6 +59,7 @@ class OfflineBattleViewModel : ViewModel() {
 
     fun initEnemy(enemy: Enemy) {
         if (baseEnemyHP == -1L) {
+            requiredSteps = (enemy.health!!).toInt()
             // Get the starting enemy HP
             baseEnemyHP = enemy.health!!
 //            baseEnemyHP = 100L
@@ -65,9 +72,25 @@ class OfflineBattleViewModel : ViewModel() {
         }
     }
 
+    suspend fun getReward(): Equipment {
+        val equipmentList = mutableListOf<Equipment>()
+        val snapshot = db.collection("equipments").get().await()
+        for (document in snapshot) {
+            val equipment = document.toObject<Equipment>()
+            equipmentList.add(equipment.addId(document.id))
+        }
+
+        val index = (0 until equipmentList.size).random()
+        val reward = equipmentList[index]
+
+        EquipmentRepository.addEquipment(reward)
+
+        return reward
+    }
 
     // reduce enemy HP by distance walked * equipment value
     fun damageEnemy(steps: Float) {
+        stepsTaken += (steps * playerDamage).toInt()
         currentEnemyHp -= (steps * playerDamage).toLong()
 //        currentEnemyHp -= steps.toLong()
         if (currentEnemyHp <= 0) {
