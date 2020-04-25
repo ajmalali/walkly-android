@@ -44,16 +44,16 @@ class AuthViewModel : ViewModel() {
 
         // TODO: this should not be in production code
         // it was used just to allow notification for old accounts
-        val ref = db.collection("users").document(user?.uid!!)
-        ref.set(
-            Player(
-                deviceToken = deviceToken,
-                name = user.displayName,
-                email = user.email,
-                currentEquipment = EquipmentRepository.getDefaultEquipment(),
-                photoURL = user.photoUrl.toString()
-            ), SetOptions.merge()
-        ).await()
+//        val ref = db.collection("users").document(user?.uid!!)
+//        ref.set(
+//            Player(
+//                deviceToken = deviceToken,
+//                name = user.displayName,
+//                email = user.email,
+//                currentEquipment = EquipmentRepository.getDefaultEquipment(),
+//                photoURL = user.photoUrl.toString()
+//            ), SetOptions.merge()
+//        ).await()
 
         return user
         // [END sign_in_with_email]

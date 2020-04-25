@@ -29,7 +29,7 @@ data class Player(
     var deviceToken: String = "",
     var CompletedQuests: List<String> = listOf(),
     var steps: Long = 0,
-    var friends: List<Friend>? = listOf(),
+    var friends: List<String>? = listOf(),
     var friendRequests: List<String>? = listOf()
 ) : Parcelable {
 
