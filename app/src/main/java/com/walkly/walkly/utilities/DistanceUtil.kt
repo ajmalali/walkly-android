@@ -2,10 +2,10 @@ package com.walkly.walkly.utilities
 
 import android.Manifest
 import android.app.Activity
-import android.os.Build
+import android.content.pm.PackageManager
 import android.util.Log
-import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.MutableLiveData
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.fitness.Fitness
@@ -44,7 +44,11 @@ class DistanceUtil(
         if (!GoogleSignIn.hasPermissions(
                 GoogleSignIn.getLastSignedInAccount(activity),
                 stepsFitnessOptions
-            )
+            ) ||
+            (ContextCompat.checkSelfPermission(
+                activity,
+                Manifest.permission.ACTIVITY_RECOGNITION
+            ) != PackageManager.PERMISSION_GRANTED)
         ) {
             GoogleSignIn.requestPermissions(
                 activity,
@@ -52,9 +56,11 @@ class DistanceUtil(
                 GoogleSignIn.getLastSignedInAccount(activity),
                 stepsFitnessOptions
             )
-            ActivityCompat.requestPermissions(activity,
+            ActivityCompat.requestPermissions(
+                activity,
                 arrayOf(Manifest.permission.ACTIVITY_RECOGNITION),
-                GOOGLE_FIT_PERMISSIONS_REQUEST_CODE);
+                GOOGLE_FIT_PERMISSIONS_REQUEST_CODE
+            );
         }
         getStepsSince()
     }
@@ -92,7 +98,7 @@ class DistanceUtil(
                 val steps = data.dataSets[0].dataPoints[0].getValue(Field.FIELD_STEPS)?.asInt()
                 Log.d("DistanceUtil", "steps since pause = $steps")
                 return steps
-            } catch (iobe: IndexOutOfBoundsException){
+            } catch (iobe: IndexOutOfBoundsException) {
                 return -1
             }
         }

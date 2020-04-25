@@ -7,6 +7,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.FirebaseFirestoreSettings
 import com.google.firebase.firestore.ktx.toObject
+import com.google.firebase.firestore.ktx.toObjects
 import com.walkly.walkly.models.Enemy
 import kotlinx.coroutines.tasks.await
 
@@ -26,18 +27,30 @@ object EnemyRepository {
         val enemy_ = enemydoc.toObject<Enemy>()
 
         enemy_?.apply {
-            level = playerLevel * 100 * (1..3).random()
-            health = playerLevel * (1..3).random()
+            level = playerLevel + (0..3).random()
+            health = playerLevel * 100 * (1..3).random()
         }
 
         return enemy_!!
     }
 
-    suspend fun generateRandomEnemies(playerLevel: Long): Array<Enemy> {
-        var enemy1 = getEnemy(1, playerLevel)
-        var enemy2 = getEnemy(2, playerLevel)
-        var enemy3 = getEnemy(3, playerLevel)
+    // Gets n random enemies
+    suspend fun generateRandomEnemies(playerLevel: Long): List<Enemy> {
+        val n = 3
+        val enemies = enemyCollection.get().await().toObjects<Enemy>().toMutableList()
 
-        return arrayOf(enemy1, enemy2, enemy3)
+        for (enemy in enemies) {
+            enemy.apply {
+                level = playerLevel + (0..3).random()
+                health = playerLevel * 100 * (1..3).random()
+            }
+        }
+
+        enemies.shuffle()
+        if (n <= enemies.size) {
+            return enemies.subList(0, n)
+        }
+
+        return enemies.subList(0, enemies.size)
     }
 }

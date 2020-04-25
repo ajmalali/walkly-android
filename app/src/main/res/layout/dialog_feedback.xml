@@ -7,9 +7,11 @@
 
     <EditText
         android:id="@+id/et_title"
-        android:layout_width="280dp"
+        android:layout_width="0dp"
         android:layout_height="40dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="40dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/style_rounded_textfield"
         android:hint="Title"
         android:paddingHorizontal="8dp"
@@ -20,9 +22,11 @@
 
     <EditText
         android:id="@+id/et_content"
-        android:layout_width="280dp"
+        android:layout_width="0dp"
         android:layout_height="240dp"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="20dp"
+        android:layout_marginEnd="16dp"
         android:background="@drawable/style_rounded_textfield"
         android:gravity="top"
         android:hint="Content"

@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Button
 import androidx.activity.viewModels
 import androidx.lifecycle.Observer
@@ -61,6 +63,13 @@ class PVPLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUseLis
     private var isHost = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // To remove status bar
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        this.window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activty_pvp_lobby)
         supportActionBar!!.hide()
@@ -122,10 +131,10 @@ class PVPLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUseLis
             adapter.equipmentList = list
             if (list.size < 5) {
                 rv.layoutManager =
-                    GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false)
+                    GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false)
             } else {
                 rv.layoutManager =
-                    GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false)
+                    GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false)
             }
             adapter.notifyDataSetChanged()
         })

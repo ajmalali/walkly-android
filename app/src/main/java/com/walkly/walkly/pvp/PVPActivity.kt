@@ -6,6 +6,8 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.viewModels
@@ -47,6 +49,13 @@ class PVPActivity : AppCompatActivity() {
     private lateinit var battle: PVPBattle
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // To remove status bar
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        this.window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pvp_battle)
         supportActionBar?.hide()

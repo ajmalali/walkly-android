@@ -8,6 +8,8 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -56,6 +58,13 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
     private var isHost = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        // To remove status bar
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        this.window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
+
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_online_lobby)
         supportActionBar!!.hide()
@@ -111,10 +120,10 @@ class OnlineLobbyActivity : AppCompatActivity(), EquipmentAdapter.OnEquipmentUse
             adapter.equipmentList = list
             if (list.size < 5) {
                 rv.layoutManager =
-                    GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false)
+                    GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false)
             } else {
                 rv.layoutManager =
-                    GridLayoutManager(this, 1, GridLayoutManager.HORIZONTAL, false)
+                    GridLayoutManager(this, 1, GridLayoutManager.VERTICAL, false)
             }
             adapter.notifyDataSetChanged()
         })

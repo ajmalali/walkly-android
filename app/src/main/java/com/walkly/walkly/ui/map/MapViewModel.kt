@@ -11,8 +11,8 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.launch
 
 class MapViewModel : ViewModel() {
-    private var _enemies = MutableLiveData<Array<Enemy>>()
-    val enemies: LiveData<Array<Enemy>>
+    private var _enemies = MutableLiveData<List<Enemy>>()
+    val enemies: LiveData<List<Enemy>>
         get() = _enemies
 
     var currentPlayer = PlayerRepository.getPlayer()
@@ -36,7 +36,7 @@ class MapViewModel : ViewModel() {
         fetchEnemies(currentPlayer.level)
     }
 
-    private fun fetchEnemies(playerLevel: Long?){
+    private fun fetchEnemies(playerLevel: Long?) {
         CoroutineScope(IO).launch {
             _enemies.postValue(EnemyRepository.generateRandomEnemies(playerLevel!!))
         }

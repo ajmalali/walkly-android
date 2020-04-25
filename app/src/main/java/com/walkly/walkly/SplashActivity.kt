@@ -36,21 +36,19 @@ class SplashActivity : AppCompatActivity() {
 
         scope.launch {
             delay(splashTime)
-            if (currentUser != null) {
+            val intent: Intent = if (currentUser != null) {
                 withContext(IO) { PlayerRepository.initPlayer() }
-                val intent = Intent(this@SplashActivity, MainActivity::class.java)
-                startActivity(intent)
-                finish()
+                Intent(this@SplashActivity, MainActivity::class.java)
             } else {
-                val intent = Intent(this@SplashActivity, LoginActivity::class.java)
-                startActivity(intent)
-                finish()
+                Intent(this@SplashActivity, LoginActivity::class.java)
             }
+            startActivity(intent)
+            finish()
         }
     }
 
-    override fun onPause() {
+    override fun onDestroy() {
         scope.cancel()
-        super.onPause()
+        super.onDestroy()
     }
 }

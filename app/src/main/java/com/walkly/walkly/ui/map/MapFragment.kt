@@ -3,6 +3,7 @@ package com.walkly.walkly.ui.map
 
 import android.annotation.SuppressLint
 import android.content.Intent
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -16,6 +17,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.transition.Transition
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.gson.JsonObject
 import com.mapbox.android.core.permissions.PermissionsListener
@@ -50,7 +53,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
     private lateinit var symbol2: Symbol
     private lateinit var symbol3: Symbol
     private lateinit var camera: LatLng
-    private lateinit var enemies: Array<Enemy>
+    private lateinit var enemies: List<Enemy>
 
 
     override fun onCreateView(
@@ -68,6 +71,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
 
         val btn_bg = join_button.background
 
+        enemies = emptyList()
         linearLayout = bottom_sheet
         //hide the bottom sheet
         BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_HIDDEN
@@ -120,7 +124,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                         .withIconSize(2.5f)
                 )
 
-
                 symbol2 = symbolManager.create(
                     SymbolOptions()
                         .withData(enemy_2_json)
@@ -168,8 +171,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, PermissionsListener {
                 BottomSheetBehavior.from(linearLayout).state = BottomSheetBehavior.STATE_COLLAPSED
 
             }
-            // }
-
         }
 
     }
