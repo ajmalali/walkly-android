@@ -54,14 +54,14 @@ class OfflineBattleViewModel : ViewModel() {
     fun initEnemy(enemy: Enemy) {
         if (baseEnemyHP == -1L) {
             // Get the starting enemy HP
-//        baseEnemyHP = enemy.HP
-            baseEnemyHP = 100L
+            baseEnemyHP = enemy.health!!
+//            baseEnemyHP = 100L
             currentEnemyHp = baseEnemyHP
             enemyHP.value = currentEnemyHp.toInt()
 
             // Get enemy damage
-//            enemyDamage = enemy.damage
-            enemyDamage = 1L
+            enemyDamage = enemy.damage!!
+//            enemyDamage = 1L
         }
     }
 
