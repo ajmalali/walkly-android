@@ -11,7 +11,10 @@
         android:id="@+id/img_avatar_1"
         android:layout_width="48dp"
         android:layout_height="48dp"
-        android:layout_marginStart="40dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:srcCompat="@tools:sample/avatars" />
@@ -22,9 +25,9 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="16dp"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="16dp"
         android:text="player name"
         android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/img_avatar_1"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -34,9 +37,9 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="16dp"
         android:layout_marginStart="44dp"
-        android:layout_marginTop="16dp"
         android:text="Level 10"
         android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/tv_username_1"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -57,14 +60,14 @@
         android:id="@+id/btn_chat"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginRight="8dp"
+        android:layout_marginEnd="16dp"
+        android:backgroundTint="@color/gradient_orange"
         android:paddingHorizontal="16dp"
         android:paddingVertical="4dp"
         android:text="Chat"
-        app:layout_constraintBaseline_toBaselineOf="@id/tv_level_1"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:backgroundTint="@color/gradient_orange"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
 
 

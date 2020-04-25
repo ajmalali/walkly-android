@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.walkly.walkly.R
 import com.walkly.walkly.databinding.LeaderboardItemBinding
+import kotlinx.android.synthetic.main.leaderboard_item.view.*
 import kotlinx.android.synthetic.main.list_leaderboard.view.*
 import java.lang.Exception
 
@@ -38,7 +39,8 @@ class LeaderboardAdapter :
         holder.bind(item)
     }
 
-    class LeaderboardViewHolder(binding: LeaderboardItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    class LeaderboardViewHolder(binding: LeaderboardItemBinding) :
+        RecyclerView.ViewHolder(binding.root) {
         val position: TextView = binding.userPosition
         val userName: TextView = binding.userName
         val userLevel: TextView = binding.userLevel
@@ -46,23 +48,28 @@ class LeaderboardAdapter :
         val userImage: ImageView = binding.userImage
     }
 
-    class LeaderbardViewHolder2(view: View) : RecyclerView.ViewHolder(view){
-        private val userName : TextView = view.tv_username
-        private val level : TextView = view.tv_level
-        private val points : TextView = view.tv_points
-        private val avatar : ImageView = view.img_avatar
+    class LeaderbardViewHolder2(view: View) : RecyclerView.ViewHolder(view) {
+        private val userName: TextView = view.tv_username
+        private val level: TextView = view.tv_level
+        private val points: TextView = view.tv_points
+        private val avatar: ImageView = view.img_avatar
+        private val rank: TextView = view.tv_rank
 
-        fun bind (item: LeaderboardItem){
+        fun bind(item: LeaderboardItem) {
             userName.text = item.name
             level.text = "level ${item.level}"
             points.text = "${item.points} points"
+            rank.text = "${adapterPosition + 1}"
 
             try {
                 Glide.with(this.itemView)
+                    .load(item.photoURL)
+                    .into(avatar)
+            } catch (e: Exception) {
+                Log.d("leaderboard binding", "Failed to load avatar")
+                Glide.with(this.itemView)
                     .load(R.drawable.ic_person_black_24dp)
                     .into(avatar)
-            } catch (e: Exception){
-                Log.d("leaderboard binding", "Failed to load avatar")
             }
         }
     }

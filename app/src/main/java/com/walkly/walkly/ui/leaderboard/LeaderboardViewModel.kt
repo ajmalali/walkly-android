@@ -11,6 +11,7 @@ import com.google.firebase.firestore.FieldPath
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.QuerySnapshot
+import com.walkly.walkly.repositories.PlayerRepository
 
 private const val TAG = "LeaderboardViewModel"
 
@@ -30,6 +31,8 @@ class LeaderboardViewModel : ViewModel() {
 
     private val db: FirebaseFirestore = FirebaseFirestore.getInstance()
     private val userID = FirebaseAuth.getInstance().currentUser?.uid
+
+    private val currentPlayer = PlayerRepository.getPlayer()
 
     private val friendIds = mutableListOf<String>()
 
@@ -70,24 +73,15 @@ class LeaderboardViewModel : ViewModel() {
         number of reads and writes.
      */
     fun getFriendsLeaderboard() {
-        if (_friendsLeaderboard.value == null) {
-            db.collection("users")
-                .document(userID!!)
-                .collection("friends")
-                .get()
-                .addOnSuccessListener { result ->
-                    friendIds.add(userID)
-                    for (document in result) {
-                        friendIds.add(document.id)
-                    }
 
-                    Log.d(TAG, "Friend IDs: $friendIds")
-                    // create the leaderboard
-                    createFriendLeaderboard(friendIds)
-                }
-                .addOnFailureListener { exception ->
-                    Log.d(TAG, "Error getting friends leaderboard documents.", exception)
-                }
+        if (_friendsLeaderboard.value == null) {
+            friendIds.add(userID!!)
+            for (id in currentPlayer.friends!!) {
+                friendIds.add(id)
+            }
+
+            createFriendLeaderboard(friendIds)
+
         } else {
             _friendsLeaderboard.value = tempFriendList
         }
