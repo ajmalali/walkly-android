@@ -1,5 +1,13 @@
 # walkly-android
 
+## How to run the app
+
+- download or clone the repo
+- open it in Android Studio
+- bulid the project then run it
+- if you want to use the emulator on Windows, make sure you enable vertualization
+- if you want to use your phone, make sure it has android 6 or above, you enalbe the developer mode and allow debuging 
+
 ## Very Important Notes
 
 - NEVER use --force
