@@ -64,12 +64,11 @@ class LeaderboardAdapter :
             try {
                 Glide.with(this.itemView)
                     .load(item.photoURL)
+                    .placeholder(R.drawable.ic_account_circle_black_24dp)
                     .into(avatar)
             } catch (e: Exception) {
                 Log.d("leaderboard binding", "Failed to load avatar")
-                Glide.with(this.itemView)
-                    .load(R.drawable.ic_person_black_24dp)
-                    .into(avatar)
+                avatar.setImageResource(R.drawable.ic_account_circle_black_24dp)
             }
         }
     }

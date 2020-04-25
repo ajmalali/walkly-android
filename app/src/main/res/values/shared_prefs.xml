@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <bool name="main_bool">false</bool>
-    <bool name="profile_bool">false</bool>
+    <bool name="profile_bool">true</bool>
 </resources>
