@@ -112,7 +112,7 @@
                 android:background="#FFFEFE"
                 android:backgroundTint="#00FFFEFE"
                 android:max="100"
-                android:progress="50"
+                android:progress="0"
                 android:progressDrawable="@drawable/levelbar"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toStartOf="@id/menu"
@@ -182,5 +182,5 @@
         android:layout_height="match_parent"
         android:layout_gravity="start"
         app:menu="@menu/drawer_menu"
-        tools:visibility="visible" />
+        tools:visibility="gone" />
 </androidx.drawerlayout.widget.DrawerLayout>

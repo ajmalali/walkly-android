@@ -1,18 +1,17 @@
 package com.walkly.walkly.models
 
-import android.os.Parcel
 import android.os.Parcelable
-import android.util.Log
 import com.google.firebase.firestore.Exclude
-import com.google.firebase.firestore.FirebaseFirestoreException
-import com.walkly.walkly.repositories.PlayerRepository
 import kotlinx.android.parcel.IgnoredOnParcel
 import kotlinx.android.parcel.Parcelize
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.tasks.await
 import kotlin.math.floor
+import kotlin.math.sqrt
 
 private const val TAG = "class Player"
+
+// amount of points player gets for defeating enemy
+private const val ENEMY_LEVEL_POINTS = 10L
 
 @Parcelize
 data class Player(
@@ -44,7 +43,4 @@ data class Player(
     fun wearEquipment(equipment: Equipment) {
         currentEquipment = equipment
     }
-
-    // TODO: calculate progress form points
-    // to save computation time calculate it and store it every time points change
 }

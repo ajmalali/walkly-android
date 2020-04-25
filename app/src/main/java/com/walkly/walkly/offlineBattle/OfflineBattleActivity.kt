@@ -8,6 +8,8 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.view.Window
+import android.view.WindowManager
 import android.widget.Button
 import android.widget.TextView
 import androidx.activity.viewModels
@@ -20,6 +22,7 @@ import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import com.walkly.walkly.models.Enemy
 import com.walkly.walkly.models.Equipment
+import com.walkly.walkly.repositories.PlayerRepository
 import com.walkly.walkly.ui.consumables.ConsumablesBottomSheetDialog
 import com.walkly.walkly.ui.consumables.ConsumablesViewModel
 import com.walkly.walkly.utilities.DistanceUtil
@@ -58,6 +61,13 @@ class OfflineBattleActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.N)
     override fun onCreate(savedInstanceState: Bundle?) {
+        // To remove status bar
+        requestWindowFeature(Window.FEATURE_NO_TITLE)
+        this.window.setFlags(
+            WindowManager.LayoutParams.FLAG_FULLSCREEN,
+            WindowManager.LayoutParams.FLAG_FULLSCREEN
+        )
+
         super.onCreate(savedInstanceState)
         supportActionBar?.hide()
         setContentView(R.layout.activity_offline_battle)
@@ -242,16 +252,17 @@ class OfflineBattleActivity : AppCompatActivity() {
 //            enemy_health_bar.progress = it.toInt()
             bar_enemy_hp.setProgress(it, true)
             // If game ends
-            if (it <= 0 && !viewModel.battleEnded) {
-//                enemy.level.value?.toInt()?.let { it1 -> Player.updatePoints(it1) }
+            if (it <= 0) {
+                walkedDistance.removeObservers(this@OfflineBattleActivity)
                 CoroutineScope(Dispatchers.IO).launch {
                     val equipment = viewModel.getReward()
                     withContext(Dispatchers.Main) {
-                        viewModel.battleEnded = true
                         setupReward(equipment)
                         winDialog.show()
                     }
                 }
+
+                PlayerRepository.updatePoints(viewModel.enemyLevel)
             }
         })
     }

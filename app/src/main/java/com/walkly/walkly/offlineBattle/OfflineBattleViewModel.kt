@@ -45,6 +45,7 @@ class OfflineBattleViewModel : ViewModel() {
 
     var requiredSteps = 0
     var stepsTaken = 0
+    var enemyLevel = 0L
 
     init {
         // Get damage player can do based on equipment
@@ -59,6 +60,7 @@ class OfflineBattleViewModel : ViewModel() {
 
     fun initEnemy(enemy: Enemy) {
         if (baseEnemyHP == -1L) {
+            enemyLevel = enemy.level!!
             requiredSteps = (enemy.health!!).toInt()
             // Get the starting enemy HP
             baseEnemyHP = enemy.health!!

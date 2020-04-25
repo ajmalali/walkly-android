@@ -113,7 +113,7 @@ class OnlineBattleActivity : AppCompatActivity() {
                     }
                 }
 
-                PlayerRepository.updatePoints(1)
+                PlayerRepository.updatePoints(battle?.enemy?.level!!)
             }
         })
 

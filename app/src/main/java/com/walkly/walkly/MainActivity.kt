@@ -278,37 +278,45 @@ class MainActivity : AppCompatActivity(), InvitesAdapter.OnInviteListener {
 
     // TODO: FIX THIS
     private fun updateTopBar() {
+        PlayerRepository.level.observe(this, Observer {
+            user_level.text = "LEVEL $it"
+        })
+
+        PlayerRepository.progress.observe(this, Observer {
+            progressBar.progress = it.toInt()
+        })
+
         stamina.observe(this, Observer {
             val stamina = it
 
             try {
 
-            stamina.let {
-                if (stamina <= 100) {
-                    // no balls
-                    view_energy_ball_3.setBackgroundResource(R.drawable.staminacircleempty)
-                    view_energy_ball_2.setBackgroundResource(R.drawable.staminacircleempty)
-                    view_energy_ball_1.setBackgroundResource(R.drawable.staminacircleempty)
+                stamina.let {
+                    if (stamina <= 100) {
+                        // no balls
+                        view_energy_ball_3.setBackgroundResource(R.drawable.staminacircleempty)
+                        view_energy_ball_2.setBackgroundResource(R.drawable.staminacircleempty)
+                        view_energy_ball_1.setBackgroundResource(R.drawable.staminacircleempty)
 
-                    // player cannot join a battle
-                    join_button.isEnabled = false
-                    join_button.background.alpha = 100
-                } else {
-                    join_button.isEnabled = true
-                    join_button.background.alpha = 255
-                    if (stamina >= 300) {
-                        view_energy_ball_3.setBackgroundResource(R.drawable.staminacircle)
-                    }
+                        // player cannot join a battle
+                        join_button.isEnabled = false
+                        join_button.background.alpha = 100
+                    } else {
+                        join_button.isEnabled = true
+                        join_button.background.alpha = 255
+                        if (stamina >= 300) {
+                            view_energy_ball_3.setBackgroundResource(R.drawable.staminacircle)
+                        }
 
-                    if (stamina >= 200) {
-                        view_energy_ball_2.setBackgroundResource(R.drawable.staminacircle)
-                    }
+                        if (stamina >= 200) {
+                            view_energy_ball_2.setBackgroundResource(R.drawable.staminacircle)
+                        }
 
-                    if (stamina >= 100) {
-                        view_energy_ball_1.setBackgroundResource(R.drawable.staminacircle)
+                        if (stamina >= 100) {
+                            view_energy_ball_1.setBackgroundResource(R.drawable.staminacircle)
+                        }
                     }
                 }
-            }
             } catch (e: IllegalStateException) {
                 Log.d("Miain", "because started activity again from service", e)
             }

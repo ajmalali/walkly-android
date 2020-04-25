@@ -17,6 +17,7 @@ import com.bumptech.glide.Glide
 import com.walkly.walkly.MainActivity
 import com.walkly.walkly.R
 import com.walkly.walkly.models.PVPBattle
+import com.walkly.walkly.repositories.PlayerRepository
 import com.walkly.walkly.ui.consumables.ConsumablesBottomSheetDialog
 import com.walkly.walkly.ui.consumables.ConsumablesViewModel
 import com.walkly.walkly.utilities.DistanceUtil
@@ -74,6 +75,7 @@ class PVPActivity : AppCompatActivity() {
                     loseDialog.show()
                 } else {
                     winDialog.show()
+                    PlayerRepository.updatePoints(battle.opponent?.level!!)
                 }
             }
         })
@@ -83,6 +85,7 @@ class PVPActivity : AppCompatActivity() {
             if (it <= 0) {
                 if (battle.host?.id == viewModel.userID) {
                     winDialog.show()
+                    PlayerRepository.updatePoints(battle.host?.level!!)
                 } else {
                     loseDialog.show()
                 }
