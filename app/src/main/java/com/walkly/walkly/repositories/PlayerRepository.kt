@@ -73,8 +73,8 @@ object PlayerRepository {
             id = snapshot.id
         }
 
-        _level.value = currentPlayer.level
-        _progress.value = currentPlayer.progress
+        _level.postValue(currentPlayer.level)
+        _progress.postValue(currentPlayer.progress)
     }
 
     // Syncs the current player with DB or store locally when no internet
@@ -107,10 +107,21 @@ object PlayerRepository {
     fun updatePoints(enemyLevel: Long) {
         val gainedPoints = enemyLevel * ENEMY_LEVEL_POINTS
         currentPlayer.apply {
+            // Calculate total points
             points = points?.plus(gainedPoints)
-            val requiredPoints = 25 * (level!! + 1) * (level!! + 1) - 25 * (level!! + 1)
+            // Calculate level
             level = (floor(25 + sqrt(625 + 100.0 * points!!)) / 50).toLong()
+            // Required points for next level
+            var requiredPoints = 25 * (level!! + 1) * (level!! + 1) - 25 * (level!! + 1)
+
+            // Check if player is leveling up
+            if (points!! >= requiredPoints) {
+                // Update required points
+                requiredPoints = 25 * (level!! + 1) * (level!! + 1) - 25 * (level!! + 1)
+            }
+
             _level.value = level
+            // Calculate progress (percentage) for next level
             progress = ((points!! * 100.0) / requiredPoints).toLong()
             _progress.value = progress
         }
